@@ -29,7 +29,7 @@ export default function MemoriesPage() {
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const [form, setForm] = useState({ title: '', description: '', memory_date: new Date().toISOString().split('T')[0], mood: 'happy', photo_url: '' })
-  const [saving, setSaving] = useState(false)\
+  const [saving, setSaving] = useState(false)
   const [uploadError, setUploadError] = useState('')
   const [uploading, setUploading] = useState(false)
   const [selected, setSelected] = useState<Memory | null>(null)
