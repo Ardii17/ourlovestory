@@ -23,6 +23,7 @@ export default function BiodataPage() {
     person1_name: '', person2_name: '', anniversary_date: '',
     person1_photo: '', person2_photo: '', love_quote: ''
   })
+  const [uploadError, setUploadError] = useState('')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -65,6 +66,11 @@ export default function BiodataPage() {
     const ext = file.name.split('.').pop()
     const fileName = `person${person}_${Date.now()}.${ext}`
     const { data, error } = await supabase.storage.from('couple-photos').upload(fileName, file, { upsert: true })
+    if (file.size > 5 * 1024 * 1024) {
+      setUploadError('Ukuran foto maksimal 5 MB ya!')
+      setTimeout(() => setUploadError(''), 3000)
+      return
+    }
     if (!error && data) {
       const { data: urlData } = supabase.storage.from('couple-photos').getPublicUrl(fileName)
       setProfile(prev => ({ ...prev, [`person${person}_photo`]: urlData.publicUrl }))
@@ -171,6 +177,12 @@ export default function BiodataPage() {
               : saved ? '✅ Tersimpan!'
               : <><Save size={16} /> Simpan Biodata</>}
           </button>
+
+          {uploadError && (
+            <p style={{ color: '#f43f5e', fontSize: '0.8rem', marginTop: '6px' }}>
+              ⚠️ {uploadError}
+            </p>
+          )}
         </div>
       </div>
 

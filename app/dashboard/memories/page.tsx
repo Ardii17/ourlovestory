@@ -29,7 +29,8 @@ export default function MemoriesPage() {
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const [form, setForm] = useState({ title: '', description: '', memory_date: new Date().toISOString().split('T')[0], mood: 'happy', photo_url: '' })
-  const [saving, setSaving] = useState(false)
+  const [saving, setSaving] = useState(false)\
+  const [uploadError, setUploadError] = useState('')
   const [uploading, setUploading] = useState(false)
   const [selected, setSelected] = useState<Memory | null>(null)
 
@@ -46,6 +47,11 @@ export default function MemoriesPage() {
     const ext = file.name.split('.').pop()
     const fileName = `memory_${Date.now()}.${ext}`
     const { error } = await supabase.storage.from('memory-photos').upload(fileName, file)
+    if (file.size > 5 * 1024 * 1024) {
+      setUploadError('Ukuran foto maksimal 5 MB ya!')
+      setTimeout(() => setUploadError(''), 3000)
+      return
+    }
     if (!error) {
       const { data } = supabase.storage.from('memory-photos').getPublicUrl(fileName)
       setForm(p => ({ ...p, photo_url: data.publicUrl }))
@@ -82,21 +88,21 @@ export default function MemoriesPage() {
     <div className="max-w-4xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="font-display text-2xl font-bold text-rose-800">Kenangan Indah 💝</h1>
-          <p className="text-rose-500 font-body text-sm mt-1">{memories.length} momen spesial tersimpan</p>
+          <h1 className="text-2xl font-bold font-display text-rose-800">Kenangan Indah 💝</h1>
+          <p className="mt-1 text-sm text-rose-500 font-body">{memories.length} momen spesial tersimpan</p>
         </div>
-        <button onClick={() => setShowModal(true)} className="btn-rose flex items-center gap-2">
+        <button onClick={() => setShowModal(true)} className="flex items-center gap-2 btn-rose">
           <Plus size={18} /> Tambah Kenangan
         </button>
       </div>
 
       {loading ? (
-        <div className="text-center py-16 text-4xl heart-beat">💕</div>
+        <div className="py-16 text-4xl text-center heart-beat">💕</div>
       ) : memories.length === 0 ? (
-        <div className="text-center py-16 glass rounded-3xl">
-          <div className="text-5xl mb-4">💝</div>
-          <h3 className="font-display text-xl text-rose-700 mb-2">Belum ada kenangan</h3>
-          <p className="text-rose-400 font-body text-sm mb-4">Abadikan setiap momen spesial kalian!</p>
+        <div className="py-16 text-center glass rounded-3xl">
+          <div className="mb-4 text-5xl">💝</div>
+          <h3 className="mb-2 text-xl font-display text-rose-700">Belum ada kenangan</h3>
+          <p className="mb-4 text-sm text-rose-400 font-body">Abadikan setiap momen spesial kalian!</p>
           <button onClick={() => setShowModal(true)} className="btn-rose">+ Tulis Kenangan Pertama</button>
         </div>
       ) : (
@@ -115,17 +121,17 @@ export default function MemoriesPage() {
                   </div>
 
                   <div
-                    className="card-hover glass rounded-2xl border border-rose-100 overflow-hidden cursor-pointer"
+                    className="overflow-hidden border cursor-pointer card-hover glass rounded-2xl border-rose-100"
                     onClick={() => setSelected(memory)}
                   >
                     <div className="flex">
                       {memory.photo_url && (
-                        <div className="w-24 md:w-32 flex-shrink-0">
+                        <div className="flex-shrink-0 w-24 md:w-32">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={memory.photo_url} alt="" className="w-full h-full object-cover" />
+                          <img src={memory.photo_url} alt="" className="object-cover w-full h-full" />
                         </div>
                       )}
-                      <div className="p-4 flex-1">
+                      <div className="flex-1 p-4">
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
@@ -133,12 +139,12 @@ export default function MemoriesPage() {
                                 {moodInfo.emoji} {moodInfo.label}
                               </span>
                             </div>
-                            <h3 className="font-display font-bold text-rose-800 text-base">{memory.title}</h3>
+                            <h3 className="text-base font-bold font-display text-rose-800">{memory.title}</h3>
                             <p className="text-rose-400 text-xs font-body mt-0.5">
                               📅 {format(parseISO(memory.memory_date), 'EEEE, d MMMM yyyy', { locale: idLocale })}
                             </p>
                             {memory.description && (
-                              <p className="text-rose-600 text-sm font-body mt-2 line-clamp-2">{memory.description}</p>
+                              <p className="mt-2 text-sm text-rose-600 font-body line-clamp-2">{memory.description}</p>
                             )}
                           </div>
                           <button onClick={e => { e.stopPropagation(); deleteMemory(memory.id) }}
@@ -160,10 +166,10 @@ export default function MemoriesPage() {
       {selected && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop"
           style={{ background: 'rgba(0,0,0,0.5)' }} onClick={() => setSelected(null)}>
-          <div className="bg-white rounded-3xl w-full max-w-md shadow-2xl overflow-hidden" onClick={e => e.stopPropagation()}>
+          <div className="w-full max-w-md overflow-hidden bg-white shadow-2xl rounded-3xl" onClick={e => e.stopPropagation()}>
             {selected.photo_url && (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={selected.photo_url} alt="" className="w-full h-48 object-cover" />
+              <img src={selected.photo_url} alt="" className="object-cover w-full h-48" />
             )}
             <div className="p-6">
               <div className="flex items-start justify-between mb-2">
@@ -174,12 +180,12 @@ export default function MemoriesPage() {
                   <X size={20} />
                 </button>
               </div>
-              <h2 className="font-display text-xl font-bold text-rose-800 mb-1">{selected.title}</h2>
-              <p className="text-rose-400 text-sm font-body mb-4">
+              <h2 className="mb-1 text-xl font-bold font-display text-rose-800">{selected.title}</h2>
+              <p className="mb-4 text-sm text-rose-400 font-body">
                 📅 {format(parseISO(selected.memory_date), 'EEEE, d MMMM yyyy', { locale: idLocale })}
               </p>
               {selected.description && (
-                <p className="text-rose-700 font-body leading-relaxed paper-texture p-4 rounded-xl">
+                <p className="p-4 leading-relaxed text-rose-700 font-body paper-texture rounded-xl">
                   {selected.description}
                 </p>
               )}
@@ -192,25 +198,25 @@ export default function MemoriesPage() {
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop"
           style={{ background: 'rgba(0,0,0,0.4)' }}>
-          <div className="bg-white rounded-3xl p-6 w-full max-w-md shadow-2xl" style={{ maxHeight: '90vh', overflowY: 'auto' }}>
+          <div className="w-full max-w-md p-6 bg-white shadow-2xl rounded-3xl" style={{ maxHeight: '90vh', overflowY: 'auto' }}>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="font-display text-xl font-bold text-rose-800">Tulis Kenangan 💝</h2>
+              <h2 className="text-xl font-bold font-display text-rose-800">Tulis Kenangan 💝</h2>
               <button onClick={() => setShowModal(false)} className="text-rose-400 hover:text-rose-600"><X size={20} /></button>
             </div>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-semibold text-rose-700 mb-2 font-body">Judul *</label>
+                <label className="block mb-2 text-sm font-semibold text-rose-700 font-body">Judul *</label>
                 <input className="love-input" placeholder="Judul kenangan..." value={form.title}
                   onChange={e => setForm(p => ({ ...p, title: e.target.value }))} />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-rose-700 mb-2 font-body">Tanggal</label>
+                <label className="block mb-2 text-sm font-semibold text-rose-700 font-body">Tanggal</label>
                 <input type="date" className="love-input" value={form.memory_date}
                   onChange={e => setForm(p => ({ ...p, memory_date: e.target.value }))} />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-rose-700 mb-2 font-body">Suasana</label>
+                <label className="block mb-2 text-sm font-semibold text-rose-700 font-body">Suasana</label>
                 <div className="grid grid-cols-3 gap-2">
                   {moods.map(m => (
                     <button key={m.value} onClick={() => setForm(p => ({ ...p, mood: m.value }))}
@@ -223,25 +229,25 @@ export default function MemoriesPage() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-semibold text-rose-700 mb-2 font-body">Cerita</label>
-                <textarea className="love-input resize-none paper-texture" rows={4}
+                <label className="block mb-2 text-sm font-semibold text-rose-700 font-body">Cerita</label>
+                <textarea className="resize-none love-input paper-texture" rows={4}
                   placeholder="Ceritakan kenangan indah ini..." value={form.description}
                   onChange={e => setForm(p => ({ ...p, description: e.target.value }))} />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-rose-700 mb-2 font-body">Foto</label>
+                <label className="block mb-2 text-sm font-semibold text-rose-700 font-body">Foto</label>
                 {form.photo_url ? (
-                  <div className="relative rounded-xl overflow-hidden h-32">
+                  <div className="relative h-32 overflow-hidden rounded-xl">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={form.photo_url} alt="" className="w-full h-full object-cover" />
+                    <img src={form.photo_url} alt="" className="object-cover w-full h-full" />
                     <button onClick={() => setForm(p => ({ ...p, photo_url: '' }))}
-                      className="absolute top-2 right-2 bg-black/50 text-white rounded-full p-1">
+                      className="absolute p-1 text-white rounded-full top-2 right-2 bg-black/50">
                       <X size={14} />
                     </button>
                   </div>
                 ) : (
-                  <label className="border-2 border-dashed border-rose-200 rounded-xl p-4 flex flex-col items-center cursor-pointer hover:bg-rose-50 transition-colors">
-                    <Upload size={24} className="text-rose-300 mb-1" />
+                  <label className="flex flex-col items-center p-4 transition-colors border-2 border-dashed cursor-pointer border-rose-200 rounded-xl hover:bg-rose-50">
+                    <Upload size={24} className="mb-1 text-rose-300" />
                     <span className="text-sm text-rose-400 font-body">{uploading ? 'Mengupload...' : 'Upload foto (opsional)'}</span>
                     <input type="file" accept="image/*" className="hidden"
                       onChange={e => e.target.files?.[0] && uploadPhoto(e.target.files[0])} />
@@ -250,13 +256,19 @@ export default function MemoriesPage() {
               </div>
               <div className="flex gap-3 pt-2">
                 <button onClick={() => setShowModal(false)}
-                  className="flex-1 py-3 rounded-xl border-2 border-rose-200 text-rose-500 font-semibold hover:bg-rose-50 transition-colors font-body">
+                  className="flex-1 py-3 font-semibold transition-colors border-2 rounded-xl border-rose-200 text-rose-500 hover:bg-rose-50 font-body">
                   Batal
                 </button>
-                <button onClick={saveMemory} disabled={saving || !form.title || uploading} className="flex-1 btn-rose flex items-center justify-center gap-2">
+                <button onClick={saveMemory} disabled={saving || !form.title || uploading} className="flex items-center justify-center flex-1 gap-2 btn-rose">
                   {saving ? '💕' : <><BookHeart size={16} /> Simpan</>}
                 </button>
               </div>
+
+              {uploadError && (
+                <p style={{ color: '#f43f5e', fontSize: '0.8rem', marginTop: '6px' }}>
+                  ⚠️ {uploadError}
+                </p>
+              )}
             </div>
           </div>
         </div>
