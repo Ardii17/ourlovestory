@@ -10,14 +10,14 @@ import {
 import { supabase } from '@/lib/supabase'
 
 const navItems = [
-  { href: '/dashboard', label: 'Beranda', icon: Home, emoji: '🏠' },
-  { href: '/dashboard/biodata', label: 'Biodata Kami', icon: Heart, emoji: '💑' },
-  { href: '/dashboard/wishlist', label: 'Mau ke Mana?', icon: MapPin, emoji: '🗺️' },
-  { href: '/dashboard/visited', label: 'Tempat Kenangan', icon: Map, emoji: '📍' },
-  { href: '/dashboard/dokumentasi', label: 'Dokumentasi', icon: Camera, emoji: '📸' },
-  { href: '/dashboard/memories', label: 'Kenangan Indah', icon: BookHeart, emoji: '💝' },
-  { href: '/dashboard/bucket-list', label: 'Bucket List', icon: CheckSquare, emoji: '✨' },
-  { href: '/dashboard/love-letters', label: 'Surat Cinta', icon: Scroll, emoji: '💌' },
+  { href: '/dashboard',             label: 'Beranda',         emoji: '🏠' },
+  { href: '/dashboard/biodata',     label: 'Biodata Kami',    emoji: '💑' },
+  { href: '/dashboard/wishlist',    label: 'Mau ke Mana?',    emoji: '🗺️' },
+  { href: '/dashboard/visited',     label: 'Tempat Kenangan', emoji: '📍' },
+  { href: '/dashboard/dokumentasi', label: 'Dokumentasi',     emoji: '📸' },
+  { href: '/dashboard/memories',    label: 'Kenangan Indah',  emoji: '💝' },
+  { href: '/dashboard/bucket-list', label: 'Bucket List',     emoji: '✨' },
+  { href: '/dashboard/love-letters',label: 'Surat Cinta',     emoji: '💌' },
 ]
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -25,9 +25,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [profile, setProfile] = useState<{ person1_name: string; person2_name: string } | null>(null)
 
-  useEffect(() => {
-    loadProfile()
-  }, [])
+  useEffect(() => { loadProfile() }, [])
 
   async function loadProfile() {
     const { data } = await supabase.from('couple_profile').select('person1_name, person2_name').single()
@@ -35,56 +33,87 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }
 
   return (
-    <div className="min-h-screen flex" style={{ background: 'linear-gradient(135deg, #fff1f2 0%, #fdf8f0 50%, #fce7f3 100%)' }}>
+    <div
+      style={{
+        display: 'flex',
+        height: '100vh',
+        overflow: 'hidden',
+        background: 'linear-gradient(135deg, #fff1f2 0%, #fdf8f0 50%, #fce7f3 100%)',
+      }}
+    >
       {/* Mobile overlay */}
       {sidebarOpen && (
-        <div 
-          className="fixed inset-0 bg-black/30 z-30 lg:hidden modal-backdrop"
+        <div
           onClick={() => setSidebarOpen(false)}
+          style={{
+            position: 'fixed', inset: 0,
+            background: 'rgba(0,0,0,0.3)',
+            zIndex: 30,
+            backdropFilter: 'blur(2px)',
+          }}
         />
       )}
 
-      {/* Sidebar */}
-      <aside className={`
-        fixed left-0 top-0 h-full w-72 z-40 transition-transform duration-300 ease-in-out
-        lg:translate-x-0 lg:static lg:z-auto
-        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-      `}
+      {/* ── SIDEBAR ── */}
+      <aside
         style={{
+          width: '272px',
+          minWidth: '272px',
+          height: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
           background: 'linear-gradient(180deg, #fff1f2 0%, #fdf2f8 50%, #fce7f3 100%)',
           borderRight: '1px solid #fecdd3',
-          boxShadow: '4px 0 20px rgba(244, 63, 94, 0.08)'
+          boxShadow: '4px 0 20px rgba(244,63,94,0.08)',
+          position: 'relative',
+          zIndex: 40,
+          transition: 'transform 0.3s ease',
+          /* mobile: hide off-screen */
+          transform: sidebarOpen ? 'translateX(0)' : undefined,
+          flexShrink: 0,
         }}
+        className={`sidebar-aside ${sidebarOpen ? '' : 'sidebar-hidden'}`}
       >
-        {/* Sidebar Header */}
-        <div className="p-6 border-b border-rose-100">
-          <div className="flex items-center justify-between">
+        {/* Header */}
+        <div style={{ padding: '24px', borderBottom: '1px solid #fecdd3', flexShrink: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="heart-beat text-2xl">💕</span>
-                <h1 className="font-display text-xl font-bold gradient-text">Our Story</h1>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                <span className="heart-beat" style={{ fontSize: '1.5rem' }}>💕</span>
+                <h1 className="font-display gradient-text" style={{ fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>
+                  Our Story
+                </h1>
               </div>
               {profile && (
-                <p className="font-script text-sm text-rose-400">
+                <p className="font-script" style={{ fontSize: '0.875rem', color: '#fb7185', margin: 0 }}>
                   {profile.person1_name} & {profile.person2_name}
                 </p>
               )}
             </div>
-            <button 
+            <button
               onClick={() => setSidebarOpen(false)}
-              className="lg:hidden text-rose-400 hover:text-rose-600"
+              className="sidebar-close-btn"
+              style={{ color: '#fb7185', background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}
             >
               <X size={20} />
             </button>
           </div>
         </div>
 
-        {/* Decorative hearts */}
-        <div className="absolute right-4 top-16 opacity-10 text-rose-300 text-4xl pointer-events-none">♥</div>
-        <div className="absolute right-8 bottom-40 opacity-10 text-rose-300 text-2xl pointer-events-none">♥</div>
+        {/* Decorative */}
+        <div style={{ position: 'absolute', right: '16px', top: '64px', opacity: 0.08, color: '#f43f5e', fontSize: '2.5rem', pointerEvents: 'none', userSelect: 'none' }}>♥</div>
 
-        {/* Navigation */}
-        <nav className="p-4 space-y-1">
+        {/* Nav — scrollable middle area */}
+        <nav
+          style={{
+            flex: 1,
+            overflowY: 'auto',
+            padding: '16px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '4px',
+          }}
+        >
           {navItems.map((item) => {
             const isActive = pathname === item.href
             return (
@@ -92,64 +121,109 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 key={item.href}
                 href={item.href}
                 onClick={() => setSidebarOpen(false)}
-                className={`
-                  flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group
-                  ${isActive 
-                    ? 'nav-active font-semibold' 
-                    : 'text-rose-700 hover:bg-rose-50 hover:text-rose-500'
-                  }
-                `}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  padding: '12px 16px',
+                  borderRadius: '12px',
+                  textDecoration: 'none',
+                  transition: 'all 0.2s',
+                  fontWeight: isActive ? 600 : 400,
+                  ...(isActive
+                    ? {
+                        background: 'linear-gradient(135deg, rgba(244,63,94,0.12), rgba(236,72,153,0.08))',
+                        borderLeft: '3px solid #f43f5e',
+                        color: '#f43f5e',
+                      }
+                    : {
+                        color: '#9f1239',
+                        borderLeft: '3px solid transparent',
+                      }),
+                }}
+                onMouseEnter={e => { if (!isActive) (e.currentTarget as HTMLElement).style.background = 'rgba(244,63,94,0.06)' }}
+                onMouseLeave={e => { if (!isActive) (e.currentTarget as HTMLElement).style.background = 'transparent' }}
               >
-                <span className="text-lg">{item.emoji}</span>
-                <span className="font-body text-sm">{item.label}</span>
-                {isActive && <Sparkles size={14} className="ml-auto text-rose-400" />}
+                <span style={{ fontSize: '1.2rem', flexShrink: 0 }}>{item.emoji}</span>
+                <span className="font-body" style={{ fontSize: '0.875rem', flex: 1 }}>{item.label}</span>
+                {isActive && <Sparkles size={14} color="#fb7185" />}
               </Link>
             )
           })}
         </nav>
 
-        {/* Bottom quote */}
-        <div className="absolute bottom-0 left-0 right-0 p-6">
-          <div className="glass rounded-2xl p-4 text-center">
-            <p className="font-script text-rose-400 text-sm leading-relaxed">
-              "Every love story is beautiful, but ours is my favorite."
+        {/* Bottom quote — fixed at bottom of sidebar */}
+        <div style={{ padding: '16px', flexShrink: 0 }}>
+          <div
+            className="glass"
+            style={{ borderRadius: '16px', padding: '16px', textAlign: 'center' }}
+          >
+            <p className="font-script" style={{ color: '#fb7185', fontSize: '0.85rem', lineHeight: 1.5, margin: 0 }}>
+              "Every love story is beautiful,<br />but ours is my favorite."
             </p>
           </div>
         </div>
       </aside>
 
-      {/* Main Content */}
-      <main className="flex-1 flex flex-col min-h-screen lg:ml-0">
+      {/* ── MAIN ── */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden', minWidth: 0 }}>
         {/* Top Bar */}
-        <header className="sticky top-0 z-20 glass border-b border-rose-100 px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => setSidebarOpen(true)}
-                className="lg:hidden text-rose-400 hover:text-rose-600 transition-colors"
-              >
-                <Menu size={24} />
-              </button>
-              <div>
-                <h2 className="font-display text-lg font-semibold text-rose-800">
-                  {navItems.find(n => n.href === pathname)?.emoji}{' '}
-                  {navItems.find(n => n.href === pathname)?.label || 'Our Story'}
-                </h2>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 text-rose-300">
-              <Star size={16} fill="currentColor" />
-              <Star size={16} fill="currentColor" />
-              <Star size={16} fill="currentColor" />
-            </div>
+        <header
+          className="glass"
+          style={{
+            padding: '16px 24px',
+            borderBottom: '1px solid #fecdd3',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexShrink: 0,
+            zIndex: 20,
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="menu-btn"
+              style={{ color: '#fb7185', background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}
+            >
+              <Menu size={24} />
+            </button>
+            <h2 className="font-display" style={{ fontSize: '1.125rem', fontWeight: 600, color: '#9f1239', margin: 0 }}>
+              {navItems.find(n => n.href === pathname)?.emoji}{' '}
+              {navItems.find(n => n.href === pathname)?.label || 'Our Story'}
+            </h2>
+          </div>
+          <div style={{ display: 'flex', gap: '4px', color: '#fda4af' }}>
+            <Star size={16} fill="currentColor" />
+            <Star size={16} fill="currentColor" />
+            <Star size={16} fill="currentColor" />
           </div>
         </header>
 
-        {/* Page Content */}
-        <div className="flex-1 p-6">
+        {/* Page content — scrollable */}
+        <main style={{ flex: 1, overflowY: 'auto', padding: '24px' }}>
           {children}
-        </div>
-      </main>
+        </main>
+      </div>
+
+      {/* Responsive styles */}
+      <style>{`
+        @media (min-width: 1024px) {
+          .sidebar-hidden { transform: translateX(0) !important; }
+          .sidebar-close-btn { display: none !important; }
+          .menu-btn { display: none !important; }
+        }
+        @media (max-width: 1023px) {
+          .sidebar-aside {
+            position: fixed !important;
+            left: 0; top: 0;
+            height: 100vh !important;
+          }
+          .sidebar-hidden {
+            transform: translateX(-100%) !important;
+          }
+        }
+      `}</style>
     </div>
   )
 }

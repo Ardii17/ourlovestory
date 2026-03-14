@@ -29,7 +29,7 @@ export default function BiodataPage() {
         person2_photo: data.person2_photo || '',
         love_quote: data.love_quote || '',
       })
-    }
+    }``
     setLoading(false)
   }
 
@@ -88,7 +88,7 @@ export default function BiodataPage() {
 
   if (loading) return (
     <div className="flex items-center justify-center py-20">
-      <div className="heart-beat text-4xl">💕</div>
+      <div className="text-4xl heart-beat">💕</div>
     </div>
   )
 
@@ -96,11 +96,11 @@ export default function BiodataPage() {
     <div className="max-w-3xl mx-auto space-y-6">
       {/* Love Counter Preview */}
       {duration && (
-        <div className="rounded-3xl p-6 text-center"
+        <div className="p-6 text-center rounded-3xl"
           style={{ background: 'linear-gradient(135deg, #f43f5e, #ec4899)', boxShadow: '0 15px 40px rgba(244, 63, 94, 0.3)' }}
         >
-          <div className="text-4xl mb-2">💕</div>
-          <p className="text-white font-script text-xl mb-3">Sudah bersama selama...</p>
+          <div className="mb-2 text-4xl">💕</div>
+          <p className="mb-3 text-xl text-white font-script">Sudah bersama selama...</p>
           <div className="flex justify-center gap-8">
             {[
               { value: duration.years, label: 'Tahun' },
@@ -108,8 +108,8 @@ export default function BiodataPage() {
               { value: duration.days, label: 'Hari' },
             ].map(item => (
               <div key={item.label} className="text-center">
-                <div className="font-display text-4xl font-bold text-white">{item.value}</div>
-                <div className="text-rose-200 text-sm">{item.label}</div>
+                <div className="text-4xl font-bold text-white font-display">{item.value}</div>
+                <div className="text-sm text-rose-200">{item.label}</div>
               </div>
             ))}
           </div>
@@ -117,8 +117,8 @@ export default function BiodataPage() {
       )}
 
       {/* Foto Pasangan */}
-      <div className="glass rounded-3xl p-6 border border-rose-100">
-        <h2 className="font-display text-xl font-bold text-rose-800 mb-6 flex items-center gap-2">
+      <div className="p-6 border glass rounded-3xl border-rose-100">
+        <h2 className="flex items-center gap-2 mb-6 text-xl font-bold font-display text-rose-800">
           <Heart size={20} className="text-rose-400" fill="currentColor" />
           Foto Pasangan
         </h2>
@@ -129,20 +129,20 @@ export default function BiodataPage() {
             const uploading = num === 1 ? uploading1 : uploading2
             return (
               <div key={num} className="text-center">
-                <div className="relative mx-auto w-32 h-32 mb-3">
-                  <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-rose-200"
+                <div className="relative w-32 h-32 mx-auto mb-3">
+                  <div className="w-32 h-32 overflow-hidden border-4 rounded-full border-rose-200"
                     style={{ boxShadow: '0 8px 25px rgba(244, 63, 94, 0.25)' }}
                   >
                     {profile[photoKey] ? (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={profile[photoKey]} alt="" className="w-full h-full object-cover" />
+                      <img src={profile[photoKey]} alt="" className="object-cover w-full h-full" />
                     ) : (
-                      <div className="w-full h-full bg-rose-100 flex items-center justify-center text-4xl">
+                      <div className="flex items-center justify-center w-full h-full text-4xl bg-rose-100">
                         {num === 1 ? '👩' : '👨'}
                       </div>
                     )}
                   </div>
-                  <label className="absolute bottom-0 right-0 bg-rose-500 rounded-full p-2 cursor-pointer hover:bg-rose-600 transition-colors shadow-lg">
+                  <label className="absolute bottom-0 right-0 p-2 transition-colors rounded-full shadow-lg cursor-pointer bg-rose-500 hover:bg-rose-600">
                     <Camera size={14} className="text-white" />
                     <input
                       type="file"
@@ -152,10 +152,10 @@ export default function BiodataPage() {
                     />
                   </label>
                 </div>
-                <p className="font-body text-sm text-rose-600 font-semibold">
+                <p className="text-sm font-semibold font-body text-rose-600">
                   {profile[nameKey] || `Orang ${num}`}
                 </p>
-                {uploading && <p className="text-xs text-rose-400 mt-1">Mengupload...</p>}
+                {uploading && <p className="mt-1 text-xs text-rose-400">Mengupload...</p>}
               </div>
             )
           })}
@@ -163,16 +163,16 @@ export default function BiodataPage() {
       </div>
 
       {/* Form Biodata */}
-      <div className="glass rounded-3xl p-6 border border-rose-100">
-        <h2 className="font-display text-xl font-bold text-rose-800 mb-6 flex items-center gap-2">
+      <div className="p-6 border glass rounded-3xl border-rose-100">
+        <h2 className="flex items-center gap-2 mb-6 text-xl font-bold font-display text-rose-800">
           <Sparkles size={20} className="text-rose-400" />
           Data Hubungan
         </h2>
 
         <div className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
-              <label className="block text-sm font-semibold text-rose-700 mb-2 font-body">
+              <label className="block mb-2 text-sm font-semibold text-rose-700 font-body">
                 👩 Nama Kamu
               </label>
               <input
@@ -183,7 +183,7 @@ export default function BiodataPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-semibold text-rose-700 mb-2 font-body">
+              <label className="block mb-2 text-sm font-semibold text-rose-700 font-body">
                 👨 Nama Dia
               </label>
               <input
@@ -196,7 +196,7 @@ export default function BiodataPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-rose-700 mb-2 font-body">
+            <label className="block mb-2 text-sm font-semibold text-rose-700 font-body">
               💑 Tanggal Jadian
             </label>
             <input
@@ -206,18 +206,18 @@ export default function BiodataPage() {
               onChange={e => setProfile(p => ({ ...p, anniversary_date: e.target.value }))}
             />
             {profile.anniversary_date && (
-              <p className="text-xs text-rose-400 mt-1 font-body">
+              <p className="mt-1 text-xs text-rose-400 font-body">
                 📅 {format(parseISO(profile.anniversary_date), "EEEE, d MMMM yyyy", { locale: idLocale })}
               </p>
             )}
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-rose-700 mb-2 font-body">
+            <label className="block mb-2 text-sm font-semibold text-rose-700 font-body">
               💬 Quote Cinta Kalian
             </label>
             <textarea
-              className="love-input resize-none"
+              className="resize-none love-input"
               rows={3}
               placeholder="Tuliskan quote cinta kalian yang paling berkesan..."
               value={profile.love_quote}
@@ -228,7 +228,7 @@ export default function BiodataPage() {
           <button
             onClick={saveProfile}
             disabled={saving}
-            className="btn-rose w-full flex items-center justify-center gap-2"
+            className="flex items-center justify-center w-full gap-2 btn-rose"
           >
             {saving ? (
               <span className="heart-beat">💕</span>
