@@ -162,10 +162,12 @@ export default function DashboardHome() {
           </h3>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
             {[
+              { href: '/dashboard/streak',    label: '+ Absen Streak', emoji: '🔥' },
               { href: '/dashboard/wishlist',    label: '+ Tambah Tempat', emoji: '🗺️' },
               { href: '/dashboard/memories',    label: '+ Kenangan Baru', emoji: '💝' },
               { href: '/dashboard/love-letters',label: '+ Tulis Surat',   emoji: '💌' },
               { href: '/dashboard/bucket-list', label: '+ Impian Baru',   emoji: '✨' },
+              { href: '/dashboard/achievements', label: '+ Pencapaian Kita',   emoji: '🏆' },
             ].map(item => (
               <Link key={item.href} href={item.href} className="font-body"
                 style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#fff1f2', borderRadius: '10px', padding: '9px 10px', textDecoration: 'none', color: '#be123c', fontSize: '0.78rem', fontWeight: 600 }}>
