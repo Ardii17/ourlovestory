@@ -14,17 +14,20 @@ const navItems = [
   { href: '/dashboard/memories',      label: 'Kenangan Indah',    emoji: '💝' },
   { href: '/dashboard/bucket-list',   label: 'Bucket List',       emoji: '✨' },
   { href: '/dashboard/love-letters',  label: 'Surat Cinta',       emoji: '💌' },
-  // ── Fitur baru ──
+  // ── Fun & Game ──
   { href: '/dashboard/streak',        label: 'Streak',            emoji: '🔥' },
   { href: '/dashboard/time-capsule',  label: 'Time Capsule',      emoji: '⏳' },
   { href: '/dashboard/love-quiz',     label: 'Love Quiz',         emoji: '💘' },
   { href: '/dashboard/date-ideas',    label: 'Random Date Idea',  emoji: '🎲' },
   { href: '/dashboard/achievements',  label: 'Achievement',       emoji: '🏆' },
+  // ── Fitur Baru ──
+  { href: '/dashboard/lokasi',        label: 'Bagi Lokasi',       emoji: '🛰️' },
 ]
 
 const NAV_GROUPS = [
-  { label: 'Utama',     items: navItems.slice(0, 8) },
-  { label: 'Fun & Game',items: navItems.slice(8) },
+  { label: 'Utama',      items: navItems.slice(0, 8) },
+  { label: 'Fun & Game', items: navItems.slice(8, 13) },
+  { label: 'Lainnya',    items: navItems.slice(13) },
 ]
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
