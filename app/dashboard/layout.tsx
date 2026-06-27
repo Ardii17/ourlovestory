@@ -11,6 +11,7 @@ const navItems = [
   { href: '/dashboard/wishlist',      label: 'Mau ke Mana?',      emoji: '🗺️' },
   { href: '/dashboard/visited',       label: 'Tempat Kenangan',   emoji: '📍' },
   { href: '/dashboard/dokumentasi',   label: 'Dokumentasi',       emoji: '📸' },
+  { href: '/dashboard/gallery',       label: 'Galeri Foto',       emoji: '🖼️' },
   { href: '/dashboard/memories',      label: 'Kenangan Indah',    emoji: '💝' },
   { href: '/dashboard/bucket-list',   label: 'Bucket List',       emoji: '✨' },
   { href: '/dashboard/love-letters',  label: 'Surat Cinta',       emoji: '💌' },
@@ -25,9 +26,9 @@ const navItems = [
 ]
 
 const NAV_GROUPS = [
-  { label: 'Utama',      items: navItems.slice(0, 8) },
-  { label: 'Fun & Game', items: navItems.slice(8, 13) },
-  { label: 'Lainnya',    items: navItems.slice(13) },
+  { label: 'Utama',      items: navItems.slice(0, 9) },
+  { label: 'Fun & Game', items: navItems.slice(9, 14) },
+  { label: 'Lainnya',    items: navItems.slice(14) },
 ]
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
