@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import { differenceInDays, differenceInMonths, differenceInYears, format, parseISO, addYears, addMonths } from 'date-fns'
 import { id as idLocale } from 'date-fns/locale'
-import { Heart, Sparkles, Calendar } from 'lucide-react'
+import { Heart, Sparkles, Calendar, ChevronLeft, ChevronRight } from 'lucide-react'
 
 interface Stats {
   wishlistCount: number
