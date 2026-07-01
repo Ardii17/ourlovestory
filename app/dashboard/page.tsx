@@ -119,28 +119,88 @@ export default function DashboardHome() {
   return (
     <div>
 
+      {/* ── HERO ── */}
+      <div style={{
+        borderRadius: '24px',
+        overflow: 'hidden',
+        marginBottom: '28px',
+        padding: '52px 32px',
+        textAlign: 'center',
+        position: 'relative',
+        background: 'linear-gradient(135deg, #f43f5e 0%, #ec4899 60%, #be123c 100%)',
+        boxShadow: '0 20px 60px rgba(244,63,94,0.3)',
+      }}>
+        {/* decorative circles */}
+        <div style={{ position: 'absolute', top: '-40px', right: '-40px', width: '180px', height: '180px', borderRadius: '50%', background: 'rgba(255,255,255,0.06)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', bottom: '-60px', left: '-30px', width: '200px', height: '200px', borderRadius: '50%', background: 'rgba(255,255,255,0.04)', pointerEvents: 'none' }} />
 
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          {/* Label */}
+          <p className="font-body" style={{ color: 'rgba(255,255,255,0.65)', fontSize: '0.75rem', letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: '20px' }}>
+            Our Story
+          </p>
+
+          {profile ? (
+            <>
+              <h1 className="font-display" style={{ color: '#fff', fontSize: 'clamp(1.4rem, 3vw, 2.1rem)', fontWeight: 700, lineHeight: 1.2, marginBottom: '4px' }}>
+                {profile.person1_name}
+              </h1>
+              <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '1rem', margin: '4px 0' }}>&amp;</p>
+              <h1 className="font-display" style={{ color: '#fff', fontSize: 'clamp(1.4rem, 3vw, 2.1rem)', fontWeight: 700, lineHeight: 1.2, marginBottom: '20px' }}>
+                {profile.person2_name}
+              </h1>
+            </>
+          ) : (
+            <h1 className="font-display" style={{ color: '#fff', fontSize: '2rem', fontWeight: 700, marginBottom: '20px' }}>
+              Selamat Datang
+            </h1>
+          )}
+
+          <p className="font-body" style={{ color: 'rgba(255,255,255,0.6)', fontStyle: 'italic', fontSize: '0.95rem', marginBottom: '32px' }}>
+            A simple story about us.
+          </p>
+
+          {/* divider */}
+          <div style={{ width: '40px', height: '1px', background: 'rgba(255,255,255,0.25)', margin: '0 auto 32px' }} />
+
+          <Link
+            href={profile ? '/dashboard/biodata' : '/dashboard/biodata'}
+            style={{
+              display: 'inline-block',
+              background: '#fff',
+              color: '#e11d48',
+              fontWeight: 700,
+              fontFamily: 'Lato, sans-serif',
+              fontSize: '0.875rem',
+              padding: '12px 32px',
+              borderRadius: '50px',
+              textDecoration: 'none',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.12)',
+              letterSpacing: '0.02em',
+            }}
+          >
+            Mulai Jelajahi →
+          </Link>
+        </div>
+      </div>
 
       {/* ── PHOTO CAROUSEL ── */}
+      {/*
       {latestPhotos.length > 0 && (
         <div className="relative w-full h-64 sm:h-80 md:h-96 rounded-3xl overflow-hidden border border-rose-100 shadow-md mb-8 group bg-rose-50/50 backdrop-blur-sm">
-          {/* Slides container */}
           <div
             className="flex w-full h-full transition-transform duration-700 ease-in-out"
             style={{ transform: `translateX(-${currentSlide * 100}%)` }}
           >
             {latestPhotos.map((photo, idx) => (
               <div key={idx} className="w-full h-full flex-shrink-0 relative">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={photo.url}
                   alt={photo.title}
                   className="w-full h-full object-cover"
                 />
-                {/* Dark overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
 
-                {/* Slide Info */}
                 <div className="absolute bottom-0 left-0 w-full p-6 text-white flex flex-col items-start gap-1.5 z-10">
                   <div className="flex items-center gap-2">
                     <span className="text-[10px] bg-rose-500 text-white font-bold uppercase px-2 py-0.5 rounded-full tracking-wider">
@@ -164,7 +224,6 @@ export default function DashboardHome() {
             ))}
           </div>
 
-          {/* Left Navigation */}
           {latestPhotos.length > 1 && (
             <>
               <button
@@ -174,7 +233,6 @@ export default function DashboardHome() {
                 <ChevronLeft size={20} />
               </button>
 
-              {/* Right Navigation */}
               <button
                 onClick={() => setCurrentSlide(prev => (prev === latestPhotos.length - 1 ? 0 : prev + 1))}
                 className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/20 hover:bg-white/40 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 backdrop-blur-sm z-20 cursor-pointer"
@@ -182,7 +240,6 @@ export default function DashboardHome() {
                 <ChevronRight size={20} />
               </button>
 
-              {/* Indicators */}
               <div className="absolute bottom-6 right-6 flex gap-1.5 z-20">
                 {latestPhotos.map((_, idx) => (
                   <button
@@ -196,6 +253,7 @@ export default function DashboardHome() {
           )}
         </div>
       )}
+      */}
 
       {/* ── STATS GRID ── */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', gap: '14px', marginBottom: '28px' }}>
