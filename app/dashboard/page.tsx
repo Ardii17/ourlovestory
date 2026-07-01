@@ -185,7 +185,6 @@ export default function DashboardHome() {
       </div>
 
       {/* ── PHOTO CAROUSEL ── */}
-      {/*
       {latestPhotos.length > 0 && (
         <div className="relative w-full h-64 sm:h-80 md:h-96 rounded-3xl overflow-hidden border border-rose-100 shadow-md mb-8 group bg-rose-50/50 backdrop-blur-sm">
           <div
@@ -253,7 +252,6 @@ export default function DashboardHome() {
           )}
         </div>
       )}
-      */}
 
       {/* ── STATS GRID ── */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', gap: '14px', marginBottom: '28px' }}>
