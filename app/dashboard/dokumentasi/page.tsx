@@ -38,6 +38,23 @@ export default function DokumentasiPage() {
   useEffect(() => { loadPlaces() }, [])
   useEffect(() => { if (selectedPlace) loadPhotos(selectedPlace) }, [selectedPlace])
 
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (lightbox === null) return
+      if (e.key === 'ArrowRight' && lightbox < photos.length - 1) {
+        setLightbox(lightbox + 1)
+      }
+      if (e.key === 'ArrowLeft' && lightbox > 0) {
+        setLightbox(lightbox - 1)
+      }
+      if (e.key === 'Escape') {
+        setLightbox(null)
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [lightbox, photos.length])
+
   async function loadPlaces() {
     const { data } = await supabase.from('places').select('id, name, category, visited_date').eq('status', 'visited').order('visited_date', { ascending: false })
     setPlaces(data || [])
@@ -249,7 +266,10 @@ export default function DokumentasiPage() {
                         className="object-cover w-full h-full cursor-pointer"
                         onClick={() => setLightbox(idx)}
                       />
-                      <div className="absolute inset-0 flex flex-col justify-end p-2 transition-opacity opacity-0 bg-black/40 group-hover:opacity-100">
+                      <div 
+                        onClick={() => setLightbox(idx)}
+                        className="absolute inset-0 flex flex-col justify-end p-2 transition-opacity opacity-0 bg-black/40 group-hover:opacity-100 cursor-pointer"
+                      >
                         {photo.caption && (
                           <p className="mb-1 text-xs text-white font-body line-clamp-2">
                             {photo.caption}
@@ -257,13 +277,13 @@ export default function DokumentasiPage() {
                         )}
                         <div className="flex gap-1">
                           <button
-                            onClick={() => setShowCaption(photo.id)}
+                            onClick={(e) => { e.stopPropagation(); setShowCaption(photo.id); }}
                             className="flex-1 px-2 py-1 text-xs text-white rounded bg-white/20 hover:bg-white/40"
                           >
                             ✏️ Edit
                           </button>
                           <button
-                            onClick={() => deletePhoto(photo.id)}
+                            onClick={(e) => { e.stopPropagation(); deletePhoto(photo.id); }}
                             className="px-2 py-1 text-xs text-white rounded bg-red-500/60 hover:bg-red-500/80"
                           >
                             🗑️
