@@ -119,70 +119,7 @@ export default function DashboardHome() {
   return (
     <div>
 
-      {/* ── HERO ── */}
-      <div style={{
-        borderRadius: '24px',
-        overflow: 'hidden',
-        marginBottom: '28px',
-        padding: '52px 32px',
-        textAlign: 'center',
-        position: 'relative',
-        background: 'linear-gradient(135deg, #f43f5e 0%, #ec4899 60%, #be123c 100%)',
-        boxShadow: '0 20px 60px rgba(244,63,94,0.3)',
-      }}>
-        {/* decorative circles */}
-        <div style={{ position: 'absolute', top: '-40px', right: '-40px', width: '180px', height: '180px', borderRadius: '50%', background: 'rgba(255,255,255,0.06)', pointerEvents: 'none' }} />
-        <div style={{ position: 'absolute', bottom: '-60px', left: '-30px', width: '200px', height: '200px', borderRadius: '50%', background: 'rgba(255,255,255,0.04)', pointerEvents: 'none' }} />
 
-        <div style={{ position: 'relative', zIndex: 1 }}>
-          {/* Label */}
-          <p className="font-body" style={{ color: 'rgba(255,255,255,0.65)', fontSize: '0.75rem', letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: '20px' }}>
-            Our Story
-          </p>
-
-          {profile ? (
-            <>
-              <h1 className="font-display" style={{ color: '#fff', fontSize: 'clamp(1.4rem, 3vw, 2.1rem)', fontWeight: 700, lineHeight: 1.2, marginBottom: '4px' }}>
-                {profile.person1_name}
-              </h1>
-              <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '1rem', margin: '4px 0' }}>&amp;</p>
-              <h1 className="font-display" style={{ color: '#fff', fontSize: 'clamp(1.4rem, 3vw, 2.1rem)', fontWeight: 700, lineHeight: 1.2, marginBottom: '20px' }}>
-                {profile.person2_name}
-              </h1>
-            </>
-          ) : (
-            <h1 className="font-display" style={{ color: '#fff', fontSize: '2rem', fontWeight: 700, marginBottom: '20px' }}>
-              Selamat Datang
-            </h1>
-          )}
-
-          <p className="font-body" style={{ color: 'rgba(255,255,255,0.6)', fontStyle: 'italic', fontSize: '0.95rem', marginBottom: '32px' }}>
-            A simple story about us.
-          </p>
-
-          {/* divider */}
-          <div style={{ width: '40px', height: '1px', background: 'rgba(255,255,255,0.25)', margin: '0 auto 32px' }} />
-
-          <Link
-            href={profile ? '/dashboard/biodata' : '/dashboard/biodata'}
-            style={{
-              display: 'inline-block',
-              background: '#fff',
-              color: '#e11d48',
-              fontWeight: 700,
-              fontFamily: 'Lato, sans-serif',
-              fontSize: '0.875rem',
-              padding: '12px 32px',
-              borderRadius: '50px',
-              textDecoration: 'none',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.12)',
-              letterSpacing: '0.02em',
-            }}
-          >
-            Mulai Jelajahi →
-          </Link>
-        </div>
-      </div>
 
       {/* ── PHOTO CAROUSEL ── */}
       {latestPhotos.length > 0 && (
