@@ -24,6 +24,8 @@ interface StreakData {
   last_check_in: string | null
   penalty_done: boolean
   total_checkins: number
+  tolerances_used?: number
+  last_tolerance_used?: string | null
 }
 
 export default function StreakPage() {
@@ -34,6 +36,27 @@ export default function StreakPage() {
   const [showPenalty, setShowPenalty] = useState<string | null>(null) // person_name
   const [showConfetti, setShowConfetti] = useState(false)
   const [checkingIn, setCheckingIn] = useState<string | null>(null)
+
+  function getTolerancesLeft(s: StreakData): number {
+    const used = s.tolerances_used || 0
+    const lastUsedStr = s.last_tolerance_used
+    
+    if (!lastUsedStr) return 3
+
+    try {
+      const lastUsedDate = parseISO(lastUsedStr)
+      const currentMonthStr = format(new Date(), 'yyyy-MM')
+      const lastUsedMonthStr = format(lastUsedDate, 'yyyy-MM')
+      
+      if (currentMonthStr !== lastUsedMonthStr) {
+        return 3
+      }
+    } catch (e) {
+      console.error(e)
+    }
+
+    return Math.max(3 - used, 0)
+  }
 
   useEffect(() => { loadData() }, [])
 
@@ -70,24 +93,50 @@ export default function StreakPage() {
     return 'missed'
   }
 
-  async function checkIn(s: StreakData) {
+  async function checkIn(s: StreakData, useTolerance = false) {
     const status = getStatus(s)
     if (status === 'checked') return
-    if (status === 'missed' && !s.penalty_done) {
+    if (status === 'missed' && !s.penalty_done && !useTolerance) {
       // pilih penalty random
       setPenalty(FUNNY_PENALTIES[Math.floor(Math.random() * FUNNY_PENALTIES.length)])
       setShowPenalty(s.person_name)
       return
     }
     setCheckingIn(s.person_name)
-    const newStreak = status === 'missed' ? 1 : s.current_streak + 1
+    
+    let newStreak = 1
+    let updatePayload: any = {}
+
+    if (status === 'missed') {
+      if (useTolerance) {
+        newStreak = s.current_streak + 1
+        const currentMonthStr = format(new Date(), 'yyyy-MM')
+        let currentUsed = s.tolerances_used || 0
+        if (s.last_tolerance_used) {
+          const lastUsedMonthStr = format(parseISO(s.last_tolerance_used), 'yyyy-MM')
+          if (lastUsedMonthStr !== currentMonthStr) {
+            currentUsed = 0 // Reset month rollover
+          }
+        }
+        updatePayload = {
+          tolerances_used: currentUsed + 1,
+          last_tolerance_used: new Date().toISOString()
+        }
+      } else {
+        newStreak = 1
+      }
+    } else {
+      newStreak = s.current_streak + 1
+    }
+
     const newLongest = Math.max(newStreak, s.longest_streak)
     await supabase.from('streaks').update({
       current_streak: newStreak,
       longest_streak: newLongest,
       last_check_in: new Date().toISOString(),
       penalty_done: false,
-      total_checkins: s.total_checkins + 1
+      total_checkins: s.total_checkins + 1,
+      ...updatePayload
     }).eq('id', s.id)
     setCheckingIn(null)
     setShowConfetti(true)
@@ -176,12 +225,13 @@ export default function StreakPage() {
                 {/* Stats row */}
                 <div style={{ display: 'flex', gap: '8px', marginBottom: '14px' }}>
                   {[
-                    { label: 'Terpanjang', value: s.longest_streak, suffix: 'hari' },
-                    { label: 'Total absen', value: s.total_checkins, suffix: 'kali' },
+                    { label: 'Terpanjang', value: `${s.longest_streak} hari` },
+                    { label: 'Total absen', value: `${s.total_checkins} kali` },
+                    { label: 'Toleransi', value: `${getTolerancesLeft(s)}/3` },
                   ].map(stat => (
-                    <div key={stat.label} style={{ flex: 1, background: '#fff1f2', borderRadius: '10px', padding: '8px 10px', textAlign: 'center' }}>
-                      <div className="font-display" style={{ fontWeight: 700, color: '#f43f5e', fontSize: '1.1rem' }}>{stat.value}</div>
-                      <div className="font-body" style={{ fontSize: '0.65rem', color: '#fda4af' }}>{stat.label}</div>
+                    <div key={stat.label} style={{ flex: 1, background: '#fff1f2', borderRadius: '10px', padding: '8px 6px', textAlign: 'center', minWidth: 0 }}>
+                      <div className="font-display" style={{ fontWeight: 700, color: '#f43f5e', fontSize: '1rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{stat.value}</div>
+                      <div className="font-body" style={{ fontSize: '0.62rem', color: '#fda4af', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{stat.label}</div>
                     </div>
                   ))}
                 </div>
@@ -193,17 +243,58 @@ export default function StreakPage() {
                     <p className="font-body" style={{ color: '#15803d', fontWeight: 600, fontSize: '0.85rem', margin: '4px 0 0' }}>Sudah absen hari ini!</p>
                   </div>
                 ) : status === 'missed' && !s.penalty_done ? (
-                  <div>
-                    <div style={{ background: '#fef2f2', border: '1.5px solid #fca5a5', borderRadius: '12px', padding: '10px 12px', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <AlertTriangle size={16} color="#ef4444" />
-                      <p className="font-body" style={{ color: '#dc2626', fontSize: '0.78rem', margin: 0, fontWeight: 600 }}>
-                        Streak terputus! Kamu harus menyelesaikan tantangan dulu.
-                      </p>
-                    </div>
-                    <button onClick={() => checkIn(s)} style={{ width: '100%', background: 'linear-gradient(135deg, #ef4444, #f97316)', color: '#fff', border: 'none', borderRadius: '12px', padding: '12px', cursor: 'pointer', fontWeight: 700, fontFamily: 'Lato, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-                      <RefreshCw size={15} /> Terima Tantangan! 😂
-                    </button>
-                  </div>
+                  (() => {
+                    const tolerancesLeft = getTolerancesLeft(s);
+                    if (tolerancesLeft > 0) {
+                      return (
+                        <div>
+                          <div style={{ background: '#fffbeb', border: '1.5px solid #fde68a', borderRadius: '12px', padding: '10px 12px', marginBottom: '8px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                              <AlertTriangle size={14} color="#d97706" />
+                              <p className="font-body" style={{ color: '#b45309', fontSize: '0.75rem', margin: 0, fontWeight: 700 }}>
+                                Lupa absen kemarin! 😢
+                              </p>
+                            </div>
+                            <p className="font-body" style={{ color: '#d97706', fontSize: '0.7rem', margin: 0, lineHeight: 1.3 }}>
+                              Kamu punya <strong>{tolerancesLeft}</strong> sisa toleransi bulan ini untuk menyelamatkan streak-mu.
+                            </p>
+                          </div>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                            <button
+                              onClick={() => checkIn(s, true)}
+                              disabled={checkingIn === s.person_name}
+                              style={{ width: '100%', background: 'linear-gradient(135deg, #10b981, #059669)', color: '#fff', border: 'none', borderRadius: '12px', padding: '12px', cursor: 'pointer', fontWeight: 700, fontFamily: 'Lato, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', boxShadow: '0 4px 10px rgba(16,185,129,0.2)' }}
+                            >
+                              {checkingIn === s.person_name ? '💕' : <><Flame size={15} /> Gunakan Toleransi & Absen</>}
+                            </button>
+                            <button
+                              onClick={() => checkIn(s, false)}
+                              style={{ width: '100%', background: 'linear-gradient(135deg, #ef4444, #f97316)', color: '#fff', border: 'none', borderRadius: '12px', padding: '10px', cursor: 'pointer', fontWeight: 700, fontFamily: 'Lato, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', fontSize: '0.78rem', boxShadow: '0 4px 10px rgba(239,68,68,0.2)' }}
+                            >
+                              <RefreshCw size={13} /> Terima Hukuman & Reset Harian 😂
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    } else {
+                      return (
+                        <div>
+                          <div style={{ background: '#fef2f2', border: '1.5px solid #fca5a5', borderRadius: '12px', padding: '10px 12px', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <AlertTriangle size={16} color="#ef4444" />
+                            <p className="font-body" style={{ color: '#dc2626', fontSize: '0.78rem', margin: 0, fontWeight: 600 }}>
+                              Streak terputus dan toleransi bulan ini habis! 😢
+                            </p>
+                          </div>
+                          <button
+                            onClick={() => checkIn(s, false)}
+                            style={{ width: '100%', background: 'linear-gradient(135deg, #ef4444, #f97316)', color: '#fff', border: 'none', borderRadius: '12px', padding: '12px', cursor: 'pointer', fontWeight: 700, fontFamily: 'Lato, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', boxShadow: '0 4px 10px rgba(239,68,68,0.2)' }}
+                          >
+                            <RefreshCw size={15} /> Terima Hukuman! 😂
+                          </button>
+                        </div>
+                      );
+                    }
+                  })()
                 ) : (
                   <button
                     onClick={() => checkIn(s)}
