@@ -128,7 +128,7 @@ export default function DokumentasiPage() {
                   className="absolute -translate-y-1/2 left-3 top-1/2 text-rose-400"
                 />
                 <input
-                  className="py-2 pl-8 text-sm love-input"
+                  className="py-2 !pl-8 text-sm love-input"
                   placeholder="Cari tempat..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
