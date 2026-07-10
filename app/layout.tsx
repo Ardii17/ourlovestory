@@ -4,6 +4,10 @@ import './globals.css'
 export const metadata: Metadata = {
   title: 'Our Love Story 💕',
   description: 'Tempat menyimpan setiap momen indah bersama kamu',
+  icons: {
+    icon: '/images/logo.png',
+  },
+
 }
 
 export default function RootLayout({
