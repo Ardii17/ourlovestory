@@ -187,18 +187,18 @@ export default function GalleryPage() {
   return (
     <div className="max-w-6xl mx-auto">
       {/* Header */}
-      <div className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div className="flex flex-col items-start justify-between gap-4 mb-8 md:flex-row md:items-center">
         <div>
-          <h1 className="font-display text-3xl font-bold text-rose-800 flex items-center gap-2">
+          <h1 className="flex items-center gap-2 text-3xl font-bold font-display text-rose-800">
             Galeri Foto 🖼️
           </h1>
-          <p className="text-rose-500 font-body text-sm mt-1">
+          <p className="mt-1 text-sm text-rose-500 font-body">
             Lihat semua lembaran foto perjalanan cinta kita dalam satu halaman indah
           </p>
         </div>
 
         {/* Info stats */}
-        <div className="glass px-4 py-2 rounded-full border border-rose-100 flex items-center gap-4 text-xs font-semibold text-rose-700">
+        <div className="flex items-center gap-4 px-4 py-2 text-xs font-semibold border rounded-full glass border-rose-100 text-rose-700">
           <div>📸 {items.filter(i => i.type === 'documentation').length} Dokumentasi</div>
           <div className="w-[1px] h-4 bg-rose-200" />
           <div>💝 {items.filter(i => i.type === 'memory').length} Kenangan</div>
@@ -208,8 +208,8 @@ export default function GalleryPage() {
       </div>
 
       {/* Control Panel (Filter, Search, Sort) */}
-      <div className="glass p-4 rounded-3xl border border-rose-100 mb-8 flex flex-col gap-4">
-        <div className="flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center">
+      <div className="flex flex-col gap-4 p-4 mb-8 border glass rounded-3xl border-rose-100">
+        <div className="flex flex-col items-stretch justify-between gap-4 md:flex-row md:items-center">
           {/* Search bar */}
           <div className="relative flex-1">
             <Search size={16} className="absolute -translate-y-1/2 left-4 top-1/2 text-rose-400" />
@@ -218,12 +218,12 @@ export default function GalleryPage() {
               placeholder="Cari foto berdasarkan nama tempat, caption, atau jenis..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="love-input pl-11 py-2.5 text-sm"
+              className="love-input !pl-11 py-2.5 text-sm"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-rose-400 hover:text-rose-600"
+                className="absolute -translate-y-1/2 right-3 top-1/2 text-rose-400 hover:text-rose-600"
               >
                 <X size={16} />
               </button>
@@ -231,12 +231,12 @@ export default function GalleryPage() {
           </div>
 
           {/* Sort selection */}
-          <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="flex items-center flex-shrink-0 gap-2">
             <span className="text-xs font-bold text-rose-700 font-body whitespace-nowrap">Urutkan:</span>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as 'newest' | 'oldest')}
-              className="love-input py-2 px-3 text-xs w-auto cursor-pointer"
+              className="w-auto px-3 py-2 text-xs cursor-pointer love-input"
             >
               <option value="newest">📅 Terbaru</option>
               <option value="oldest">📅 Terlama</option>
@@ -245,7 +245,7 @@ export default function GalleryPage() {
         </div>
 
         {/* Filter Tabs */}
-        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+        <div className="flex gap-2 pb-1 overflow-x-auto scrollbar-hide">
           {[
             { id: 'all', label: 'Semua Foto', icon: Sparkles, color: 'text-rose-500' },
             { id: 'profile', label: 'Profil Pasangan', icon: User, color: 'text-blue-500' },
@@ -275,15 +275,15 @@ export default function GalleryPage() {
       {/* Loading state */}
       {loading ? (
         <div className="py-24 text-center">
-          <div className="heart-beat text-4xl">💕</div>
-          <p className="text-sm font-semibold text-rose-500 font-display mt-2">Merajut momen foto-foto kita...</p>
+          <div className="text-4xl heart-beat">💕</div>
+          <p className="mt-2 text-sm font-semibold text-rose-500 font-display">Merajut momen foto-foto kita...</p>
         </div>
       ) : filteredItems.length === 0 ? (
         /* Empty state */
-        <div className="glass text-center py-20 rounded-3xl border border-rose-100">
-          <div className="text-5xl mb-4">🖼️</div>
-          <h3 className="font-display text-xl font-bold text-rose-800 mb-2">Foto tidak ditemukan</h3>
-          <p className="text-sm text-rose-400 font-body max-w-md mx-auto">
+        <div className="py-20 text-center border glass rounded-3xl border-rose-100">
+          <div className="mb-4 text-5xl">🖼️</div>
+          <h3 className="mb-2 text-xl font-bold font-display text-rose-800">Foto tidak ditemukan</h3>
+          <p className="max-w-md mx-auto text-sm text-rose-400 font-body">
             {searchQuery
               ? `Tidak ada foto dengan kata kunci "${searchQuery}" pada kategori ini.`
               : 'Belum ada foto yang diunggah dalam kategori ini.'}
@@ -291,7 +291,7 @@ export default function GalleryPage() {
           {searchQuery && (
             <button
               onClick={() => { setSearchQuery(''); setFilterType('all') }}
-              className="btn-rose text-xs mt-4 py-2 px-6"
+              className="px-6 py-2 mt-4 text-xs btn-rose"
             >
               Reset Filter
             </button>
@@ -299,12 +299,12 @@ export default function GalleryPage() {
         </div>
       ) : (
         /* Photo Grid */
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
           {filteredItems.map((item, idx) => (
             <div
               key={item.id}
               onClick={() => setLightboxIndex(idx)}
-              className="group relative overflow-hidden rounded-2xl aspect-square bg-rose-50 border border-rose-100 cursor-pointer card-hover shadow-sm"
+              className="relative overflow-hidden border shadow-sm cursor-pointer group rounded-2xl aspect-square bg-rose-50 border-rose-100 card-hover"
             >
               {/* Image */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -312,12 +312,12 @@ export default function GalleryPage() {
                 src={item.url}
                 alt={item.title}
                 loading="lazy"
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
               />
 
               {/* Hover overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 text-white">
-                <div className="absolute top-3 right-3 bg-white/20 backdrop-blur-md rounded-full p-2">
+              <div className="absolute inset-0 flex flex-col justify-end p-4 text-white transition-opacity duration-300 opacity-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent group-hover:opacity-100">
+                <div className="absolute p-2 rounded-full top-3 right-3 bg-white/20 backdrop-blur-md">
                   <Eye size={14} className="text-white" />
                 </div>
 
@@ -335,7 +335,7 @@ export default function GalleryPage() {
                 </div>
 
                 {/* Details */}
-                <h4 className="font-display font-bold text-xs truncate mb-1">
+                <h4 className="mb-1 text-xs font-bold truncate font-display">
                   {item.type === 'documentation' && item.category && categoryEmoji[item.category] ? `${categoryEmoji[item.category]} ` : ''}
                   {item.type === 'memory' && item.mood && moodEmoji[item.mood] ? `${moodEmoji[item.mood]} ` : ''}
                   {item.title}
@@ -357,27 +357,27 @@ export default function GalleryPage() {
       {lightboxIndex !== null && currentLightboxItem && (
         <div
           onClick={() => setLightboxIndex(null)}
-          className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex flex-col justify-between p-4 transition-all duration-300"
+          className="fixed inset-0 z-50 flex flex-col justify-between p-4 transition-all duration-300 bg-black/95 backdrop-blur-md"
         >
           {/* Top Bar */}
-          <div className="flex justify-between items-center w-full z-10 p-2">
+          <div className="z-10 flex items-center justify-between w-full p-2">
             <span className="text-xs font-semibold tracking-wide text-gray-400 font-body">
               {lightboxIndex + 1} dari {filteredItems.length} foto
             </span>
             <button
               onClick={() => setLightboxIndex(null)}
-              className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white cursor-pointer transition-colors"
+              className="p-2 text-white transition-colors rounded-full cursor-pointer bg-white/10 hover:bg-white/20"
             >
               <X size={20} />
             </button>
           </div>
 
           {/* Center Area: Prev Image Next */}
-          <div className="flex-1 flex items-center justify-between gap-4 max-w-5xl mx-auto w-full relative">
+          <div className="relative flex items-center justify-between flex-1 w-full max-w-5xl gap-4 mx-auto">
             {/* Prev button */}
             <button
               onClick={(e) => { e.stopPropagation(); handlePrev() }}
-              className="p-3 rounded-full bg-white/5 hover:bg-white/10 text-white cursor-pointer transition-colors flex-shrink-0"
+              className="flex-shrink-0 p-3 text-white transition-colors rounded-full cursor-pointer bg-white/5 hover:bg-white/10"
             >
               <ChevronLeft size={24} />
             </button>
@@ -398,7 +398,7 @@ export default function GalleryPage() {
             {/* Next button */}
             <button
               onClick={(e) => { e.stopPropagation(); handleNext() }}
-              className="p-3 rounded-full bg-white/5 hover:bg-white/10 text-white cursor-pointer transition-colors flex-shrink-0"
+              className="flex-shrink-0 p-3 text-white transition-colors rounded-full cursor-pointer bg-white/5 hover:bg-white/10"
             >
               <ChevronRight size={24} />
             </button>
@@ -407,10 +407,10 @@ export default function GalleryPage() {
           {/* Bottom Bar: Detail Info */}
           <div
             onClick={(e) => e.stopPropagation()}
-            className="bg-white/10 backdrop-blur-lg border border-white/10 rounded-2xl p-5 max-w-3xl mx-auto w-full mb-4 text-white flex flex-col md:flex-row justify-between items-start md:items-center gap-4"
+            className="flex flex-col items-start justify-between w-full max-w-3xl gap-4 p-5 mx-auto mb-4 text-white border bg-white/10 backdrop-blur-lg border-white/10 rounded-2xl md:flex-row md:items-center"
           >
             <div className="space-y-1.5 flex-1">
-              <div className="flex items-center gap-2 flex-wrap">
+              <div className="flex flex-wrap items-center gap-2">
                 <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
                   currentLightboxItem.type === 'profile'
                     ? 'bg-blue-500 text-white'
@@ -428,14 +428,14 @@ export default function GalleryPage() {
                 )}
               </div>
 
-              <h3 className="font-display font-bold text-lg md:text-xl">
+              <h3 className="text-lg font-bold font-display md:text-xl">
                 {currentLightboxItem.type === 'documentation' && currentLightboxItem.category && categoryEmoji[currentLightboxItem.category] ? `${categoryEmoji[currentLightboxItem.category]} ` : ''}
                 {currentLightboxItem.type === 'memory' && currentLightboxItem.mood && moodEmoji[currentLightboxItem.mood] ? `${moodEmoji[currentLightboxItem.mood]} ` : ''}
                 {currentLightboxItem.title}
               </h3>
 
               {currentLightboxItem.caption && (
-                <p className="text-sm text-gray-300 font-body leading-relaxed max-w-2xl italic">
+                <p className="max-w-2xl text-sm italic leading-relaxed text-gray-300 font-body">
                   "{currentLightboxItem.caption}"
                 </p>
               )}

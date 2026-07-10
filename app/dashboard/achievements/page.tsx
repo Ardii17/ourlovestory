@@ -664,7 +664,7 @@ export default function AchievementsPage() {
                 {/* Desc */}
                 <p className="font-body" style={{ color: isUnlocked ? '#fb7185' : '#d1d5db', fontSize: '0.67rem', margin: 0, lineHeight: 1.4 }}>
                   {isUnlocked ? a.desc : (a.hint || a.desc)}
-                </p>k
+                </p>
               </div>
             )
           })}
