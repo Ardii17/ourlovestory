@@ -109,7 +109,11 @@ export default function StreakPage() {
 
     if (status === 'missed') {
       if (useTolerance) {
-        newStreak = s.current_streak + 1
+        const last = s.last_check_in ? parseISO(s.last_check_in) : null
+        const missedDays = last ? differenceInDays(new Date(), last) - 1 : 0
+        const finalMissed = Math.max(missedDays, 1)
+
+        newStreak = s.current_streak + finalMissed + 1
         const currentMonthStr = format(new Date(), 'yyyy-MM')
         let currentUsed = s.tolerances_used || 0
         if (s.last_tolerance_used) {
@@ -119,7 +123,7 @@ export default function StreakPage() {
           }
         }
         updatePayload = {
-          tolerances_used: currentUsed + 1,
+          tolerances_used: currentUsed + finalMissed,
           last_tolerance_used: new Date().toISOString()
         }
       } else {
@@ -245,18 +249,23 @@ export default function StreakPage() {
                 ) : status === 'missed' && !s.penalty_done ? (
                   (() => {
                     const tolerancesLeft = getTolerancesLeft(s);
-                    if (tolerancesLeft > 0) {
+                    const last = s.last_check_in ? parseISO(s.last_check_in) : null;
+                    const missedDays = last ? differenceInDays(new Date(), last) - 1 : 0;
+                    const finalMissed = Math.max(missedDays, 1);
+                    const canUseTolerance = tolerancesLeft >= finalMissed;
+
+                    if (canUseTolerance) {
                       return (
                         <div>
                           <div style={{ background: '#fffbeb', border: '1.5px solid #fde68a', borderRadius: '12px', padding: '10px 12px', marginBottom: '8px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                               <AlertTriangle size={14} color="#d97706" />
                               <p className="font-body" style={{ color: '#b45309', fontSize: '0.75rem', margin: 0, fontWeight: 700 }}>
-                                Lupa absen kemarin! 😢
+                                Terlewat {finalMissed} hari! 😢
                               </p>
                             </div>
                             <p className="font-body" style={{ color: '#d97706', fontSize: '0.7rem', margin: 0, lineHeight: 1.3 }}>
-                              Kamu punya <strong>{tolerancesLeft}</strong> sisa toleransi bulan ini untuk menyelamatkan streak-mu.
+                              Kamu punya <strong>{tolerancesLeft}</strong> sisa toleransi bulan ini. Kamu bisa menggunakan <strong>{finalMissed}</strong> toleransi untuk menyelamatkan streak-mu.
                             </p>
                           </div>
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -265,7 +274,7 @@ export default function StreakPage() {
                               disabled={checkingIn === s.person_name}
                               style={{ width: '100%', background: 'linear-gradient(135deg, #10b981, #059669)', color: '#fff', border: 'none', borderRadius: '12px', padding: '12px', cursor: 'pointer', fontWeight: 700, fontFamily: 'Lato, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', boxShadow: '0 4px 10px rgba(16,185,129,0.2)' }}
                             >
-                              {checkingIn === s.person_name ? '💕' : <><Flame size={15} /> Gunakan Toleransi & Absen</>}
+                              {checkingIn === s.person_name ? '💕' : <><Flame size={15} /> Gunakan {finalMissed} Toleransi & Absen</>}
                             </button>
                             <button
                               onClick={() => checkIn(s, false)}
@@ -279,10 +288,15 @@ export default function StreakPage() {
                     } else {
                       return (
                         <div>
-                          <div style={{ background: '#fef2f2', border: '1.5px solid #fca5a5', borderRadius: '12px', padding: '10px 12px', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <AlertTriangle size={16} color="#ef4444" />
-                            <p className="font-body" style={{ color: '#dc2626', fontSize: '0.78rem', margin: 0, fontWeight: 600 }}>
-                              Streak terputus dan toleransi bulan ini habis! 😢
+                          <div style={{ background: '#fef2f2', border: '1.5px solid #fca5a5', borderRadius: '12px', padding: '10px 12px', marginBottom: '8px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                              <AlertTriangle size={14} color="#ef4444" />
+                              <p className="font-body" style={{ color: '#dc2626', fontSize: '0.75rem', margin: 0, fontWeight: 700 }}>
+                                Terlewat {finalMissed} hari! 😢
+                              </p>
+                            </div>
+                            <p className="font-body" style={{ color: '#dc2626', fontSize: '0.7rem', margin: 0, lineHeight: 1.3 }}>
+                              Toleransi tersisa ({tolerancesLeft}) tidak cukup untuk mengganti {finalMissed} hari terlewat. Streak terputus!
                             </p>
                           </div>
                           <button

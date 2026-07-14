@@ -3,6 +3,68 @@ import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
 import { Camera, Upload, X, Plus, ChevronLeft, ChevronRight, Search } from 'lucide-react'
 
+function isVideoUrl(url: string | null): boolean {
+  if (!url) return false
+  const ext = url.split('.').pop()?.toLowerCase() || ''
+  return ['mp4', 'mov', 'webm', 'avi', 'mkv', '3gp', 'm4v'].includes(ext)
+}
+
+async function compressImage(file: File): Promise<File | Blob> {
+  return new Promise((resolve) => {
+    if (!file.type.startsWith('image/')) {
+      resolve(file)
+      return
+    }
+
+    const reader = new FileReader()
+    reader.onload = (event) => {
+      const img = new Image()
+      img.onload = () => {
+        const canvas = document.createElement('canvas')
+        let width = img.width
+        let height = img.height
+
+        const MAX_WIDTH = 1920
+        const MAX_HEIGHT = 1080
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width
+            width = MAX_WIDTH
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width *= MAX_HEIGHT / height
+            height = MAX_HEIGHT
+          }
+        }
+
+        canvas.width = width
+        canvas.height = height
+
+        const ctx = canvas.getContext('2d')
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height)
+          canvas.toBlob(
+            (blob) => {
+              if (blob) {
+                resolve(new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".jpg", { type: 'image/jpeg', lastModified: Date.now() }))
+              } else {
+                resolve(file)
+              }
+            },
+            'image/jpeg',
+            0.8
+          )
+        } else {
+          resolve(file)
+        }
+      }
+      img.src = event.target?.result as string
+    }
+    reader.readAsDataURL(file)
+  })
+}
+
 interface Place {
   id: string
   name: string
@@ -66,27 +128,73 @@ export default function DokumentasiPage() {
     setPhotos(data || [])
   }
 
-  async function uploadPhoto(file: File) {
+  async function uploadPhoto(originalFile: File) {
     if (!selectedPlace) return
     setUploading(true)
-    const ext = file.name.split('.').pop()
-    const fileName = `place_${selectedPlace}_${Date.now()}.${ext}`
-    const { data, error } = await supabase.storage.from('place-photos').upload(fileName, file)
-    if (file.size > 5 * 1024 * 1024) {
-      setUploadError('Ukuran foto maksimal 5 MB ya!')
-      setTimeout(() => setUploadError(''), 3000)
+    setUploadError('')
+
+    let fileToUpload: File | Blob = originalFile
+
+    const isVideo = originalFile.type.startsWith('video/')
+    const isImage = originalFile.type.startsWith('image/')
+
+    if (isImage) {
+      try {
+        fileToUpload = await compressImage(originalFile)
+      } catch (err) {
+        console.error('Gagal mengompresi gambar:', err)
+      }
+
+      if (fileToUpload.size > 5 * 1024 * 1024) {
+        setUploadError('Ukuran gambar maksimal 5 MB setelah dikompresi!')
+        setUploading(false)
+        setTimeout(() => setUploadError(''), 4000)
+        return
+      }
+    } else if (isVideo) {
+      if (originalFile.size > 30 * 1024 * 1024) {
+        setUploadError('Ukuran video maksimal 30 MB ya!')
+        setUploading(false)
+        setTimeout(() => setUploadError(''), 4000)
+        return
+      }
+    } else {
+      setUploadError('Format file tidak didukung!')
+      setUploading(false)
+      setTimeout(() => setUploadError(''), 4000)
       return
     }
-    if (!error) {
-      const { data: urlData } = supabase.storage.from('place-photos').getPublicUrl(fileName)
-      await supabase.from('place_photos').insert([{
-        place_id: selectedPlace,
-        photo_url: urlData.publicUrl,
-        caption: caption || null
-      }])
-      setCaption('')
-      await loadPhotos(selectedPlace)
+
+    const fileExt = fileToUpload instanceof File 
+      ? fileToUpload.name.split('.').pop() 
+      : originalFile.name.split('.').pop()
+      
+    const fileName = `place_${selectedPlace}_${Date.now()}.${fileExt}`
+    
+    const { data, error } = await supabase.storage
+      .from('place-photos')
+      .upload(fileName, fileToUpload)
+
+    if (error) {
+      console.error('Gagal upload ke storage:', error)
+      setUploadError('Gagal mengunggah file. Silakan coba lagi.')
+      setUploading(false)
+      setTimeout(() => setUploadError(''), 4000)
+      return
     }
+
+    const { data: urlData } = supabase.storage
+      .from('place-photos')
+      .getPublicUrl(fileName)
+
+    await supabase.from('place_photos').insert([{
+      place_id: selectedPlace,
+      photo_url: urlData.publicUrl,
+      caption: caption || null
+    }])
+    
+    setCaption('')
+    await loadPhotos(selectedPlace)
     setUploading(false)
   }
 
@@ -226,7 +334,7 @@ export default function DokumentasiPage() {
                   <input
                     ref={fileRef}
                     type="file"
-                    accept="image/*"
+                    accept="image/*,video/*"
                     multiple
                     className="hidden"
                     onChange={async (e) => {
@@ -245,10 +353,10 @@ export default function DokumentasiPage() {
                 >
                   <Camera size={40} className="mx-auto mb-3 text-rose-300" />
                   <p className="font-semibold font-display text-rose-600">
-                    Belum ada foto di sini
+                    Belum ada dokumentasi di sini
                   </p>
                   <p className="mt-1 text-sm text-rose-400 font-body">
-                    Klik untuk upload foto pertama
+                    Klik untuk upload foto atau video pertama
                   </p>
                 </div>
               ) : (
@@ -259,13 +367,25 @@ export default function DokumentasiPage() {
                       className="relative overflow-hidden group rounded-xl aspect-square bg-rose-50"
                       style={{ boxShadow: "0 4px 15px rgba(244,63,94,0.1)" }}
                     >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={photo.photo_url}
-                        alt={photo.caption || ""}
-                        className="object-cover w-full h-full cursor-pointer"
-                        onClick={() => setLightbox(idx)}
-                      />
+                      {isVideoUrl(photo.photo_url) ? (
+                        <video
+                          src={photo.photo_url}
+                          className="object-cover w-full h-full cursor-pointer"
+                          onClick={() => setLightbox(idx)}
+                          muted
+                          loop
+                          playsInline
+                          autoPlay
+                        />
+                      ) : (
+                        /* eslint-disable-next-line @next/next/no-img-element */
+                        <img
+                          src={photo.photo_url}
+                          alt={photo.caption || ""}
+                          className="object-cover w-full h-full cursor-pointer"
+                          onClick={() => setLightbox(idx)}
+                        />
+                      )}
                       <div 
                         onClick={() => setLightbox(idx)}
                         className="absolute inset-0 flex flex-col justify-end p-2 transition-opacity opacity-0 bg-black/40 group-hover:opacity-100 cursor-pointer"
@@ -347,12 +467,21 @@ export default function DokumentasiPage() {
             className="max-w-3xl max-h-screen p-8 text-center"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={photos[lightbox].photo_url}
-              alt=""
-              className="max-h-[75vh] max-w-full rounded-xl object-contain mx-auto"
-            />
+            {isVideoUrl(photos[lightbox].photo_url) ? (
+              <video
+                src={photos[lightbox].photo_url}
+                className="max-h-[75vh] max-w-full rounded-xl object-contain mx-auto"
+                controls
+                autoPlay
+              />
+            ) : (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img
+                src={photos[lightbox].photo_url}
+                alt=""
+                className="max-h-[75vh] max-w-full rounded-xl object-contain mx-auto"
+              />
+            )}
             {photos[lightbox].caption && (
               <p className="mt-4 text-lg text-white font-script">
                 "{photos[lightbox].caption}"
