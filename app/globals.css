@@ -1,35 +1,49 @@
 @import "tailwindcss";
 
 @theme {
-  --font-display: 'Playfair Display', Georgia, serif;
-  --font-body: 'Lato', sans-serif;
+  --font-display: 'Fredoka', 'Nunito', sans-serif;
+  --font-body: 'Nunito', sans-serif;
   --font-script: 'Dancing Script', cursive;
 
-  --color-rose-50: #f4f9f7;
-  --color-rose-100: #e3f0eb;
-  --color-rose-200: #c8ddd5;
-  --color-rose-300: #a0c4b8;
-  --color-rose-400: #5bb89a;
-  --color-rose-500: #2d8c6e;
-  --color-rose-600: #237a5e;
-  --color-rose-700: #1a5c47;
-  --color-rose-800: #1a5c47;
-  --color-rose-900: #0f3d2e;
+  /* Zootopia Teal/Cyan */
+  --color-zoo-50: #e6fbf7;
+  --color-zoo-100: #b3f2e3;
+  --color-zoo-200: #80e9cf;
+  --color-zoo-300: #4ddfbb;
+  --color-zoo-400: #1ad6a7;
+  --color-zoo-500: #00A896;
+  --color-zoo-600: #0081A7;
+  --color-zoo-700: #006d8e;
+  --color-zoo-800: #005975;
+  --color-zoo-900: #00455c;
 
-  --color-blush-50: #fef8f0;
-  --color-blush-100: #fdefd8;
-  --color-blush-200: #fbe0b0;
-  --color-blush-300: #f6c97a;
-  --color-blush-400: #f0ad4e;
-  --color-blush-500: #e8943a;
-  --color-blush-600: #cc7a28;
-  --color-blush-700: #a86020;
-  --color-blush-800: #8a4e1c;
-  --color-blush-900: #6b3c16;
+  /* Savannah Gold */
+  --color-gold-50: #fff8ef;
+  --color-gold-100: #ffefd6;
+  --color-gold-200: #ffdead;
+  --color-gold-300: #f4c27a;
+  --color-gold-400: #F4A261;
+  --color-gold-500: #E9C46A;
+  --color-gold-600: #cc9a2e;
+  --color-gold-700: #a67c24;
+  --color-gold-800: #7f5f1c;
+  --color-gold-900: #594314;
 
-  --color-cream: #f0f5f3;
-  --color-petal: #e3f0eb;
-  --color-wine: #1a5c47;
+  /* ZPD Blue */
+  --color-zpd-50: #e8f4fd;
+  --color-zpd-100: #bee3f8;
+  --color-zpd-200: #90cdf4;
+  --color-zpd-300: #63b3ed;
+  --color-zpd-400: #4299e1;
+  --color-zpd-500: #0077B6;
+  --color-zpd-600: #006399;
+  --color-zpd-700: #00507c;
+  --color-zpd-800: #003d5f;
+  --color-zpd-900: #002a42;
+
+  --color-cream: #FFF8F0;
+  --color-petal: #e6fbf7;
+  --color-wine: #005975;
 }
 
 @layer base {
@@ -42,70 +56,149 @@
   }
 
   body {
-    font-family: 'Lato', sans-serif;
-    background-color: #f0f5f3;
+    font-family: 'Nunito', sans-serif;
+    background-color: #FFF8F0;
     color: #1e3a2f;
+    margin: 0;
+    padding: 0;
   }
 
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: #e3f0eb; }
-  ::-webkit-scrollbar-thumb { background: #a0c4b8; border-radius: 10px; }
-  ::-webkit-scrollbar-thumb:hover { background: #2d8c6e; }
+  /* Zootopia-themed scrollbar */
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: #e6fbf7; }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #00A896, #0081A7);
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: #006d8e; }
 }
 
 @layer utilities {
-  .font-display { font-family: 'Playfair Display', Georgia, serif; }
+  /* ── FONTS ── */
+  .font-display { font-family: 'Fredoka', 'Nunito', sans-serif; }
   .font-script  { font-family: 'Dancing Script', cursive; }
-  .font-body    { font-family: 'Lato', sans-serif; }
+  .font-body    { font-family: 'Nunito', sans-serif; }
 
+  /* ── GRADIENT TEXT ── */
   .gradient-text {
-    background: linear-gradient(135deg, #2d8c6e, #e8943a, #1a5c47);
+    background: linear-gradient(135deg, #00A896 0%, #F4A261 50%, #0077B6 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
+  .zoo-gradient-text {
+    background: linear-gradient(135deg, #0077B6, #00A896, #F4A261);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ── GLASS / CARD EFFECTS ── */
   .glass {
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(0, 168, 150, 0.15);
   }
 
-  .card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+  .zoo-glass {
+    background: rgba(255, 248, 240, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1.5px solid rgba(0, 168, 150, 0.2);
+    box-shadow: 0 4px 24px rgba(0, 129, 167, 0.08);
+  }
+
+  .zoo-card {
+    background: #ffffff;
+    border-radius: 20px;
+    border: 2px solid rgba(0, 168, 150, 0.15);
+    box-shadow:
+      0 4px 16px rgba(0, 129, 167, 0.08),
+      0 1px 4px rgba(0, 0, 0, 0.04);
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+  }
+
+  .zoo-card:hover {
+    transform: translateY(-6px) scale(1.01);
+    box-shadow:
+      0 16px 48px rgba(0, 129, 167, 0.16),
+      0 4px 12px rgba(0, 168, 150, 0.1);
+    border-color: rgba(0, 168, 150, 0.35);
+  }
+
+  .card-hover { transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
   .card-hover:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 20px 40px rgba(45, 140, 110, 0.15);
+    transform: translateY(-5px);
+    box-shadow: 0 20px 50px rgba(0, 129, 167, 0.18);
   }
 
-  .modal-backdrop {
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+  /* ── BUTTONS ── */
+  .zoo-btn {
+    background: linear-gradient(135deg, #0077B6, #00A896);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 14px 36px;
+    font-family: 'Fredoka', 'Nunito', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow:
+      0 4px 20px rgba(0, 119, 182, 0.35),
+      0 0 0 0 rgba(0, 168, 150, 0);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    position: relative;
+    overflow: hidden;
   }
 
-  .heart-beat { animation: gentleBounce 2s ease-in-out infinite; }
-  .float      { animation: float 4s ease-in-out infinite; }
+  .zoo-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+  }
 
-  .shimmer {
-    background: linear-gradient(90deg, #2d8c6e 25%, #e8943a 50%, #2d8c6e 75%);
-    background-size: 200% 100%;
-    animation: shimmer 3s linear infinite;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  .zoo-btn:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow:
+      0 8px 32px rgba(0, 119, 182, 0.45),
+      0 0 0 4px rgba(0, 168, 150, 0.15);
+  }
+
+  .zoo-btn:hover::before {
+    left: 100%;
+  }
+
+  .zoo-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
   }
 
   .btn-rose {
-    background: linear-gradient(135deg, #2d8c6e, #e8943a);
+    background: linear-gradient(135deg, #0077B6, #00A896);
     color: white;
     border: none;
     border-radius: 50px;
     padding: 12px 28px;
-    font-family: 'Lato', sans-serif;
+    font-family: 'Fredoka', 'Nunito', sans-serif;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(45, 140, 110, 0.3);
+    box-shadow: 0 4px 15px rgba(0, 119, 182, 0.3);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -114,7 +207,7 @@
   }
   .btn-rose:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(45, 140, 110, 0.4);
+    box-shadow: 0 8px 25px rgba(0, 119, 182, 0.4);
   }
   .btn-rose:disabled {
     opacity: 0.6;
@@ -122,54 +215,93 @@
     transform: none;
   }
 
+  .zoo-btn-outline {
+    background: transparent;
+    color: #00A896;
+    border: 2px solid #00A896;
+    border-radius: 50px;
+    padding: 12px 28px;
+    font-family: 'Fredoka', 'Nunito', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .zoo-btn-outline:hover {
+    background: #00A896;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 168, 150, 0.3);
+  }
+
+  /* ── INPUTS ── */
   .love-input {
-    background: rgba(255, 255, 255, 0.8);
-    border: 2px solid #c8ddd5;
-    border-radius: 12px;
-    padding: 10px 16px;
-    font-family: 'Lato', sans-serif;
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid rgba(0, 168, 150, 0.2);
+    border-radius: 14px;
+    padding: 12px 18px;
+    font-family: 'Nunito', sans-serif;
     color: #1e3a2f;
-    transition: border-color 0.3s;
+    transition: all 0.3s;
     width: 100%;
   }
   .love-input:focus {
     outline: none;
-    border-color: #2d8c6e;
-    box-shadow: 0 0 0 3px rgba(45, 140, 110, 0.1);
+    border-color: #00A896;
+    box-shadow: 0 0 0 4px rgba(0, 168, 150, 0.1);
   }
 
+  /* ── NAV ── */
   .nav-active {
-    background: linear-gradient(135deg, rgba(45, 140, 110, 0.15), rgba(232, 148, 58, 0.1));
-    border-left: 3px solid #2d8c6e;
-    color: #2d8c6e;
+    background: linear-gradient(135deg, rgba(0, 168, 150, 0.15), rgba(244, 162, 97, 0.1));
+    border-left: 3px solid #00A896;
+    color: #00A896;
   }
 
+  /* ── PROGRESS BAR ── */
   .progress-bar {
-    background: linear-gradient(90deg, #2d8c6e, #e8943a);
+    background: linear-gradient(90deg, #00A896, #0077B6, #F4A261);
     border-radius: 50px;
     height: 8px;
     transition: width 0.5s ease;
+    background-size: 200% 100%;
+    animation: progressShimmer 3s ease infinite;
   }
 
+  /* ── MODAL ── */
+  .modal-backdrop {
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+
+  /* ── BADGE / RIBBON ── */
   .ribbon {
     position: absolute;
     top: -1px;
     right: 20px;
-    background: linear-gradient(135deg, #2d8c6e, #e8943a);
+    background: linear-gradient(135deg, #0077B6, #00A896);
     color: white;
-    padding: 4px 12px;
+    padding: 4px 14px;
     font-size: 0.75rem;
     font-weight: 700;
-    border-radius: 0 0 8px 8px;
-    font-family: 'Lato', sans-serif;
+    border-radius: 0 0 10px 10px;
+    font-family: 'Fredoka', 'Nunito', sans-serif;
     letter-spacing: 0.05em;
     text-transform: uppercase;
   }
 
-  .photo-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 12px;
+  .zoo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 14px;
+    border-radius: 50px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    font-family: 'Fredoka', 'Nunito', sans-serif;
+    background: linear-gradient(135deg, rgba(0, 168, 150, 0.12), rgba(0, 119, 182, 0.08));
+    color: #00A896;
+    border: 1px solid rgba(0, 168, 150, 0.2);
   }
 
   .mood-badge {
@@ -180,18 +312,140 @@
     border-radius: 50px;
     font-size: 0.8rem;
     font-weight: 600;
-    font-family: 'Lato', sans-serif;
+    font-family: 'Nunito', sans-serif;
   }
 
+  /* ── PHOTO GRID ── */
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 14px;
+  }
+
+  /* ── PAPER TEXTURE ── */
   .paper-texture {
-    background-color: #fffdf7;
+    background-color: #FFF8F0;
     background-image:
-      linear-gradient(rgba(45, 140, 110, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(45, 140, 110, 0.03) 1px, transparent 1px);
+      linear-gradient(rgba(0, 168, 150, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 168, 150, 0.03) 1px, transparent 1px);
     background-size: 24px 24px;
+  }
+
+  /* ── ZOOTOPIA SPECIFIC STYLES ── */
+
+  /* Paw print separator */
+  .paw-separator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+  }
+  .paw-separator::before,
+  .paw-separator::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0, 168, 150, 0.3), transparent);
+  }
+
+  /* Border ornament pattern */
+  .zoo-border-left {
+    position: relative;
+  }
+  .zoo-border-left::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: repeating-linear-gradient(
+      180deg,
+      #00A896 0px,
+      #00A896 8px,
+      transparent 8px,
+      transparent 12px,
+      #F4A261 12px,
+      #F4A261 20px,
+      transparent 20px,
+      transparent 24px
+    );
+    border-radius: 0 4px 4px 0;
+  }
+
+  .zoo-border-right {
+    position: relative;
+  }
+  .zoo-border-right::before {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: repeating-linear-gradient(
+      180deg,
+      #0077B6 0px,
+      #0077B6 8px,
+      transparent 8px,
+      transparent 12px,
+      #00A896 12px,
+      #00A896 20px,
+      transparent 20px,
+      transparent 24px
+    );
+    border-radius: 4px 0 0 4px;
+  }
+
+  /* Zootopia skyline silhouette (CSS) */
+  .zoo-skyline {
+    position: relative;
+  }
+  .zoo-skyline::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background:
+      linear-gradient(135deg, transparent 33.33%, rgba(0, 129, 167, 0.08) 33.33%, rgba(0, 129, 167, 0.08) 66.66%, transparent 66.66%),
+      linear-gradient(225deg, transparent 33.33%, rgba(0, 168, 150, 0.06) 33.33%, rgba(0, 168, 150, 0.06) 66.66%, transparent 66.66%);
+    pointer-events: none;
+  }
+
+  /* ── ANIMATIONS ── */
+  .heart-beat { animation: gentleBounce 2s ease-in-out infinite; }
+  .float      { animation: zooFloat 4s ease-in-out infinite; }
+  .zoo-float  { animation: zooFloat 5s ease-in-out infinite; }
+  .zoo-pulse  { animation: zooPulse 3s ease-in-out infinite; }
+  .zoo-wiggle { animation: zooWiggle 2s ease-in-out infinite; }
+
+  .shimmer {
+    background: linear-gradient(90deg, #00A896 25%, #F4A261 50%, #0077B6 75%);
+    background-size: 200% 100%;
+    animation: shimmer 3s linear infinite;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Paw sparkle dots */
+  .paw-sparkle {
+    position: relative;
+  }
+  .paw-sparkle::after {
+    content: '🐾';
+    position: absolute;
+    top: -8px;
+    right: -12px;
+    font-size: 0.65rem;
+    animation: zooFloat 3s ease-in-out infinite;
+    opacity: 0.5;
   }
 }
 
+/* ── KEYFRAMES ── */
 @keyframes fall {
   0%   { transform: translateY(-100px) rotate(0deg);   opacity: 1; }
   100% { transform: translateY(100vh)  rotate(720deg); opacity: 0; }
@@ -204,11 +458,35 @@
   0%   { background-position: -200% 0; }
   100% { background-position:  200% 0; }
 }
-@keyframes float {
+@keyframes zooFloat {
   0%, 100% { transform: translateY(0px); }
-  50%       { transform: translateY(-8px); }
+  50%      { transform: translateY(-10px); }
+}
+@keyframes zooPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%      { transform: scale(1.05); opacity: 0.85; }
+}
+@keyframes zooWiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25%      { transform: rotate(-3deg); }
+  75%      { transform: rotate(3deg); }
+}
+@keyframes progressShimmer {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 @keyframes confetti-fall {
   0%   { transform: translateY(-20px) rotate(0deg);   opacity: 1; }
   100% { transform: translateY(100px)  rotate(360deg); opacity: 0; }
+}
+@keyframes cloudDrift {
+  0%   { transform: translateX(-10px); }
+  50%  { transform: translateX(10px); }
+  100% { transform: translateX(-10px); }
+}
+@keyframes pawBounce {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25%      { transform: translateY(-5px) rotate(-5deg); }
+  75%      { transform: translateY(-3px) rotate(5deg); }
 }

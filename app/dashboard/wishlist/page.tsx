@@ -72,26 +72,26 @@ export default function WishlistPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="font-display text-2xl font-bold text-rose-800">Mau ke Mana? 🗺️</h1>
-          <p className="text-rose-500 font-body text-sm mt-1">{places.length} tempat dalam wishlist kalian</p>
+          <h1 className="text-2xl font-bold font-display text-rose-800">Mau ke Mana? 🗺️</h1>
+          <p className="mt-1 text-sm text-rose-500 font-body">{places.length} tempat dalam wishlist kalian</p>
         </div>
         <button
           onClick={() => setShowModal(true)}
-          className="btn-rose flex items-center gap-2"
+          className="flex items-center gap-2 btn-rose"
         >
           <Plus size={18} /> Tambah Tempat
         </button>
       </div>
 
       {/* Filter */}
-      <div className="flex gap-2 flex-wrap mb-6">
+      <div className="flex flex-wrap gap-2 mb-6">
         {['semua', ...categories].map(cat => (
           <button
             key={cat}
             onClick={() => setFilterCat(cat)}
             className={`px-4 py-2 rounded-full text-sm font-semibold font-body transition-all ${
               filterCat === cat
-                ? 'bg-rose-500 text-white shadow-md'
+                ? 'bg-[#2d8c6e] text-white shadow-md'
                 : 'bg-white text-rose-600 border border-rose-200 hover:border-rose-400'
             }`}
           >
@@ -103,22 +103,22 @@ export default function WishlistPage() {
 
       {/* Places Grid */}
       {loading ? (
-        <div className="text-center py-16 text-4xl heart-beat">🌿</div>
+        <div className="py-16 text-4xl text-center heart-beat">🌿</div>
       ) : filtered.length === 0 ? (
-        <div className="text-center py-16 glass rounded-3xl">
-          <div className="text-5xl mb-4">🗺️</div>
-          <h3 className="font-display text-xl text-rose-700 mb-2">Belum ada wishlist</h3>
-          <p className="text-rose-400 font-body text-sm mb-4">Yuk tambahkan tempat yang ingin kalian kunjungi!</p>
+        <div className="py-16 text-center glass rounded-3xl">
+          <div className="mb-4 text-5xl">🗺️</div>
+          <h3 className="mb-2 text-xl font-display text-rose-700">Belum ada wishlist</h3>
+          <p className="mb-4 text-sm text-rose-400 font-body">Yuk tambahkan tempat yang ingin kalian kunjungi!</p>
           <button onClick={() => setShowModal(true)} className="btn-rose">
             + Tambah Tempat Pertama
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {filtered.map(place => (
-            <div key={place.id} className="card-hover glass rounded-2xl overflow-hidden border border-rose-100">
+            <div key={place.id} className="overflow-hidden border card-hover glass rounded-2xl border-rose-100">
               {/* Cover */}
-              <div className="h-32 flex items-center justify-center text-5xl"
+              <div className="flex items-center justify-center h-32 text-5xl"
                 style={{ background: 'linear-gradient(135deg, #e3f0eb, #e3f0eb)' }}
               >
                 {categoryEmoji[place.category] || '📌'}
@@ -127,7 +127,7 @@ export default function WishlistPage() {
               <div className="p-4">
                 <div className="flex items-start justify-between gap-2 mb-2">
                   <div>
-                    <h3 className="font-display font-bold text-rose-800 text-base leading-tight">{place.name}</h3>
+                    <h3 className="text-base font-bold leading-tight font-display text-rose-800">{place.name}</h3>
                     <span className="inline-block bg-rose-100 text-rose-600 text-xs px-2 py-0.5 rounded-full font-body mt-1">
                       {categoryEmoji[place.category]} {place.category}
                     </span>
@@ -135,27 +135,27 @@ export default function WishlistPage() {
                 </div>
 
                 {place.address && (
-                  <p className="text-xs text-rose-400 font-body flex items-center gap-1 mb-2">
+                  <p className="flex items-center gap-1 mb-2 text-xs text-rose-400 font-body">
                     <MapPin size={12} /> {place.address}
                   </p>
                 )}
                 {place.description && (
-                  <p className="text-xs text-rose-600 font-body mb-3 line-clamp-2">{place.description}</p>
+                  <p className="mb-3 text-xs text-rose-600 font-body line-clamp-2">{place.description}</p>
                 )}
                 {place.notes && (
-                  <p className="text-xs text-rose-400 italic font-body mb-3">💭 {place.notes}</p>
+                  <p className="mb-3 text-xs italic text-rose-400 font-body">💭 {place.notes}</p>
                 )}
 
                 <div className="flex gap-2">
                   <button
                     onClick={() => markVisited(place.id)}
-                    className="flex-1 flex items-center justify-center gap-1 bg-green-50 hover:bg-green-100 text-green-700 text-xs font-semibold py-2 rounded-lg transition-colors"
+                    className="flex items-center justify-center flex-1 gap-1 py-2 text-xs font-semibold text-green-700 transition-colors rounded-lg bg-green-50 hover:bg-green-100"
                   >
                     <Check size={14} /> Sudah Dikunjungi
                   </button>
                   <button
                     onClick={() => deletePlace(place.id)}
-                    className="p-2 bg-rose-50 hover:bg-rose-100 text-rose-400 rounded-lg transition-colors"
+                    className="p-2 transition-colors rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-400"
                   >
                     <X size={14} />
                   </button>
@@ -171,9 +171,9 @@ export default function WishlistPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop" 
           style={{ background: 'rgba(0,0,0,0.4)' }}
         >
-          <div className="bg-white rounded-3xl p-6 w-full max-w-md shadow-2xl" style={{ maxHeight: '90vh', overflowY: 'auto' }}>
+          <div className="w-full max-w-md p-6 bg-white shadow-2xl rounded-3xl" style={{ maxHeight: '90vh', overflowY: 'auto' }}>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="font-display text-xl font-bold text-rose-800">Tambah Tempat Wishlist 🗺️</h2>
+              <h2 className="text-xl font-bold font-display text-rose-800">Tambah Tempat Wishlist 🗺️</h2>
               <button onClick={() => setShowModal(false)} className="text-rose-400 hover:text-rose-600">
                 <X size={20} />
               </button>
@@ -181,12 +181,12 @@ export default function WishlistPage() {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-semibold text-rose-700 mb-2 font-body">Nama Tempat *</label>
+                <label className="block mb-2 text-sm font-semibold text-rose-700 font-body">Nama Tempat *</label>
                 <input className="love-input" placeholder="Nama tempat..." value={form.name}
                   onChange={e => setForm(p => ({ ...p, name: e.target.value }))} />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-rose-700 mb-2 font-body">Kategori</label>
+                <label className="block mb-2 text-sm font-semibold text-rose-700 font-body">Kategori</label>
                 <select className="love-input" value={form.category}
                   onChange={e => setForm(p => ({ ...p, category: e.target.value }))}>
                   {categories.map(c => (
@@ -195,27 +195,27 @@ export default function WishlistPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-semibold text-rose-700 mb-2 font-body">Alamat</label>
+                <label className="block mb-2 text-sm font-semibold text-rose-700 font-body">Alamat</label>
                 <input className="love-input" placeholder="Alamat atau lokasi..." value={form.address}
                   onChange={e => setForm(p => ({ ...p, address: e.target.value }))} />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-rose-700 mb-2 font-body">Deskripsi</label>
-                <textarea className="love-input resize-none" rows={2} placeholder="Kenapa ingin ke sini?" value={form.description}
+                <label className="block mb-2 text-sm font-semibold text-rose-700 font-body">Deskripsi</label>
+                <textarea className="resize-none love-input" rows={2} placeholder="Kenapa ingin ke sini?" value={form.description}
                   onChange={e => setForm(p => ({ ...p, description: e.target.value }))} />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-rose-700 mb-2 font-body">Catatan</label>
+                <label className="block mb-2 text-sm font-semibold text-rose-700 font-body">Catatan</label>
                 <input className="love-input" placeholder="Catatan tambahan..." value={form.notes}
                   onChange={e => setForm(p => ({ ...p, notes: e.target.value }))} />
               </div>
               <div className="flex gap-3 pt-2">
                 <button onClick={() => setShowModal(false)}
-                  className="flex-1 py-3 rounded-xl border-2 border-rose-200 text-rose-500 font-semibold hover:bg-rose-50 transition-colors font-body">
+                  className="flex-1 py-3 font-semibold transition-colors border-2 rounded-xl border-rose-200 text-rose-500 hover:bg-rose-50 font-body">
                   Batal
                 </button>
                 <button onClick={addPlace} disabled={saving || !form.name}
-                  className="flex-1 btn-rose flex items-center justify-center gap-2">
+                  className="flex items-center justify-center flex-1 gap-2 btn-rose">
                   {saving ? '🌿' : <><Plus size={16} /> Tambahkan</>}
                 </button>
               </div>

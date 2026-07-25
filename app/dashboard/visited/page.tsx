@@ -95,20 +95,20 @@ export default function VisitedPage() {
     <div className="max-w-4xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="font-display text-2xl font-bold text-rose-800">Tempat Kenangan 📍</h1>
-          <p className="text-rose-500 font-body text-sm mt-1">{places.length} tempat sudah kalian kunjungi bersama</p>
+          <h1 className="text-2xl font-bold font-display text-rose-800">Tempat Kenangan 📍</h1>
+          <p className="mt-1 text-sm text-rose-500 font-body">{places.length} tempat sudah kalian kunjungi bersama</p>
         </div>
-        <button onClick={openAdd} className="btn-rose flex items-center gap-2">
+        <button onClick={openAdd} className="flex items-center gap-2 btn-rose">
           <Plus size={18} /> Tambah
         </button>
       </div>
 
       {/* Filter */}
-      <div className="flex gap-2 flex-wrap mb-6">
+      <div className="flex flex-wrap gap-2 mb-6">
         {['semua', ...categories].map(cat => (
           <button key={cat} onClick={() => setFilterCat(cat)}
             className={`px-4 py-2 rounded-full text-sm font-semibold font-body transition-all ${
-              filterCat === cat ? 'bg-rose-500 text-white shadow-md' : 'bg-white text-rose-600 border border-rose-200 hover:border-rose-400'
+              filterCat === cat ? 'bg-[#2d8c6e] text-white shadow-md' : 'bg-white text-rose-600 border border-rose-200 hover:border-rose-400'
             }`}>
             {cat !== 'semua' ? categoryEmoji[cat] + ' ' : ''}{cat.charAt(0).toUpperCase() + cat.slice(1)}
           </button>
@@ -116,19 +116,19 @@ export default function VisitedPage() {
       </div>
 
       {loading ? (
-        <div className="text-center py-16 text-4xl heart-beat">🌿</div>
+        <div className="py-16 text-4xl text-center heart-beat">🌿</div>
       ) : filtered.length === 0 ? (
-        <div className="text-center py-16 glass rounded-3xl">
-          <div className="text-5xl mb-4">📍</div>
-          <h3 className="font-display text-xl text-rose-700 mb-2">Belum ada kenangan di sini</h3>
-          <p className="text-rose-400 font-body text-sm mb-4">Catat semua tempat yang sudah kalian kunjungi bersama!</p>
+        <div className="py-16 text-center glass rounded-3xl">
+          <div className="mb-4 text-5xl">📍</div>
+          <h3 className="mb-2 text-xl font-display text-rose-700">Belum ada kenangan di sini</h3>
+          <p className="mb-4 text-sm text-rose-400 font-body">Catat semua tempat yang sudah kalian kunjungi bersama!</p>
           <button onClick={openAdd} className="btn-rose">+ Tambah Tempat Pertama</button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {filtered.map(place => (
-            <div key={place.id} className="card-hover glass rounded-2xl overflow-hidden border border-rose-100">
-              <div className="h-28 flex items-center justify-center text-5xl relative"
+            <div key={place.id} className="overflow-hidden border card-hover glass rounded-2xl border-rose-100">
+              <div className="relative flex items-center justify-center text-5xl h-28"
                 style={{ background: 'linear-gradient(135deg, #e3f0eb, #e3f0eb)' }}>
                 {categoryEmoji[place.category] || '📌'}
                 <div className="ribbon">✓ Dikunjungi</div>
@@ -136,7 +136,7 @@ export default function VisitedPage() {
 
               <div className="p-4">
                 <div className="flex items-start justify-between mb-1">
-                  <h3 className="font-display font-bold text-rose-800">{place.name}</h3>
+                  <h3 className="font-bold font-display text-rose-800">{place.name}</h3>
                   <div className="flex gap-1 ml-2">
                     <button onClick={() => openEdit(place)} className="p-1.5 bg-rose-50 rounded-lg hover:bg-rose-100 transition-colors">
                       <Edit2 size={12} className="text-rose-400" />
@@ -155,21 +155,21 @@ export default function VisitedPage() {
                 </div>
 
                 {place.visited_date && (
-                  <p className="text-xs text-rose-400 font-body mb-2">
+                  <p className="mb-2 text-xs text-rose-400 font-body">
                     📅 {format(parseISO(place.visited_date), 'd MMMM yyyy', { locale: idLocale })}
                   </p>
                 )}
                 {place.address && (
-                  <p className="text-xs text-rose-400 font-body flex items-center gap-1 mb-2">
+                  <p className="flex items-center gap-1 mb-2 text-xs text-rose-400 font-body">
                     <MapPin size={11} /> {place.address}
                   </p>
                 )}
                 {place.notes && (
-                  <p className="text-xs text-rose-500 italic font-body mb-3">💭 "{place.notes}"</p>
+                  <p className="mb-3 text-xs italic text-rose-500 font-body">💭 "{place.notes}"</p>
                 )}
 
                 <Link href={`/dashboard/dokumentasi?place=${place.id}`}
-                  className="flex items-center gap-1 text-xs text-rose-500 hover:text-rose-700 font-semibold">
+                  className="flex items-center gap-1 text-xs font-semibold text-rose-500 hover:text-rose-700">
                   <Camera size={13} /> Lihat dokumentasi →
                 </Link>
               </div>
@@ -182,9 +182,9 @@ export default function VisitedPage() {
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop"
           style={{ background: 'rgba(0,0,0,0.4)' }}>
-          <div className="bg-white rounded-3xl p-6 w-full max-w-md shadow-2xl" style={{ maxHeight: '90vh', overflowY: 'auto' }}>
+          <div className="w-full max-w-md p-6 bg-white shadow-2xl rounded-3xl" style={{ maxHeight: '90vh', overflowY: 'auto' }}>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="font-display text-xl font-bold text-rose-800">
+              <h2 className="text-xl font-bold font-display text-rose-800">
                 {editingId ? 'Edit Tempat 📝' : 'Tambah Tempat Dikunjungi 📍'}
               </h2>
               <button onClick={() => setShowModal(false)} className="text-rose-400 hover:text-rose-600"><X size={20} /></button>
@@ -192,26 +192,26 @@ export default function VisitedPage() {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-semibold text-rose-700 mb-2 font-body">Nama Tempat *</label>
+                <label className="block mb-2 text-sm font-semibold text-rose-700 font-body">Nama Tempat *</label>
                 <input className="love-input" placeholder="Nama tempat..." value={form.name}
                   onChange={e => setForm(p => ({ ...p, name: e.target.value }))} />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-semibold text-rose-700 mb-2 font-body">Kategori</label>
+                  <label className="block mb-2 text-sm font-semibold text-rose-700 font-body">Kategori</label>
                   <select className="love-input" value={form.category}
                     onChange={e => setForm(p => ({ ...p, category: e.target.value }))}>
                     {categories.map(c => <option key={c} value={c}>{categoryEmoji[c]} {c}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-rose-700 mb-2 font-body">Tanggal Kunjungi</label>
+                  <label className="block mb-2 text-sm font-semibold text-rose-700 font-body">Tanggal Kunjungi</label>
                   <input type="date" className="love-input" value={form.visited_date}
                     onChange={e => setForm(p => ({ ...p, visited_date: e.target.value }))} />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-semibold text-rose-700 mb-2 font-body">Rating</label>
+                <label className="block mb-2 text-sm font-semibold text-rose-700 font-body">Rating</label>
                 <div className="flex gap-2">
                   {[1, 2, 3, 4, 5].map(n => (
                     <button key={n} onClick={() => setForm(p => ({ ...p, rating: n }))}
@@ -222,21 +222,21 @@ export default function VisitedPage() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-semibold text-rose-700 mb-2 font-body">Alamat</label>
+                <label className="block mb-2 text-sm font-semibold text-rose-700 font-body">Alamat</label>
                 <input className="love-input" placeholder="Lokasi..." value={form.address}
                   onChange={e => setForm(p => ({ ...p, address: e.target.value }))} />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-rose-700 mb-2 font-body">Kesan & Pesan</label>
-                <textarea className="love-input resize-none" rows={3} placeholder="Bagaimana kesan kalian di sini?" value={form.notes}
+                <label className="block mb-2 text-sm font-semibold text-rose-700 font-body">Kesan & Pesan</label>
+                <textarea className="resize-none love-input" rows={3} placeholder="Bagaimana kesan kalian di sini?" value={form.notes}
                   onChange={e => setForm(p => ({ ...p, notes: e.target.value }))} />
               </div>
               <div className="flex gap-3 pt-2">
                 <button onClick={() => setShowModal(false)}
-                  className="flex-1 py-3 rounded-xl border-2 border-rose-200 text-rose-500 font-semibold hover:bg-rose-50 transition-colors font-body">
+                  className="flex-1 py-3 font-semibold transition-colors border-2 rounded-xl border-rose-200 text-rose-500 hover:bg-rose-50 font-body">
                   Batal
                 </button>
-                <button onClick={savePlace} disabled={saving || !form.name} className="flex-1 btn-rose flex items-center justify-center gap-2">
+                <button onClick={savePlace} disabled={saving || !form.name} className="flex items-center justify-center flex-1 gap-2 btn-rose">
                   {saving ? '🌿' : <><Plus size={16} /> {editingId ? 'Simpan' : 'Tambahkan'}</>}
                 </button>
               </div>
