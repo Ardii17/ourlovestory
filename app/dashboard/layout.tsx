@@ -71,23 +71,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         }} />
 
         {/* Header — Logo Area */}
-        <div style={{ padding: '20px 20px 16px', borderBottom: '1px solid rgba(255,255,255,0.12)', flexShrink: 0 }}>
+        <div style={{ padding: '16px 20px', borderBottom: '1px solid rgba(255,255,255,0.12)', flexShrink: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
-                <span style={{ fontSize: '1.6rem' }}>🦊🐰</span>
-                <div>
-                  <h1 style={{
-                    fontFamily: "'Fredoka', sans-serif", fontSize: '1.2rem', fontWeight: 700,
-                    margin: 0, color: '#F4A261',
-                    textShadow: '0 2px 8px rgba(0,0,0,0.2)',
-                    letterSpacing: '0.04em',
-                  }}>ZOOTOPIA</h1>
-                  <p style={{ fontFamily: "'Nunito', sans-serif", fontSize: '0.65rem', color: 'rgba(255,255,255,0.6)', margin: 0, letterSpacing: '0.08em', textTransform: 'uppercase' }}>Our Story</p>
-                </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '4px' }}>
+                <img src="/images/logo-zootopia.png" alt="Zootopia Logo" style={{ width: '100%', height: 'auto', objectFit: 'contain', alignSelf: 'flex-start' }} />
+                <p style={{ fontFamily: "'Nunito', sans-serif", fontSize: '0.55rem', color: 'rgba(255,255,255,0.5)', margin: '4px 0 0 4px', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Our Story</p>
               </div>
               {profile && (
-                <p style={{ fontFamily: "'Dancing Script', cursive", fontSize: '0.85rem', color: '#E9C46A', margin: '4px 0 0 0' }}>
+                <p style={{ fontFamily: "'Dancing Script', cursive", fontSize: '0.85rem', color: '#E9C46A', margin: '4px 0 0 4px' }}>
                   {profile.person1_name} & {profile.person2_name}
                 </p>
               )}

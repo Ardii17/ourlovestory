@@ -106,8 +106,8 @@ export default function DashboardHome() {
     ? format(parseISO(profile.anniversary_date), 'd MMMM yyyy', { locale: idLocale })
     : ''
 
-  const person1 = profile?.person1_name || 'Nick'
-  const person2 = profile?.person2_name || 'Judy'
+  const person2 = profile?.person1_name || 'Nick'
+  const person1 = profile?.person2_name || 'Judy'
 
   return (
     <div>
@@ -115,53 +115,43 @@ export default function DashboardHome() {
       {/* ══════════════════════════════════════════
           HERO SECTION — Zootopia Sky + City
       ══════════════════════════════════════════ */}
-      <div style={{
-        borderRadius: '28px',
-        overflow: 'hidden',
-        marginBottom: '32px',
-        position: 'relative',
-        background: 'linear-gradient(180deg, #87CEEB 0%, #B0E0E6 35%, #E0F7FA 65%, #FFF8F0 100%)',
-        boxShadow: '0 20px 60px rgba(0, 129, 167, 0.2), 0 0 0 2px rgba(0, 168, 150, 0.1)',
-        minHeight: '420px',
-      }}>
+      {/* ── HERO BANNER WITH ZOOTOPIA IMAGES ── */}
+      <div className="hero-banner-container">
         {/* Decorative clouds */}
-        <div style={{ position: 'absolute', top: '30px', left: '8%', fontSize: '2.5rem', opacity: 0.3, animation: 'cloudDrift 8s ease-in-out infinite', pointerEvents: 'none' }}>☁️</div>
-        <div style={{ position: 'absolute', top: '50px', right: '12%', fontSize: '3.5rem', opacity: 0.2, animation: 'cloudDrift 10s ease-in-out 2s infinite', pointerEvents: 'none' }}>☁️</div>
-        <div style={{ position: 'absolute', top: '20px', left: '55%', fontSize: '2rem', opacity: 0.25, animation: 'cloudDrift 7s ease-in-out 1s infinite', pointerEvents: 'none' }}>☁️</div>
+        <div style={{ position: 'absolute', top: '30px', left: '8%', fontSize: '2.5rem', opacity: 0.3, animation: 'cloudDrift 8s ease-in-out infinite', pointerEvents: 'none', zIndex: 1 }}>☁️</div>
+        <div style={{ position: 'absolute', top: '50px', right: '12%', fontSize: '3.5rem', opacity: 0.2, animation: 'cloudDrift 10s ease-in-out 2s infinite', pointerEvents: 'none', zIndex: 1 }}>☁️</div>
+        <div style={{ position: 'absolute', top: '20px', left: '55%', fontSize: '2rem', opacity: 0.25, animation: 'cloudDrift 7s ease-in-out 1s infinite', pointerEvents: 'none', zIndex: 1 }}>☁️</div>
 
-        {/* CSS City Silhouette at bottom */}
-        <div style={{
-          position: 'absolute', bottom: 0, left: 0, right: 0, height: '120px',
-          background: `
-            linear-gradient(transparent 0%, rgba(0, 129, 167, 0.06) 100%),
-            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120'%3E%3Cpath d='M0 120 L0 80 L30 80 L30 50 L50 50 L50 30 L70 30 L70 50 L90 50 L90 70 L110 70 L110 40 L120 40 L120 20 L140 20 L140 40 L150 40 L150 60 L180 60 L180 35 L200 35 L200 10 L210 10 L210 0 L220 0 L220 10 L230 10 L230 35 L250 35 L250 55 L280 55 L280 70 L300 70 L300 45 L310 45 L310 25 L330 25 L330 45 L350 45 L350 65 L370 65 L370 50 L390 50 L390 30 L400 30 L400 15 L410 15 L410 30 L420 30 L420 50 L450 50 L450 75 L480 75 L480 55 L500 55 L500 35 L510 35 L510 20 L530 20 L530 35 L550 35 L550 60 L570 60 L570 45 L590 45 L590 70 L620 70 L620 50 L640 50 L640 25 L650 25 L650 10 L660 10 L660 25 L670 25 L670 50 L700 50 L700 65 L730 65 L730 40 L750 40 L750 55 L780 55 L780 70 L800 70 L800 45 L820 45 L820 30 L830 30 L830 15 L840 15 L840 30 L850 30 L850 45 L870 45 L870 60 L900 60 L900 75 L930 75 L930 50 L950 50 L950 35 L970 35 L970 55 L1000 55 L1000 70 L1030 70 L1030 45 L1050 45 L1050 60 L1080 60 L1080 75 L1100 75 L1100 55 L1120 55 L1120 40 L1140 40 L1140 60 L1170 60 L1170 80 L1200 80 L1200 120 Z' fill='rgba(0,77,96,0.08)'/%3E%3C/svg%3E") repeat-x bottom
-          `,
-          backgroundSize: 'auto 120px',
-          pointerEvents: 'none',
-        }} />
+        {/* Nick & Judy character standee */}
+        <img
+          src="/images/hero-nick-judy.png"
+          className="hero-standee-img"
+          alt="Nick & Judy"
+        />
 
         {/* Hero Content */}
-        <div style={{ position: 'relative', zIndex: 1, padding: '52px 32px 80px', textAlign: 'center' }}>
+        <div className="hero-inner-content">
           {/* Small label */}
           <div style={{
             display: 'inline-flex', alignItems: 'center', gap: '6px',
             background: 'rgba(0, 119, 182, 0.12)', borderRadius: '50px',
             padding: '6px 16px', marginBottom: '20px',
+            border: '1.5px solid rgba(0, 119, 182, 0.2)',
           }}>
             <span style={{ fontSize: '0.8rem' }}>🐾</span>
-            <span style={{ fontFamily: "'Nunito', sans-serif", fontSize: '0.72rem', fontWeight: 700, color: '#0077B6', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+            <span style={{ fontFamily: "'Fredoka', sans-serif", fontSize: '0.72rem', fontWeight: 700, color: '#0077B6', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
               Our Zootopia Story
             </span>
           </div>
 
           <h1 style={{
             fontFamily: "'Fredoka', sans-serif",
-            fontSize: 'clamp(1.6rem, 4vw, 2.8rem)',
+            fontSize: 'clamp(1.6rem, 4vw, 2.6rem)',
             fontWeight: 700,
             color: '#004D60',
             lineHeight: 1.15,
-            marginBottom: '8px',
-            textShadow: '0 2px 12px rgba(0, 77, 96, 0.08)',
+            marginBottom: '10px',
+            textShadow: '0 2px 12px rgba(255, 255, 255, 0.7)',
           }}>
             TEMUI WUJUD BARU<br />
             ZOOTOPIA: {person1.toUpperCase()} & {person2.toUpperCase()}!
@@ -169,13 +159,13 @@ export default function DashboardHome() {
 
           <p style={{
             fontFamily: "'Nunito', sans-serif",
-            color: '#006d8e',
-            fontSize: 'clamp(0.85rem, 1.5vw, 1.05rem)',
-            marginBottom: '32px',
+            color: '#005975',
+            fontSize: 'clamp(0.85rem, 1.5vw, 1rem)',
+            marginBottom: '28px',
             maxWidth: '480px',
-            margin: '0 auto 32px',
             lineHeight: 1.6,
-            opacity: 0.85,
+            fontWeight: 600,
+            textShadow: '0 1px 8px rgba(255, 255, 255, 0.6)',
           }}>
             Menjelajahi Petualangan Duo Ikonik Kami<br />di Kota Modern.
           </p>
@@ -184,50 +174,17 @@ export default function DashboardHome() {
             display: 'inline-flex', alignItems: 'center', gap: '8px',
             background: 'linear-gradient(135deg, #0077B6, #00A896)',
             color: '#fff', fontFamily: "'Fredoka', sans-serif",
-            fontWeight: 600, fontSize: '1rem',
-            padding: '14px 36px', borderRadius: '50px',
+            fontWeight: 600, fontSize: '0.9rem',
+            padding: '12px 32px', borderRadius: '50px',
             textDecoration: 'none',
-            boxShadow: '0 6px 24px rgba(0, 119, 182, 0.35), 0 0 0 0 rgba(0,168,150,0)',
+            boxShadow: '0 6px 24px rgba(0, 119, 182, 0.35)',
             transition: 'all 0.3s ease',
             letterSpacing: '0.02em',
           }}>
             🚀 Mulai Petualangan
           </Link>
         </div>
-
-        {/* Hero Characters Placeholder (emoji + glass area) */}
-        <div style={{
-          position: 'absolute', bottom: '20px', left: '50%', transform: 'translateX(-50%)',
-          display: 'flex', gap: '24px', alignItems: 'flex-end',
-          pointerEvents: 'none',
-        }}>
-          {/* Nick placeholder */}
-          <div style={{
-            width: '80px', height: '100px',
-            background: 'rgba(244, 162, 97, 0.15)',
-            borderRadius: '50% 50% 20px 20px',
-            border: '2px dashed rgba(244, 162, 97, 0.3)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: '2.5rem',
-            backdropFilter: 'blur(4px)',
-          }}>
-            🦊
-          </div>
-          {/* Judy placeholder */}
-          <div style={{
-            width: '70px', height: '90px',
-            background: 'rgba(0, 119, 182, 0.12)',
-            borderRadius: '50% 50% 20px 20px',
-            border: '2px dashed rgba(0, 119, 182, 0.25)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: '2.2rem',
-            backdropFilter: 'blur(4px)',
-          }}>
-            🐰
-          </div>
-        </div>
       </div>
-
 
       {/* ══════════════════════════════════════════
           CHARACTER PROFILE CARDS — Nick & Judy
@@ -253,24 +210,23 @@ export default function DashboardHome() {
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               position: 'relative',
             }}>
-              {profile?.person1_photo ? (
-                <img src={profile.person1_photo} alt={person1} style={{ width: '85px', height: '85px', borderRadius: '50%', objectFit: 'cover', border: '3px solid #F4A261' }} />
+              {false ? (
+                <img src={profile.person2_photo} alt={person1} style={{ width: '85px', height: '85px', borderRadius: '50%', objectFit: 'cover', border: '3px solid #F4A261' }} />
               ) : (
-                <div style={{
-                  width: '85px', height: '85px', borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #F4A261, #E9C46A)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: '2.5rem', boxShadow: '0 4px 16px rgba(244,162,97,0.3)',
-                }}>🦊</div>
+                <img src="/images/nick.png" alt={person1} style={{ width: '85px', height: '85px', borderRadius: '50%', objectFit: 'cover', border: '3px solid #F4A261', boxShadow: '0 4px 16px rgba(244,162,97,0.3)' }} />
               )}
               {/* Badge */}
               <div style={{
                 position: 'absolute', top: '10px', right: '-8px',
-                background: '#F4A261', borderRadius: '50%',
-                width: '28px', height: '28px',
+                background: '#fff', borderRadius: '50%',
+                width: '32px', height: '32px',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: '0.75rem', boxShadow: '0 2px 8px rgba(244,162,97,0.3)',
-              }}>👔</div>
+                boxShadow: '0 2px 8px rgba(244,162,97,0.3)',
+                overflow: 'hidden',
+                border: '1.5px solid #F4A261',
+              }}>
+                <img src="/images/badge-purple-tie.png" alt="Tie Badge" style={{ width: '80%', height: '80%', objectFit: 'contain' }} />
+              </div>
             </div>
             {/* Info */}
             <div style={{ flex: 1, padding: '18px 20px' }}>
@@ -304,24 +260,23 @@ export default function DashboardHome() {
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               position: 'relative',
             }}>
-              {profile?.person2_photo ? (
-                <img src={profile.person2_photo} alt={person2} style={{ width: '85px', height: '85px', borderRadius: '50%', objectFit: 'cover', border: '3px solid #0077B6' }} />
+              {false ? (
+                <img src={profile.person1_photo} alt={person2} style={{ width: '85px', height: '85px', borderRadius: '50%', objectFit: 'cover', border: '3px solid #0077B6' }} />
               ) : (
-                <div style={{
-                  width: '85px', height: '85px', borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #0077B6, #00A896)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: '2.5rem', boxShadow: '0 4px 16px rgba(0,119,182,0.3)',
-                }}>🐰</div>
+                <img src="/images/judy.png" alt={person2} style={{ width: '85px', height: '85px', borderRadius: '50%', objectFit: 'cover', border: '3px solid #0077B6', boxShadow: '0 4px 16px rgba(0,119,182,0.3)' }} />
               )}
               {/* Badge */}
               <div style={{
                 position: 'absolute', top: '10px', right: '-8px',
-                background: '#0077B6', borderRadius: '50%',
-                width: '28px', height: '28px',
+                background: '#fff', borderRadius: '50%',
+                width: '32px', height: '32px',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: '0.75rem', boxShadow: '0 2px 8px rgba(0,119,182,0.3)',
-              }}>🛡️</div>
+                boxShadow: '0 2px 8px rgba(0,119,182,0.3)',
+                overflow: 'hidden',
+                border: '1.5px solid #0077B6',
+              }}>
+                <img src="/images/badge-zpd-police.png" alt="ZPD Badge" style={{ width: '80%', height: '80%', objectFit: 'contain' }} />
+              </div>
             </div>
             {/* Info */}
             <div style={{ flex: 1, padding: '18px 20px' }}>
@@ -399,13 +354,13 @@ export default function DashboardHome() {
             <>
               <button
                 onClick={() => setCurrentSlide(prev => (prev === 0 ? latestPhotos.length - 1 : prev - 1))}
-                className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/20 hover:bg-white/40 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 backdrop-blur-sm z-20 cursor-pointer"
+                className="absolute z-20 p-2 text-white transition-opacity duration-300 -translate-y-1/2 rounded-full opacity-0 cursor-pointer left-4 top-1/2 bg-white/20 hover:bg-white/40 group-hover:opacity-100 backdrop-blur-sm"
               >
                 <ChevronLeft size={20} />
               </button>
               <button
                 onClick={() => setCurrentSlide(prev => (prev === latestPhotos.length - 1 ? 0 : prev + 1))}
-                className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/20 hover:bg-white/40 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 backdrop-blur-sm z-20 cursor-pointer"
+                className="absolute z-20 p-2 text-white transition-opacity duration-300 -translate-y-1/2 rounded-full opacity-0 cursor-pointer right-4 top-1/2 bg-white/20 hover:bg-white/40 group-hover:opacity-100 backdrop-blur-sm"
               >
                 <ChevronRight size={20} />
               </button>
@@ -452,22 +407,22 @@ export default function DashboardHome() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '18px' }}>
           {[
             {
-              name: 'Rainforest District', emoji: '🌿',
-              gradient: 'linear-gradient(135deg, #2d6a4f, #40916c, #52b788)',
-              desc: 'Hutan tropis yang lebat & hijau',
-              href: '/dashboard/wishlist',
+              name: 'Sunrise Point Cukul', emoji: '🌿',
+              image: '/images/thumb-rainforest.jpeg',
+              desc: 'Indahnya pemandangan matahari terbit di atas kebun teh Cukul.',
+              href: '/dashboard/dokumentasi?place=Sunrise Point Cukul',
             },
             {
-              name: 'Sahara Square', emoji: '🏜️',
-              gradient: 'linear-gradient(135deg, #bc6c25, #dda15e, #fefae0)',
-              desc: 'Kota gurun pasir bernuansa hangat',
-              href: '/dashboard/visited',
+              name: 'Cibuni Estate', emoji: '🏜️',
+              image: '/images/thumb-sahara-square.jpeg',
+              desc: 'Momen manis di tengah hamparan hijau perkebunan teh Cibuni.',
+              href: '/dashboard/dokumentasi?place=Cibuni Estate',
             },
             {
-              name: 'Tundra Town', emoji: '❄️',
-              gradient: 'linear-gradient(135deg, #457b9d, #a8dadc, #f1faee)',
-              desc: 'Kota es dan salju yang memukau',
-              href: '/dashboard/memories',
+              name: 'Taman Summarecon', emoji: '❄️',
+              image: '/images/thumb-tundra-town.jpeg',
+              desc: 'Bersantai sore bersama di area taman hijau Summarecon.',
+              href: '/dashboard/dokumentasi?place=Taman Summarecon',
             },
           ].map((district) => (
             <Link key={district.name} href={district.href} style={{ textDecoration: 'none' }}>
@@ -488,13 +443,14 @@ export default function DashboardHome() {
                   ;(e.currentTarget as HTMLElement).style.boxShadow = '0 4px 20px rgba(0,129,167,0.08)'
                 }}
               >
-                {/* District image placeholder */}
+                {/* District image */}
                 <div style={{
-                  height: '130px', background: district.gradient,
+                  height: '130px',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: '3rem', position: 'relative',
+                  position: 'relative',
+                  overflow: 'hidden',
                 }}>
-                  {district.emoji}
+                  <img src={district.image} alt={district.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   {/* overlay pattern */}
                   <div style={{ position: 'absolute', inset: 0, background: 'rgba(255,255,255,0.08)', pointerEvents: 'none' }} />
                 </div>

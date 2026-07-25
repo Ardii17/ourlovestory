@@ -120,7 +120,20 @@ export default function DokumentasiPage() {
   async function loadPlaces() {
     const { data } = await supabase.from('places').select('id, name, category, visited_date').eq('status', 'visited').order('visited_date', { ascending: false })
     setPlaces(data || [])
-    if (data && data.length > 0) setSelectedPlace(data[0].id)
+    if (data && data.length > 0) {
+      if (typeof window !== 'undefined') {
+        const params = new URLSearchParams(window.location.search)
+        const paramPlaceName = params.get('place')
+        if (paramPlaceName) {
+          const found = data.find(p => p.name.toLowerCase() === paramPlaceName.toLowerCase())
+          if (found) {
+            setSelectedPlace(found.id)
+            return
+          }
+        }
+      }
+      setSelectedPlace(data[0].id)
+    }
   }
 
   async function loadPhotos(placeId: string) {
@@ -211,7 +224,6 @@ export default function DokumentasiPage() {
     setShowCaption(null)
   }
 
-  const currentPlace = places.find(p => p.id === selectedPlace)
   const filteredPlaces = places.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()))
 
   return (
@@ -225,208 +237,184 @@ export default function DokumentasiPage() {
         </p>
       </div>
 
-      <div className="flex flex-col gap-4 md:flex-row">
-        {/* Sidebar - Places List */}
-        <div className="flex-shrink-0 md:w-64">
-          <div className="overflow-hidden border glass rounded-2xl border-rose-100">
-            <div className="p-3 border-b border-rose-100">
-              <div className="relative">
-                <Search
-                  size={14}
-                  className="absolute -translate-y-1/2 left-3 top-1/2 text-rose-400"
-                />
-                <input
-                  className="py-2 !pl-8 text-sm love-input"
-                  placeholder="Cari tempat..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
-            </div>
-            <div className="overflow-y-auto" style={{ maxHeight: "60vh" }}>
-              {filteredPlaces.length === 0 ? (
-                <p className="py-6 text-sm text-center text-rose-400 font-body">
-                  Tidak ada tempat
-                </p>
-              ) : (
-                filteredPlaces.map((place) => (
-                  <button
-                    key={place.id}
-                    onClick={() => setSelectedPlace(place.id)}
-                    className={`w-full text-left px-4 py-3 transition-colors border-b border-rose-50 ${
-                      selectedPlace === place.id
-                        ? "bg-rose-50 border-l-4 border-l-rose-400"
-                        : "hover:bg-rose-50"
-                    }`}
-                  >
-                    <div className="flex items-center gap-2">
-                      <span className="text-xl">
-                        {categoryEmoji[place.category] || "📌"}
-                      </span>
-                      <div className="min-w-0">
-                        <p className="text-sm font-semibold truncate text-rose-800 font-body">
-                          {place.name}
-                        </p>
-                        {place.visited_date && (
-                          <p className="text-xs text-rose-400">
-                            {new Date(place.visited_date).toLocaleDateString(
-                              "id-ID",
-                            )}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  </button>
-                ))
-              )}
-            </div>
-          </div>
+      {/* ── CONTROLS ROW (Search, Select Place, and Upload on the same row) ── */}
+      <div className="p-4 mb-6 border glass rounded-2xl border-rose-100 flex flex-col lg:flex-row items-stretch lg:items-center gap-4">
+        {/* 1. Form Cari (Search) */}
+        <div className="relative w-full lg:w-48 flex-shrink-0">
+          <Search
+            size={14}
+            className="absolute -translate-y-1/2 left-3 top-1/2 text-rose-400"
+          />
+          <input
+            className="py-2.5 !pl-9 text-sm love-input w-full"
+            placeholder="Cari tempat..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
         </div>
 
-        {/* Photo Gallery */}
-        <div className="flex-1">
-          {!selectedPlace ? (
-            <div className="py-16 text-center glass rounded-3xl">
-              <div className="mb-4 text-5xl">📸</div>
-              <p className="text-xl text-rose-600 font-display">
-                Pilih tempat untuk melihat foto
-              </p>
-            </div>
-          ) : (
-            <>
-              {/* Upload Section */}
-              <div className="p-4 mb-4 border glass rounded-2xl border-rose-100">
-                <h3 className="mb-3 font-bold font-display text-rose-800">
-                  {categoryEmoji[currentPlace?.category || ""]}{" "}
-                  {currentPlace?.name}
-                </h3>
-                <div className="flex gap-2">
-                  <input
-                    className="flex-1 text-sm love-input"
-                    placeholder="Tulis caption foto (opsional)..."
-                    value={caption}
-                    onChange={(e) => setCaption(e.target.value)}
-                  />
-                  <button
-                    onClick={() => fileRef.current?.click()}
-                    disabled={uploading}
-                    className="flex items-center gap-2 text-sm btn-rose whitespace-nowrap"
-                  >
-                    {uploading ? (
-                      <span className="heart-beat">🌿</span>
-                    ) : (
-                      <>
-                        <Upload size={16} /> Upload
-                      </>
-                    )}
-                  </button>
-                  {uploadError && (
-                    <p
-                      style={{
-                        color: "#2d8c6e",
-                        fontSize: "0.8rem",
-                        marginTop: "6px",
-                      }}
-                    >
-                      ⚠️ {uploadError}
-                    </p>
-                  )}
-                  <input
-                    ref={fileRef}
-                    type="file"
-                    accept="image/*,video/*"
-                    multiple
-                    className="hidden"
-                    onChange={async (e) => {
-                      const files = Array.from(e.target.files || []);
-                      for (const file of files) await uploadPhoto(file);
-                    }}
-                  />
-                </div>
-              </div>
+        {/* 2. Pilih Tempat (Select Dropdown) */}
+        <div className="w-full lg:w-56 flex-shrink-0">
+          <select
+            value={selectedPlace || ''}
+            onChange={(e) => setSelectedPlace(e.target.value || null)}
+            className="w-full py-2.5 px-3 text-sm love-input bg-white cursor-pointer"
+            style={{
+              appearance: 'none',
+              backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%2300A896\' stroke-width=\'2\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' d=\'M19 9l-7 7-7-7\' /%3E%3C/svg%3E")',
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'right 12px center',
+              backgroundSize: '16px',
+              paddingRight: '36px',
+            }}
+          >
+            {filteredPlaces.length === 0 ? (
+              <option value="">Tidak ada tempat</option>
+            ) : (
+              filteredPlaces.map((place) => (
+                <option key={place.id} value={place.id}>
+                  {categoryEmoji[place.category] || '📌'} {place.name}
+                </option>
+              ))
+            )}
+          </select>
+        </div>
 
-              {/* Photos Grid */}
-              {photos.length === 0 ? (
+        {/* 3. Upload Form (Visible if a place is selected) */}
+        {selectedPlace && (
+          <div className="flex-1 flex flex-col sm:flex-row gap-2 w-full">
+            <div className="flex-1 relative">
+              <input
+                className="w-full text-sm love-input"
+                placeholder="Tulis caption foto (opsional)..."
+                value={caption}
+                onChange={(e) => setCaption(e.target.value)}
+              />
+              {uploadError && (
+                <p className="absolute left-1 top-full text-[10px] text-red-500 mt-0.5 whitespace-nowrap">
+                  ⚠️ {uploadError}
+                </p>
+              )}
+            </div>
+            <button
+              onClick={() => fileRef.current?.click()}
+              disabled={uploading}
+              className="flex items-center justify-center gap-2 text-sm btn-rose whitespace-nowrap py-2.5 px-6"
+            >
+              {uploading ? (
+                <span className="heart-beat">🌿</span>
+              ) : (
+                <>
+                  <Upload size={16} /> Upload Foto
+                </>
+              )}
+            </button>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/*,video/*"
+              multiple
+              className="hidden"
+              onChange={async (e) => {
+                const files = Array.from(e.target.files || []);
+                for (const file of files) await uploadPhoto(file);
+              }}
+            />
+          </div>
+        )}
+      </div>
+
+      {/* ── PHOTO GALLERY (Full Width Below) ── */}
+      <div className="w-full">
+        {!selectedPlace ? (
+          <div className="py-16 text-center glass rounded-3xl">
+            <div className="mb-4 text-5xl">📸</div>
+            <p className="text-xl text-rose-600 font-display">
+              Pilih tempat untuk melihat foto
+            </p>
+          </div>
+        ) : (
+          <>
+            {photos.length === 0 ? (
+              <div
+                className="py-16 text-center transition-colors border border-dashed cursor-pointer glass rounded-2xl border-rose-200 hover:bg-rose-50"
+                onClick={() => fileRef.current?.click()}
+              >
+                <Camera size={40} className="mx-auto mb-3 text-rose-300" />
+                <p className="font-semibold font-display text-rose-600">
+                  Belum ada dokumentasi di sini
+                </p>
+                <p className="mt-1 text-sm text-rose-400 font-body">
+                  Klik di sini untuk mengunggah foto atau video pertama kalian
+                </p>
+              </div>
+            ) : (
+              <div className="photo-grid">
+                {photos.map((photo, idx) => (
+                  <div
+                    key={photo.id}
+                    className="relative overflow-hidden group rounded-xl aspect-square bg-rose-50"
+                    style={{ boxShadow: "0 4px 15px rgba(0, 168, 150, 0.08)", border: "1.5px solid rgba(0, 168, 150, 0.1)" }}
+                  >
+                    {isVideoUrl(photo.photo_url) ? (
+                      <video
+                        src={photo.photo_url}
+                        className="object-cover w-full h-full cursor-pointer"
+                        onClick={() => setLightbox(idx)}
+                        muted
+                        loop
+                        playsInline
+                        autoPlay
+                      />
+                    ) : (
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img
+                        src={photo.photo_url}
+                        alt={photo.caption || ""}
+                        className="object-cover w-full h-full cursor-pointer"
+                        onClick={() => setLightbox(idx)}
+                      />
+                    )}
+                    <div
+                      onClick={() => setLightbox(idx)}
+                      className="absolute inset-0 flex flex-col justify-end p-2.5 transition-opacity opacity-0 bg-black/40 group-hover:opacity-100 cursor-pointer"
+                    >
+                      {photo.caption && (
+                        <p className="mb-2 text-xs text-white font-body line-clamp-2">
+                          {photo.caption}
+                        </p>
+                      )}
+                      <div className="flex gap-1.5">
+                        <button
+                          onClick={(e) => { e.stopPropagation(); setShowCaption(photo.id); }}
+                          className="flex-1 py-1.5 text-center text-xs text-white rounded bg-white/20 hover:bg-white/35 font-semibold transition"
+                        >
+                          ✏️ Edit Caption
+                        </button>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); deletePhoto(photo.id); }}
+                          className="px-2 py-1.5 text-center text-xs text-white rounded bg-red-500/60 hover:bg-red-500/85 transition"
+                        >
+                          🗑️
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                {/* Add more photo card */}
                 <div
-                  className="py-16 text-center transition-colors border border-dashed cursor-pointer glass rounded-2xl border-rose-200 hover:bg-rose-50"
+                  className="flex flex-col items-center justify-center transition-colors border-2 border-dashed cursor-pointer aspect-square rounded-xl border-rose-200 hover:bg-rose-50"
                   onClick={() => fileRef.current?.click()}
                 >
-                  <Camera size={40} className="mx-auto mb-3 text-rose-300" />
-                  <p className="font-semibold font-display text-rose-600">
-                    Belum ada dokumentasi di sini
-                  </p>
-                  <p className="mt-1 text-sm text-rose-400 font-body">
-                    Klik untuk upload foto atau video pertama
-                  </p>
+                  <Plus size={24} className="mb-1 text-rose-300" />
+                  <span className="text-xs text-rose-400 font-body">
+                    Tambah Foto
+                  </span>
                 </div>
-              ) : (
-                <div className="photo-grid">
-                  {photos.map((photo, idx) => (
-                    <div
-                      key={photo.id}
-                      className="relative overflow-hidden group rounded-xl aspect-square bg-rose-50"
-                      style={{ boxShadow: "0 4px 15px rgba(45,140,110,0.1)" }}
-                    >
-                      {isVideoUrl(photo.photo_url) ? (
-                        <video
-                          src={photo.photo_url}
-                          className="object-cover w-full h-full cursor-pointer"
-                          onClick={() => setLightbox(idx)}
-                          muted
-                          loop
-                          playsInline
-                          autoPlay
-                        />
-                      ) : (
-                        /* eslint-disable-next-line @next/next/no-img-element */
-                        <img
-                          src={photo.photo_url}
-                          alt={photo.caption || ""}
-                          className="object-cover w-full h-full cursor-pointer"
-                          onClick={() => setLightbox(idx)}
-                        />
-                      )}
-                      <div 
-                        onClick={() => setLightbox(idx)}
-                        className="absolute inset-0 flex flex-col justify-end p-2 transition-opacity opacity-0 bg-black/40 group-hover:opacity-100 cursor-pointer"
-                      >
-                        {photo.caption && (
-                          <p className="mb-1 text-xs text-white font-body line-clamp-2">
-                            {photo.caption}
-                          </p>
-                        )}
-                        <div className="flex gap-1">
-                          <button
-                            onClick={(e) => { e.stopPropagation(); setShowCaption(photo.id); }}
-                            className="flex-1 px-2 py-1 text-xs text-white rounded bg-white/20 hover:bg-white/40"
-                          >
-                            ✏️ Edit
-                          </button>
-                          <button
-                            onClick={(e) => { e.stopPropagation(); deletePhoto(photo.id); }}
-                            className="px-2 py-1 text-xs text-white rounded bg-red-500/60 hover:bg-red-500/80"
-                          >
-                            🗑️
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                  {/* Add more */}
-                  <div
-                    className="flex flex-col items-center justify-center transition-colors border-2 border-dashed cursor-pointer aspect-square rounded-xl border-rose-200 hover:bg-rose-50"
-                    onClick={() => fileRef.current?.click()}
-                  >
-                    <Plus size={24} className="mb-1 text-rose-300" />
-                    <span className="text-xs text-rose-400 font-body">
-                      Tambah Foto
-                    </span>
-                  </div>
-                </div>
-              )}
-            </>
-          )}
-        </div>
+              </div>
+            )}
+          </>
+        )}
       </div>
 
       {/* Lightbox */}

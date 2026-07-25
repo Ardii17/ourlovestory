@@ -116,11 +116,13 @@ export default function LoginPage() {
           borderRadius: '50% 50% 24px 24px',
           border: '2px solid rgba(244,162,97,0.3)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: '3.2rem',
           backdropFilter: 'blur(8px)',
           boxShadow: '0 8px 32px rgba(244,162,97,0.15)',
           animation: 'zooFloat 5s ease-in-out infinite',
-        }}>🦊</div>
+          overflow: 'hidden',
+        }}>
+          <img src="/images/nick.png" alt="Nick" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        </div>
         <span style={{
           fontFamily: "'Fredoka', sans-serif", fontSize: '0.7rem', fontWeight: 700,
           color: '#004D60', background: 'rgba(255,255,255,0.7)',
@@ -146,11 +148,13 @@ export default function LoginPage() {
           borderRadius: '50% 50% 24px 24px',
           border: '2px solid rgba(0,119,182,0.25)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: '2.8rem',
           backdropFilter: 'blur(8px)',
           boxShadow: '0 8px 32px rgba(0,119,182,0.12)',
           animation: 'zooFloat 5s ease-in-out 1s infinite',
-        }}>🐰</div>
+          overflow: 'hidden',
+        }}>
+          <img src="/images/judy.png" alt="Judy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        </div>
         <span style={{
           fontFamily: "'Fredoka', sans-serif", fontSize: '0.7rem', fontWeight: 700,
           color: '#004D60', background: 'rgba(255,255,255,0.7)',
