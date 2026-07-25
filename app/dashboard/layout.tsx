@@ -2,23 +2,24 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Star, Menu, X, Sparkles } from 'lucide-react'
+import { Star, Menu, X, Sparkles, LogOut } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
+import { logoutAction } from '../login/actions'
 
 const navItems = [
   { href: '/dashboard',               label: 'Beranda',           emoji: '🏠' },
-  { href: '/dashboard/biodata',       label: 'Biodata Kami',      emoji: '💑' },
+  { href: '/dashboard/biodata',       label: 'Biodata Kami',      emoji: '👫' },
   { href: '/dashboard/wishlist',      label: 'Mau ke Mana?',      emoji: '🗺️' },
   { href: '/dashboard/visited',       label: 'Tempat Kenangan',   emoji: '📍' },
   { href: '/dashboard/dokumentasi',   label: 'Dokumentasi',       emoji: '📸' },
   { href: '/dashboard/gallery',       label: 'Galeri Foto',       emoji: '🖼️' },
-  { href: '/dashboard/memories',      label: 'Kenangan Indah',    emoji: '💝' },
+  { href: '/dashboard/memories',      label: 'Kenangan Indah',    emoji: '⭐' },
   { href: '/dashboard/bucket-list',   label: 'Bucket List',       emoji: '✨' },
-  { href: '/dashboard/love-letters',  label: 'Surat Cinta',       emoji: '💌' },
+  { href: '/dashboard/love-letters',  label: 'Surat Cinta',       emoji: '✉️' },
   // ── Fun & Game ──
   { href: '/dashboard/streak',        label: 'Streak',            emoji: '🔥' },
   { href: '/dashboard/time-capsule',  label: 'Time Capsule',      emoji: '⏳' },
-  { href: '/dashboard/love-quiz',     label: 'Love Quiz',         emoji: '💘' },
+  { href: '/dashboard/love-quiz',     label: 'Love Quiz',         emoji: '🎯' },
   { href: '/dashboard/date-ideas',    label: 'Random Date Idea',  emoji: '🎲' },
   { href: '/dashboard/achievements',  label: 'Achievement',       emoji: '🏆' },
   // ── Fitur Baru ──
@@ -44,7 +45,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }
 
   return (
-    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: 'linear-gradient(135deg, #fff1f2 0%, #fdf8f0 50%, #fce7f3 100%)' }}>
+    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: 'linear-gradient(135deg, #f4f9f7 0%, #f0f5f3 50%, #e3f0eb 100%)' }}>
       {sidebarOpen && (
         <div onClick={() => setSidebarOpen(false)}
           style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.3)', zIndex: 30, backdropFilter: 'blur(2px)' }} />
@@ -55,30 +56,30 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         style={{
           width: '260px', minWidth: '260px', height: '100vh',
           display: 'flex', flexDirection: 'column',
-          background: 'linear-gradient(180deg, #fff1f2 0%, #fdf2f8 50%, #fce7f3 100%)',
-          borderRight: '1px solid #fecdd3',
-          boxShadow: '4px 0 20px rgba(244,63,94,0.08)',
+          background: 'linear-gradient(180deg, #f4f9f7 0%, #f4f9f7 50%, #e3f0eb 100%)',
+          borderRight: '1px solid #c8ddd5',
+          boxShadow: '4px 0 20px rgba(45,140,110,0.08)',
           position: 'relative', zIndex: 40,
           transition: 'transform 0.3s ease', flexShrink: 0,
         }}
         className={`sidebar-aside ${sidebarOpen ? '' : 'sidebar-hidden'}`}
       >
         {/* Header */}
-        <div style={{ padding: '20px 20px 16px', borderBottom: '1px solid #fecdd3', flexShrink: 0 }}>
+        <div style={{ padding: '20px 20px 16px', borderBottom: '1px solid #c8ddd5', flexShrink: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '3px' }}>
-                <span className="heart-beat" style={{ fontSize: '1.3rem' }}>💕</span>
+                <span className="heart-beat" style={{ fontSize: '1.3rem' }}>🦊🐰</span>
                 <h1 className="font-display gradient-text" style={{ fontSize: '1.15rem', fontWeight: 700, margin: 0 }}>Our Story</h1>
               </div>
               {profile && (
-                <p className="font-script" style={{ fontSize: '0.8rem', color: '#fb7185', margin: 0 }}>
+                <p className="font-script" style={{ fontSize: '0.8rem', color: '#5bb89a', margin: 0 }}>
                   {profile.person1_name} & {profile.person2_name}
                 </p>
               )}
             </div>
             <button onClick={() => setSidebarOpen(false)} className="sidebar-close-btn"
-              style={{ color: '#fb7185', background: 'none', border: 'none', cursor: 'pointer', padding: '4px', display: 'flex' }}>
+              style={{ color: '#5bb89a', background: 'none', border: 'none', cursor: 'pointer', padding: '4px', display: 'flex' }}>
               <X size={18} />
             </button>
           </div>
@@ -88,7 +89,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <nav style={{ flex: 1, overflowY: 'auto', padding: '12px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
           {NAV_GROUPS.map(group => (
             <div key={group.label} style={{ marginBottom: '6px' }}>
-              <p className="font-body" style={{ fontSize: '0.65rem', fontWeight: 700, color: '#fda4af', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '6px 12px 4px', margin: 0 }}>
+              <p className="font-body" style={{ fontSize: '0.65rem', fontWeight: 700, color: '#a0c4b8', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '6px 12px 4px', margin: 0 }}>
                 {group.label}
               </p>
               {group.items.map(item => {
@@ -100,16 +101,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                       padding: '9px 12px', borderRadius: '10px',
                       textDecoration: 'none', transition: 'all 0.15s',
                       fontWeight: isActive ? 600 : 400,
-                      background: isActive ? 'linear-gradient(135deg,rgba(244,63,94,0.12),rgba(236,72,153,0.08))' : 'transparent',
-                      borderLeft: `3px solid ${isActive ? '#f43f5e' : 'transparent'}`,
-                      color: isActive ? '#f43f5e' : '#9f1239',
+                      background: isActive ? 'linear-gradient(135deg,rgba(45,140,110,0.12),rgba(232,148,58,0.08))' : 'transparent',
+                      borderLeft: `3px solid ${isActive ? '#2d8c6e' : 'transparent'}`,
+                      color: isActive ? '#2d8c6e' : '#1a5c47',
                     }}
-                    onMouseEnter={e => { if (!isActive) (e.currentTarget as HTMLElement).style.background = 'rgba(244,63,94,0.05)' }}
+                    onMouseEnter={e => { if (!isActive) (e.currentTarget as HTMLElement).style.background = 'rgba(45,140,110,0.05)' }}
                     onMouseLeave={e => { if (!isActive) (e.currentTarget as HTMLElement).style.background = 'transparent' }}
                   >
                     <span style={{ fontSize: '1.05rem', flexShrink: 0 }}>{item.emoji}</span>
                     <span className="font-body" style={{ fontSize: '0.82rem', flex: 1 }}>{item.label}</span>
-                    {isActive && <Sparkles size={12} color="#fb7185" />}
+                    {isActive && <Sparkles size={12} color="#5bb89a" />}
                   </Link>
                 )
               })}
@@ -118,29 +119,64 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </nav>
 
         {/* Bottom quote */}
-        <div style={{ padding: '12px', flexShrink: 0 }}>
+        <div style={{ padding: '0 12px 12px', flexShrink: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
           <div className="glass" style={{ borderRadius: '14px', padding: '12px', textAlign: 'center' }}>
-            <p className="font-script" style={{ color: '#fb7185', fontSize: '0.78rem', lineHeight: 1.5, margin: 0 }}>
-              "Every love story is beautiful,<br />but ours is my favorite."
+            <p className="font-script" style={{ color: '#5bb89a', fontSize: '0.78rem', lineHeight: 1.5, margin: 0 }}>
+              "In Zootopia, anyone can be anything."
             </p>
           </div>
+          <button
+            onClick={async () => {
+              if (confirm('Keluar dari dashboard?')) {
+                await logoutAction()
+                window.location.reload()
+              }
+            }}
+            style={{
+              width: '100%',
+              background: 'rgba(45,140,110,0.06)',
+              color: '#2d8c6e',
+              border: '1px solid #a0c4b8',
+              borderRadius: '12px',
+              padding: '10px',
+              fontSize: '0.8rem',
+              fontWeight: 700,
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              fontFamily: 'Lato, sans-serif'
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.background = 'rgba(45,140,110,0.12)'
+              e.currentTarget.style.borderColor = '#2d8c6e'
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.background = 'rgba(45,140,110,0.06)'
+              e.currentTarget.style.borderColor = '#a0c4b8'
+            }}
+          >
+            <LogOut size={14} /> Keluar (Logout)
+          </button>
         </div>
       </aside>
 
       {/* ── MAIN ── */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden', minWidth: 0 }}>
-        <header className="glass" style={{ padding: '14px 24px', borderBottom: '1px solid #fecdd3', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0, zIndex: 20 }}>
+        <header className="glass" style={{ padding: '14px 24px', borderBottom: '1px solid #c8ddd5', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0, zIndex: 20 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <button onClick={() => setSidebarOpen(true)} className="menu-btn"
-              style={{ color: '#fb7185', background: 'none', border: 'none', cursor: 'pointer', padding: '4px', display: 'flex' }}>
+              style={{ color: '#5bb89a', background: 'none', border: 'none', cursor: 'pointer', padding: '4px', display: 'flex' }}>
               <Menu size={22} />
             </button>
-            <h2 className="font-display" style={{ fontSize: '1rem', fontWeight: 600, color: '#9f1239', margin: 0 }}>
+            <h2 className="font-display" style={{ fontSize: '1rem', fontWeight: 600, color: '#1a5c47', margin: 0 }}>
               {navItems.find(n => n.href === pathname)?.emoji}{' '}
               {navItems.find(n => n.href === pathname)?.label || 'Our Story'}
             </h2>
           </div>
-          <div style={{ display: 'flex', gap: '4px', color: '#fda4af' }}>
+          <div style={{ display: 'flex', gap: '4px', color: '#a0c4b8' }}>
             <Star size={14} fill="currentColor" />
             <Star size={14} fill="currentColor" />
             <Star size={14} fill="currentColor" />

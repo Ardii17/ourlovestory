@@ -86,7 +86,7 @@ export default function BiodataPage() {
 
   if (loading) return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '80px 0' }}>
-      <div className="heart-beat" style={{ fontSize: '2.5rem' }}>💕</div>
+      <div className="heart-beat" style={{ fontSize: '2.5rem' }}>🌿</div>
     </div>
   )
 
@@ -94,9 +94,9 @@ export default function BiodataPage() {
     <div style={{ maxWidth: '680px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '20px' }}>
 
       {/* ── FOTO PASANGAN ── */}
-      <div className="glass" style={{ borderRadius: '20px', padding: '24px', border: '1px solid #fecdd3' }}>
-        <h2 className="font-display" style={{ fontSize: '1.1rem', fontWeight: 700, color: '#9f1239', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Heart size={18} color="#fb7185" fill="#fb7185" /> Foto Pasangan
+      <div className="glass" style={{ borderRadius: '20px', padding: '24px', border: '1px solid #c8ddd5' }}>
+        <h2 className="font-display" style={{ fontSize: '1.1rem', fontWeight: 700, color: '#1a5c47', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <Heart size={18} color="#5bb89a" fill="#5bb89a" /> Foto Pasangan
         </h2>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
           {([1, 2] as const).map(num => {
@@ -106,26 +106,26 @@ export default function BiodataPage() {
             return (
               <div key={num} style={{ textAlign: 'center' }}>
                 <div style={{ position: 'relative', width: '112px', height: '112px', margin: '0 auto 10px' }}>
-                  <div style={{ width: '112px', height: '112px', borderRadius: '50%', overflow: 'hidden', border: '3px solid #fecdd3', boxShadow: '0 6px 20px rgba(244,63,94,0.2)' }}>
+                  <div style={{ width: '112px', height: '112px', borderRadius: '50%', overflow: 'hidden', border: '3px solid #c8ddd5', boxShadow: '0 6px 20px rgba(45,140,110,0.2)' }}>
                     {profile[photoKey] ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={profile[photoKey]} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     ) : (
-                      <div style={{ width: '100%', height: '100%', background: '#fff1f2', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.5rem' }}>
+                      <div style={{ width: '100%', height: '100%', background: '#f4f9f7', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.5rem' }}>
                         {num === 1 ? '👩' : '👨'}
                       </div>
                     )}
                   </div>
-                  <label style={{ position: 'absolute', bottom: 0, right: 0, background: '#f43f5e', borderRadius: '50%', padding: '7px', cursor: 'pointer', boxShadow: '0 2px 8px rgba(244,63,94,0.4)', display: 'flex' }}>
+                  <label style={{ position: 'absolute', bottom: 0, right: 0, background: '#2d8c6e', borderRadius: '50%', padding: '7px', cursor: 'pointer', boxShadow: '0 2px 8px rgba(45,140,110,0.4)', display: 'flex' }}>
                     <Camera size={14} color="#fff" />
                     <input type="file" accept="image/*" style={{ display: 'none' }}
                       onChange={e => e.target.files?.[0] && uploadPhoto(e.target.files[0], num)} />
                   </label>
                 </div>
-                <p className="font-body" style={{ color: '#be123c', fontSize: '0.85rem', fontWeight: 600 }}>
+                <p className="font-body" style={{ color: '#1a5c47', fontSize: '0.85rem', fontWeight: 600 }}>
                   {profile[nameKey] || `Orang ${num}`}
                 </p>
-                {uploading && <p style={{ color: '#fb7185', fontSize: '0.7rem', marginTop: '2px' }}>Mengupload...</p>}
+                {uploading && <p style={{ color: '#5bb89a', fontSize: '0.7rem', marginTop: '2px' }}>Mengupload...</p>}
               </div>
             )
           })}
@@ -133,38 +133,38 @@ export default function BiodataPage() {
       </div>
 
       {/* ── FORM DATA ── */}
-      <div className="glass" style={{ borderRadius: '20px', padding: '24px', border: '1px solid #fecdd3' }}>
-        <h2 className="font-display" style={{ fontSize: '1.1rem', fontWeight: 700, color: '#9f1239', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Sparkles size={18} color="#fb7185" /> Data Hubungan
+      <div className="glass" style={{ borderRadius: '20px', padding: '24px', border: '1px solid #c8ddd5' }}>
+        <h2 className="font-display" style={{ fontSize: '1.1rem', fontWeight: 700, color: '#1a5c47', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <Sparkles size={18} color="#5bb89a" /> Data Hubungan
         </h2>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
             <div>
-              <label className="font-body" style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#be123c', marginBottom: '6px' }}>👩 Nama Kamu</label>
+              <label className="font-body" style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#1a5c47', marginBottom: '6px' }}>👩 Nama Kamu</label>
               <input className="love-input" placeholder="Nama kamu..." value={profile.person1_name}
                 onChange={e => setProfile(p => ({ ...p, person1_name: e.target.value }))} />
             </div>
             <div>
-              <label className="font-body" style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#be123c', marginBottom: '6px' }}>👨 Nama Dia</label>
+              <label className="font-body" style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#1a5c47', marginBottom: '6px' }}>👨 Nama Dia</label>
               <input className="love-input" placeholder="Nama dia..." value={profile.person2_name}
                 onChange={e => setProfile(p => ({ ...p, person2_name: e.target.value }))} />
             </div>
           </div>
 
           <div>
-            <label className="font-body" style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#be123c', marginBottom: '6px' }}>💑 Tanggal Jadian</label>
+            <label className="font-body" style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#1a5c47', marginBottom: '6px' }}>👫 Tanggal Jadian</label>
             <input type="date" className="love-input" value={profile.anniversary_date}
               onChange={e => setProfile(p => ({ ...p, anniversary_date: e.target.value }))} />
             {anniversaryFormatted && (
-              <p className="font-body" style={{ color: '#fb7185', fontSize: '0.72rem', marginTop: '4px' }}>
+              <p className="font-body" style={{ color: '#5bb89a', fontSize: '0.72rem', marginTop: '4px' }}>
                 📅 {anniversaryFormatted}
               </p>
             )}
           </div>
 
           <div>
-            <label className="font-body" style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#be123c', marginBottom: '6px' }}>💬 Quote Cinta</label>
+            <label className="font-body" style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#1a5c47', marginBottom: '6px' }}>💬 Quote Kita</label>
             <textarea className="love-input" style={{ resize: 'none' }} rows={3}
               placeholder="Tuliskan quote cinta kalian yang paling berkesan..."
               value={profile.love_quote}
@@ -173,13 +173,13 @@ export default function BiodataPage() {
 
           <button onClick={saveProfile} disabled={saving}
             className="btn-rose" style={{ width: '100%', justifyContent: 'center', gap: '8px' }}>
-            {saving ? <span className="heart-beat">💕</span>
+            {saving ? <span className="heart-beat">🌿</span>
               : saved ? '✅ Tersimpan!'
               : <><Save size={16} /> Simpan Biodata</>}
           </button>
 
           {uploadError && (
-            <p style={{ color: '#f43f5e', fontSize: '0.8rem', marginTop: '6px' }}>
+            <p style={{ color: '#2d8c6e', fontSize: '0.8rem', marginTop: '6px' }}>
               ⚠️ {uploadError}
             </p>
           )}
@@ -188,15 +188,15 @@ export default function BiodataPage() {
 
       {/* ── LOVE TIMER (bawah, hanya muncul kalau anniversary sudah diisi) ── */}
       {duration && profile.anniversary_date && (
-        <div className="glass" style={{ borderRadius: '20px', border: '1px solid #fecdd3', overflow: 'hidden' }}>
+        <div className="glass" style={{ borderRadius: '20px', border: '1px solid #c8ddd5', overflow: 'hidden' }}>
           {/* header strip */}
-          <div style={{ background: 'linear-gradient(90deg, #f43f5e, #ec4899)', padding: '14px 24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ background: 'linear-gradient(90deg, #2d8c6e, #e8943a)', padding: '14px 24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Calendar size={16} color="rgba(255,255,255,0.85)" />
-            <span className="font-display" style={{ color: '#fff', fontSize: '0.9rem', fontWeight: 600 }}>Perjalanan Cinta Kita</span>
+            <span className="font-display" style={{ color: '#fff', fontSize: '0.9rem', fontWeight: 600 }}>Perjalanan Kita Bersama</span>
           </div>
 
           <div style={{ padding: '28px 24px', textAlign: 'center' }}>
-            <p className="font-body" style={{ color: '#fb7185', fontSize: '0.8rem', marginBottom: '20px' }}>
+            <p className="font-body" style={{ color: '#5bb89a', fontSize: '0.8rem', marginBottom: '20px' }}>
               Bersama sejak <strong>{anniversaryFormatted}</strong>
             </p>
 
@@ -205,39 +205,39 @@ export default function BiodataPage() {
               {duration.years > 0 && (
                 <>
                   <div style={{ textAlign: 'center', padding: '0 16px' }}>
-                    <div className="font-display" style={{ fontSize: '3rem', fontWeight: 700, color: '#f43f5e', lineHeight: 1 }}>{duration.years}</div>
-                    <div className="font-body" style={{ color: '#fda4af', fontSize: '0.78rem', marginTop: '4px' }}>Tahun</div>
+                    <div className="font-display" style={{ fontSize: '3rem', fontWeight: 700, color: '#2d8c6e', lineHeight: 1 }}>{duration.years}</div>
+                    <div className="font-body" style={{ color: '#a0c4b8', fontSize: '0.78rem', marginTop: '4px' }}>Tahun</div>
                   </div>
                   {(duration.months > 0 || duration.days > 0) && (
-                    <div style={{ color: '#fecdd3', fontSize: '2rem', paddingBottom: '20px', fontWeight: 300 }}>·</div>
+                    <div style={{ color: '#c8ddd5', fontSize: '2rem', paddingBottom: '20px', fontWeight: 300 }}>·</div>
                   )}
                 </>
               )}
               {duration.months > 0 && (
                 <>
                   <div style={{ textAlign: 'center', padding: '0 16px' }}>
-                    <div className="font-display" style={{ fontSize: '3rem', fontWeight: 700, color: '#f43f5e', lineHeight: 1 }}>{duration.months}</div>
-                    <div className="font-body" style={{ color: '#fda4af', fontSize: '0.78rem', marginTop: '4px' }}>Bulan</div>
+                    <div className="font-display" style={{ fontSize: '3rem', fontWeight: 700, color: '#2d8c6e', lineHeight: 1 }}>{duration.months}</div>
+                    <div className="font-body" style={{ color: '#a0c4b8', fontSize: '0.78rem', marginTop: '4px' }}>Bulan</div>
                   </div>
                   {duration.days > 0 && (
-                    <div style={{ color: '#fecdd3', fontSize: '2rem', paddingBottom: '20px', fontWeight: 300 }}>·</div>
+                    <div style={{ color: '#c8ddd5', fontSize: '2rem', paddingBottom: '20px', fontWeight: 300 }}>·</div>
                   )}
                 </>
               )}
               {duration.days > 0 && (
                 <div style={{ textAlign: 'center', padding: '0 16px' }}>
-                  <div className="font-display" style={{ fontSize: '3rem', fontWeight: 700, color: '#f43f5e', lineHeight: 1 }}>{duration.days}</div>
-                  <div className="font-body" style={{ color: '#fda4af', fontSize: '0.78rem', marginTop: '4px' }}>Hari</div>
+                  <div className="font-display" style={{ fontSize: '3rem', fontWeight: 700, color: '#2d8c6e', lineHeight: 1 }}>{duration.days}</div>
+                  <div className="font-body" style={{ color: '#a0c4b8', fontSize: '0.78rem', marginTop: '4px' }}>Hari</div>
                 </div>
               )}
               {duration.years === 0 && duration.months === 0 && duration.days === 0 && (
-                <div className="font-display" style={{ fontSize: '1.4rem', fontWeight: 700, color: '#f43f5e' }}>Hari Pertama ✨</div>
+                <div className="font-display" style={{ fontSize: '1.4rem', fontWeight: 700, color: '#2d8c6e' }}>Hari Pertama ✨</div>
               )}
             </div>
 
             {/* Total hari badge */}
-            <div style={{ display: 'inline-block', background: '#fff1f2', borderRadius: '50px', padding: '6px 18px' }}>
-              <span className="font-body" style={{ color: '#be123c', fontSize: '0.8rem', fontWeight: 600 }}>
+            <div style={{ display: 'inline-block', background: '#f4f9f7', borderRadius: '50px', padding: '6px 18px' }}>
+              <span className="font-body" style={{ color: '#1a5c47', fontSize: '0.8rem', fontWeight: 600 }}>
                 🗓️ {duration.totalDays} hari bersama
               </span>
             </div>

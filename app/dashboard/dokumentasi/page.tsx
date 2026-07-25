@@ -313,7 +313,7 @@ export default function DokumentasiPage() {
                     className="flex items-center gap-2 text-sm btn-rose whitespace-nowrap"
                   >
                     {uploading ? (
-                      <span className="heart-beat">💕</span>
+                      <span className="heart-beat">🌿</span>
                     ) : (
                       <>
                         <Upload size={16} /> Upload
@@ -323,7 +323,7 @@ export default function DokumentasiPage() {
                   {uploadError && (
                     <p
                       style={{
-                        color: "#f43f5e",
+                        color: "#2d8c6e",
                         fontSize: "0.8rem",
                         marginTop: "6px",
                       }}
@@ -365,7 +365,7 @@ export default function DokumentasiPage() {
                     <div
                       key={photo.id}
                       className="relative overflow-hidden group rounded-xl aspect-square bg-rose-50"
-                      style={{ boxShadow: "0 4px 15px rgba(244,63,94,0.1)" }}
+                      style={{ boxShadow: "0 4px 15px rgba(45,140,110,0.1)" }}
                     >
                       {isVideoUrl(photo.photo_url) ? (
                         <video

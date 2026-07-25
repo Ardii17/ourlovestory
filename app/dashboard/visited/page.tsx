@@ -116,7 +116,7 @@ export default function VisitedPage() {
       </div>
 
       {loading ? (
-        <div className="text-center py-16 text-4xl heart-beat">💕</div>
+        <div className="text-center py-16 text-4xl heart-beat">🌿</div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-16 glass rounded-3xl">
           <div className="text-5xl mb-4">📍</div>
@@ -129,7 +129,7 @@ export default function VisitedPage() {
           {filtered.map(place => (
             <div key={place.id} className="card-hover glass rounded-2xl overflow-hidden border border-rose-100">
               <div className="h-28 flex items-center justify-center text-5xl relative"
-                style={{ background: 'linear-gradient(135deg, #ffe8ef, #fce7f3)' }}>
+                style={{ background: 'linear-gradient(135deg, #e3f0eb, #e3f0eb)' }}>
                 {categoryEmoji[place.category] || '📌'}
                 <div className="ribbon">✓ Dikunjungi</div>
               </div>
@@ -237,7 +237,7 @@ export default function VisitedPage() {
                   Batal
                 </button>
                 <button onClick={savePlace} disabled={saving || !form.name} className="flex-1 btn-rose flex items-center justify-center gap-2">
-                  {saving ? '💕' : <><Plus size={16} /> {editingId ? 'Simpan' : 'Tambahkan'}</>}
+                  {saving ? '🌿' : <><Plus size={16} /> {editingId ? 'Simpan' : 'Tambahkan'}</>}
                 </button>
               </div>
             </div>

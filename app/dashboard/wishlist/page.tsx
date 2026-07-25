@@ -103,7 +103,7 @@ export default function WishlistPage() {
 
       {/* Places Grid */}
       {loading ? (
-        <div className="text-center py-16 text-4xl heart-beat">💕</div>
+        <div className="text-center py-16 text-4xl heart-beat">🌿</div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-16 glass rounded-3xl">
           <div className="text-5xl mb-4">🗺️</div>
@@ -119,7 +119,7 @@ export default function WishlistPage() {
             <div key={place.id} className="card-hover glass rounded-2xl overflow-hidden border border-rose-100">
               {/* Cover */}
               <div className="h-32 flex items-center justify-center text-5xl"
-                style={{ background: 'linear-gradient(135deg, #ffe8ef, #fce7f3)' }}
+                style={{ background: 'linear-gradient(135deg, #e3f0eb, #e3f0eb)' }}
               >
                 {categoryEmoji[place.category] || '📌'}
               </div>
@@ -216,7 +216,7 @@ export default function WishlistPage() {
                 </button>
                 <button onClick={addPlace} disabled={saving || !form.name}
                   className="flex-1 btn-rose flex items-center justify-center gap-2">
-                  {saving ? '💕' : <><Plus size={16} /> Tambahkan</>}
+                  {saving ? '🌿' : <><Plus size={16} /> Tambahkan</>}
                 </button>
               </div>
             </div>

@@ -5,31 +5,31 @@
   --font-body: 'Lato', sans-serif;
   --font-script: 'Dancing Script', cursive;
 
-  --color-rose-50: #fff1f2;
-  --color-rose-100: #ffe4e6;
-  --color-rose-200: #fecdd3;
-  --color-rose-300: #fda4af;
-  --color-rose-400: #fb7185;
-  --color-rose-500: #f43f5e;
-  --color-rose-600: #e11d48;
-  --color-rose-700: #be123c;
-  --color-rose-800: #9f1239;
-  --color-rose-900: #881337;
+  --color-rose-50: #f4f9f7;
+  --color-rose-100: #e3f0eb;
+  --color-rose-200: #c8ddd5;
+  --color-rose-300: #a0c4b8;
+  --color-rose-400: #5bb89a;
+  --color-rose-500: #2d8c6e;
+  --color-rose-600: #237a5e;
+  --color-rose-700: #1a5c47;
+  --color-rose-800: #1a5c47;
+  --color-rose-900: #0f3d2e;
 
-  --color-blush-50: #fdf2f8;
-  --color-blush-100: #fce7f3;
-  --color-blush-200: #fbcfe8;
-  --color-blush-300: #f9a8d4;
-  --color-blush-400: #f472b6;
-  --color-blush-500: #ec4899;
-  --color-blush-600: #db2777;
-  --color-blush-700: #be185d;
-  --color-blush-800: #9d174d;
-  --color-blush-900: #831843;
+  --color-blush-50: #fef8f0;
+  --color-blush-100: #fdefd8;
+  --color-blush-200: #fbe0b0;
+  --color-blush-300: #f6c97a;
+  --color-blush-400: #f0ad4e;
+  --color-blush-500: #e8943a;
+  --color-blush-600: #cc7a28;
+  --color-blush-700: #a86020;
+  --color-blush-800: #8a4e1c;
+  --color-blush-900: #6b3c16;
 
-  --color-cream: #fdf8f0;
-  --color-petal: #ffe8ef;
-  --color-wine: #7c1033;
+  --color-cream: #f0f5f3;
+  --color-petal: #e3f0eb;
+  --color-wine: #1a5c47;
 }
 
 @layer base {
@@ -43,14 +43,14 @@
 
   body {
     font-family: 'Lato', sans-serif;
-    background-color: #fdf8f0;
-    color: #3d1a26;
+    background-color: #f0f5f3;
+    color: #1e3a2f;
   }
 
   ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: #fce7f3; }
-  ::-webkit-scrollbar-thumb { background: #f9a8d4; border-radius: 10px; }
-  ::-webkit-scrollbar-thumb:hover { background: #f43f5e; }
+  ::-webkit-scrollbar-track { background: #e3f0eb; }
+  ::-webkit-scrollbar-thumb { background: #a0c4b8; border-radius: 10px; }
+  ::-webkit-scrollbar-thumb:hover { background: #2d8c6e; }
 }
 
 @layer utilities {
@@ -59,7 +59,7 @@
   .font-body    { font-family: 'Lato', sans-serif; }
 
   .gradient-text {
-    background: linear-gradient(135deg, #f43f5e, #ec4899, #be123c);
+    background: linear-gradient(135deg, #2d8c6e, #e8943a, #1a5c47);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -75,7 +75,7 @@
   .card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
   .card-hover:hover {
     transform: translateY(-4px);
-    box-shadow: 0 20px 40px rgba(244, 63, 94, 0.15);
+    box-shadow: 0 20px 40px rgba(45, 140, 110, 0.15);
   }
 
   .modal-backdrop {
@@ -83,11 +83,11 @@
     -webkit-backdrop-filter: blur(4px);
   }
 
-  .heart-beat { animation: heartBeat 1.5s ease-in-out infinite; }
+  .heart-beat { animation: gentleBounce 2s ease-in-out infinite; }
   .float      { animation: float 4s ease-in-out infinite; }
 
   .shimmer {
-    background: linear-gradient(90deg, #f43f5e 25%, #ec4899 50%, #f43f5e 75%);
+    background: linear-gradient(90deg, #2d8c6e 25%, #e8943a 50%, #2d8c6e 75%);
     background-size: 200% 100%;
     animation: shimmer 3s linear infinite;
     -webkit-background-clip: text;
@@ -96,7 +96,7 @@
   }
 
   .btn-rose {
-    background: linear-gradient(135deg, #f43f5e, #ec4899);
+    background: linear-gradient(135deg, #2d8c6e, #e8943a);
     color: white;
     border: none;
     border-radius: 50px;
@@ -105,7 +105,7 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(244, 63, 94, 0.3);
+    box-shadow: 0 4px 15px rgba(45, 140, 110, 0.3);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -114,7 +114,7 @@
   }
   .btn-rose:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(244, 63, 94, 0.4);
+    box-shadow: 0 8px 25px rgba(45, 140, 110, 0.4);
   }
   .btn-rose:disabled {
     opacity: 0.6;
@@ -124,28 +124,28 @@
 
   .love-input {
     background: rgba(255, 255, 255, 0.8);
-    border: 2px solid #fecdd3;
+    border: 2px solid #c8ddd5;
     border-radius: 12px;
     padding: 10px 16px;
     font-family: 'Lato', sans-serif;
-    color: #3d1a26;
+    color: #1e3a2f;
     transition: border-color 0.3s;
     width: 100%;
   }
   .love-input:focus {
     outline: none;
-    border-color: #f43f5e;
-    box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.1);
+    border-color: #2d8c6e;
+    box-shadow: 0 0 0 3px rgba(45, 140, 110, 0.1);
   }
 
   .nav-active {
-    background: linear-gradient(135deg, rgba(244, 63, 94, 0.15), rgba(236, 72, 153, 0.1));
-    border-left: 3px solid #f43f5e;
-    color: #f43f5e;
+    background: linear-gradient(135deg, rgba(45, 140, 110, 0.15), rgba(232, 148, 58, 0.1));
+    border-left: 3px solid #2d8c6e;
+    color: #2d8c6e;
   }
 
   .progress-bar {
-    background: linear-gradient(90deg, #f43f5e, #ec4899);
+    background: linear-gradient(90deg, #2d8c6e, #e8943a);
     border-radius: 50px;
     height: 8px;
     transition: width 0.5s ease;
@@ -155,7 +155,7 @@
     position: absolute;
     top: -1px;
     right: 20px;
-    background: linear-gradient(135deg, #f43f5e, #ec4899);
+    background: linear-gradient(135deg, #2d8c6e, #e8943a);
     color: white;
     padding: 4px 12px;
     font-size: 0.75rem;
@@ -186,19 +186,9 @@
   .paper-texture {
     background-color: #fffdf7;
     background-image:
-      linear-gradient(rgba(244, 63, 94, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(244, 63, 94, 0.03) 1px, transparent 1px);
+      linear-gradient(rgba(45, 140, 110, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(45, 140, 110, 0.03) 1px, transparent 1px);
     background-size: 24px 24px;
-  }
-
-  .petal {
-    position: fixed;
-    top: -20px;
-    animation: fall linear infinite;
-    pointer-events: none;
-    z-index: 0;
-    font-size: 1.2rem;
-    user-select: none;
   }
 }
 
@@ -206,10 +196,9 @@
   0%   { transform: translateY(-100px) rotate(0deg);   opacity: 1; }
   100% { transform: translateY(100vh)  rotate(720deg); opacity: 0; }
 }
-@keyframes heartBeat {
+@keyframes gentleBounce {
   0%, 100% { transform: scale(1); }
-  25%       { transform: scale(1.15); }
-  75%       { transform: scale(1.05); }
+  50%      { transform: scale(1.08); }
 }
 @keyframes shimmer {
   0%   { background-position: -200% 0; }

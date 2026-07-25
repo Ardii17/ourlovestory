@@ -167,17 +167,17 @@ export default function StreakPage() {
   return (
     <div style={{ maxWidth: '680px', margin: '0 auto' }}>
       <div style={{ marginBottom: '24px' }}>
-        <h1 className="font-display" style={{ fontSize: '1.5rem', fontWeight: 700, color: '#9f1239', margin: 0 }}>Streak Kebersamaan 🔥</h1>
-        <p className="font-body" style={{ color: '#fb7185', fontSize: '0.85rem', marginTop: '4px' }}>Absen setiap hari untuk menjaga streak kalian!</p>
+        <h1 className="font-display" style={{ fontSize: '1.5rem', fontWeight: 700, color: '#1a5c47', margin: 0 }}>Streak Kebersamaan 🔥</h1>
+        <p className="font-body" style={{ color: '#5bb89a', fontSize: '0.85rem', marginTop: '4px' }}>Absen setiap hari untuk menjaga streak kalian!</p>
       </div>
 
       {/* Shared streak banner */}
       <div style={{
         borderRadius: '20px', padding: '24px', textAlign: 'center', marginBottom: '24px',
         background: totalSharedStreak > 0
-          ? 'linear-gradient(135deg, #f43f5e, #ec4899)'
-          : 'linear-gradient(135deg, #fecdd3, #fda4af)',
-        boxShadow: '0 12px 40px rgba(244,63,94,0.25)',
+          ? 'linear-gradient(135deg, #2d8c6e, #e8943a)'
+          : 'linear-gradient(135deg, #c8ddd5, #a0c4b8)',
+        boxShadow: '0 12px 40px rgba(45,140,110,0.25)',
       }}>
         <div style={{ fontSize: '3rem', marginBottom: '6px' }}>
           {totalSharedStreak >= 30 ? '🔥🔥🔥' : totalSharedStreak >= 7 ? '🔥🔥' : totalSharedStreak >= 1 ? '🔥' : '💤'}
@@ -198,10 +198,10 @@ export default function StreakPage() {
         {streaks.map(s => {
           const status = getStatus(s)
           const isP1 = s.person_name === profile?.person1_name
-          const streakColor = status === 'checked' ? '#22c55e' : status === 'missed' ? '#ef4444' : '#f43f5e'
+          const streakColor = status === 'checked' ? '#22c55e' : status === 'missed' ? '#ef4444' : '#2d8c6e'
 
           return (
-            <div key={s.id} className="glass" style={{ borderRadius: '20px', border: `2px solid ${status === 'checked' ? '#86efac' : status === 'missed' ? '#fca5a5' : '#fecdd3'}`, overflow: 'hidden' }}>
+            <div key={s.id} className="glass" style={{ borderRadius: '20px', border: `2px solid ${status === 'checked' ? '#86efac' : status === 'missed' ? '#fca5a5' : '#c8ddd5'}`, overflow: 'hidden' }}>
               {/* Status bar */}
               <div style={{ height: '4px', background: streakColor }} />
 
@@ -210,8 +210,8 @@ export default function StreakPage() {
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <div style={{ fontSize: '2rem' }}>{isP1 ? '👩' : '👨'}</div>
                     <div>
-                      <h3 className="font-display" style={{ fontWeight: 700, color: '#9f1239', fontSize: '1rem', margin: 0 }}>{s.person_name}</h3>
-                      <p className="font-body" style={{ fontSize: '0.72rem', color: '#fda4af', margin: 0 }}>
+                      <h3 className="font-display" style={{ fontWeight: 700, color: '#1a5c47', fontSize: '1rem', margin: 0 }}>{s.person_name}</h3>
+                      <p className="font-body" style={{ fontSize: '0.72rem', color: '#a0c4b8', margin: 0 }}>
                         {s.last_check_in ? `Terakhir: ${format(parseISO(s.last_check_in), 'd MMM, HH:mm', { locale: idLocale })}` : 'Belum pernah absen'}
                       </p>
                     </div>
@@ -219,10 +219,10 @@ export default function StreakPage() {
                   {/* streak count */}
                   <div style={{ textAlign: 'center' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <Flame size={20} color={s.current_streak > 0 ? '#f43f5e' : '#fda4af'} fill={s.current_streak > 0 ? '#f43f5e' : 'none'} />
-                      <span className="font-display" style={{ fontSize: '1.8rem', fontWeight: 700, color: s.current_streak > 0 ? '#f43f5e' : '#fda4af' }}>{s.current_streak}</span>
+                      <Flame size={20} color={s.current_streak > 0 ? '#2d8c6e' : '#a0c4b8'} fill={s.current_streak > 0 ? '#2d8c6e' : 'none'} />
+                      <span className="font-display" style={{ fontSize: '1.8rem', fontWeight: 700, color: s.current_streak > 0 ? '#2d8c6e' : '#a0c4b8' }}>{s.current_streak}</span>
                     </div>
-                    <div className="font-body" style={{ fontSize: '0.68rem', color: '#fda4af' }}>hari</div>
+                    <div className="font-body" style={{ fontSize: '0.68rem', color: '#a0c4b8' }}>hari</div>
                   </div>
                 </div>
 
@@ -233,9 +233,9 @@ export default function StreakPage() {
                     { label: 'Total absen', value: `${s.total_checkins} kali` },
                     { label: 'Toleransi', value: `${getTolerancesLeft(s)}/3` },
                   ].map(stat => (
-                    <div key={stat.label} style={{ flex: 1, background: '#fff1f2', borderRadius: '10px', padding: '8px 6px', textAlign: 'center', minWidth: 0 }}>
-                      <div className="font-display" style={{ fontWeight: 700, color: '#f43f5e', fontSize: '1rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{stat.value}</div>
-                      <div className="font-body" style={{ fontSize: '0.62rem', color: '#fda4af', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{stat.label}</div>
+                    <div key={stat.label} style={{ flex: 1, background: '#f4f9f7', borderRadius: '10px', padding: '8px 6px', textAlign: 'center', minWidth: 0 }}>
+                      <div className="font-display" style={{ fontWeight: 700, color: '#2d8c6e', fontSize: '1rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{stat.value}</div>
+                      <div className="font-body" style={{ fontSize: '0.62rem', color: '#a0c4b8', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{stat.label}</div>
                     </div>
                   ))}
                 </div>
@@ -274,7 +274,7 @@ export default function StreakPage() {
                               disabled={checkingIn === s.person_name}
                               style={{ width: '100%', background: 'linear-gradient(135deg, #10b981, #059669)', color: '#fff', border: 'none', borderRadius: '12px', padding: '12px', cursor: 'pointer', fontWeight: 700, fontFamily: 'Lato, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', boxShadow: '0 4px 10px rgba(16,185,129,0.2)' }}
                             >
-                              {checkingIn === s.person_name ? '💕' : <><Flame size={15} /> Gunakan {finalMissed} Toleransi & Absen</>}
+                              {checkingIn === s.person_name ? '🌿' : <><Flame size={15} /> Gunakan {finalMissed} Toleransi & Absen</>}
                             </button>
                             <button
                               onClick={() => checkIn(s, false)}
@@ -316,7 +316,7 @@ export default function StreakPage() {
                     className="btn-rose"
                     style={{ width: '100%', justifyContent: 'center', gap: '8px', fontSize: '0.875rem' }}
                   >
-                    {checkingIn === s.person_name ? '💕' : <><Flame size={16} /> Absen Sekarang!</>}
+                    {checkingIn === s.person_name ? '🌿' : <><Flame size={16} /> Absen Sekarang!</>}
                   </button>
                 )}
               </div>
@@ -330,9 +330,9 @@ export default function StreakPage() {
         <div style={{ position: 'fixed', inset: 0, zIndex: 100, pointerEvents: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div style={{ textAlign: 'center', animation: 'float 0.5s ease-out' }}>
             <div style={{ fontSize: '5rem' }}>🔥</div>
-            <div className="font-display" style={{ fontSize: '2rem', fontWeight: 700, color: '#f43f5e', textShadow: '0 2px 20px rgba(244,63,94,0.5)' }}>Streak lanjut!</div>
+            <div className="font-display" style={{ fontSize: '2rem', fontWeight: 700, color: '#2d8c6e', textShadow: '0 2px 20px rgba(45,140,110,0.5)' }}>Streak lanjut!</div>
           </div>
-          {['❤️','💕','🔥','⭐','✨'].map((e, i) => (
+          {['🌟','🌿','🔥','⭐','✨'].map((e, i) => (
             <div key={i} style={{
               position: 'absolute',
               left: `${10 + Math.random() * 80}%`,
@@ -360,7 +360,7 @@ export default function StreakPage() {
               </div>
               <div style={{ display: 'flex', gap: '10px' }}>
                 <button onClick={() => { setShowPenalty(null); setPenalty(null) }}
-                  className="font-body" style={{ flex: 1, padding: '12px', borderRadius: '12px', border: '2px solid #fecdd3', background: '#fff', color: '#fb7185', fontWeight: 600, cursor: 'pointer' }}>
+                  className="font-body" style={{ flex: 1, padding: '12px', borderRadius: '12px', border: '2px solid #c8ddd5', background: '#fff', color: '#5bb89a', fontWeight: 600, cursor: 'pointer' }}>
                   Nanti dulu 😅
                 </button>
                 <button onClick={() => completePenalty(showPenalty)}

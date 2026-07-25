@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Our Love Story 💕',
-  description: 'Tempat menyimpan setiap momen indah bersama kamu',
+  title: 'Our Story 🦊🐰',
+  description: 'Tempat menyimpan setiap momen indah perjalanan kita bersama',
   icons: {
     icon: '/images/logo.png',
   },

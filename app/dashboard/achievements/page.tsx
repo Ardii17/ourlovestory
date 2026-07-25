@@ -76,7 +76,7 @@ const ACHIEVEMENTS: AchievementDef[] = [
 
   // ── KENANGAN ──────────────────────────────────────────
   {
-    id: 'first_memory', emoji: '💝', title: 'Kenangan Pertama',
+    id: 'first_memory', emoji: '⭐', title: 'Kenangan Pertama',
     desc: 'Abadikan kenangan pertama bersama',
     rarity: 'bronze', category: 'Kenangan',
     check: s => s.memories >= 1,
@@ -94,13 +94,13 @@ const ACHIEVEMENTS: AchievementDef[] = [
     check: s => s.memories >= 10,
   },
   {
-    id: 'memories_25', emoji: '📚', title: 'Pustaka Cinta',
+    id: 'memories_25', emoji: '📚', title: 'Pustaka',
     desc: 'Simpan 25 kenangan indah',
     rarity: 'gold', category: 'Kenangan',
     check: s => s.memories >= 25,
   },
   {
-    id: 'memories_50', emoji: '🏛️', title: 'Arsiparis Cinta',
+    id: 'memories_50', emoji: '🏛️', title: 'Arsiparis',
     desc: 'Simpan 50 kenangan indah',
     rarity: 'legendary', category: 'Kenangan',
     check: s => s.memories >= 50,
@@ -125,35 +125,35 @@ const ACHIEVEMENTS: AchievementDef[] = [
     check: s => s.memoriesWithPhoto >= 10,
   },
 
-  // ── SURAT CINTA ──────────────────────────────────────────
+  // ── SURAT UNTUK KAMU ──────────────────────────────────────────
   {
-    id: 'first_letter', emoji: '💌', title: 'Penulis Romantis',
+    id: 'first_letter', emoji: '✉️', title: 'Penulis Romantis',
     desc: 'Tulis surat cinta pertama',
-    rarity: 'bronze', category: 'Surat Cinta',
+    rarity: 'bronze', category: 'Surat untuk Kamu',
     check: s => s.letters >= 1,
   },
   {
     id: 'letters_3', emoji: '📝', title: 'Surat Menyurat',
     desc: 'Tulis 3 surat cinta',
-    rarity: 'bronze', category: 'Surat Cinta',
+    rarity: 'bronze', category: 'Surat untuk Kamu',
     check: s => s.letters >= 3,
   },
   {
     id: 'letters_5', emoji: '📜', title: 'Shakespeare Kecil',
     desc: 'Tulis 5 surat cinta',
-    rarity: 'silver', category: 'Surat Cinta',
+    rarity: 'silver', category: 'Surat untuk Kamu',
     check: s => s.letters >= 5,
   },
   {
-    id: 'letters_10', emoji: '🖊️', title: 'Pujangga Cinta',
+    id: 'letters_10', emoji: '🖊️', title: 'Pujangga',
     desc: 'Tulis 10 surat cinta',
-    rarity: 'gold', category: 'Surat Cinta',
+    rarity: 'gold', category: 'Surat untuk Kamu',
     check: s => s.letters >= 10,
   },
   {
     id: 'letters_25', emoji: '📮', title: 'Legenda Surat',
     desc: 'Tulis 25 surat cinta',
-    rarity: 'legendary', category: 'Surat Cinta',
+    rarity: 'legendary', category: 'Surat untuk Kamu',
     check: s => s.letters >= 25,
   },
 
@@ -165,7 +165,7 @@ const ACHIEVEMENTS: AchievementDef[] = [
     check: s => s.photos >= 1,
   },
   {
-    id: 'photos_10', emoji: '🖼️', title: 'Fotografer Cinta',
+    id: 'photos_10', emoji: '🖼️', title: 'Fotografer',
     desc: 'Upload 10 foto dokumentasi',
     rarity: 'bronze', category: 'Dokumentasi',
     check: s => s.photos >= 10,
@@ -183,7 +183,7 @@ const ACHIEVEMENTS: AchievementDef[] = [
     check: s => s.photos >= 50,
   },
   {
-    id: 'photos_100', emoji: '🎬', title: 'Sineas Cinta',
+    id: 'photos_100', emoji: '🎬', title: 'Sineas',
     desc: 'Upload 100 foto dokumentasi',
     rarity: 'legendary', category: 'Dokumentasi',
     check: s => s.photos >= 100,
@@ -203,13 +203,13 @@ const ACHIEVEMENTS: AchievementDef[] = [
     check: s => s.maxStreak >= 3,
   },
   {
-    id: 'streak_7', emoji: '🔥', title: 'Api Cinta',
+    id: 'streak_7', emoji: '🔥', title: 'Api',
     desc: 'Pertahankan streak 7 hari berturut-turut',
     rarity: 'bronze', category: 'Streak',
     check: s => s.maxStreak >= 7,
   },
   {
-    id: 'streak_14', emoji: '⭐', title: 'Dua Minggu Cinta',
+    id: 'streak_14', emoji: '⭐', title: 'Dua Minggu',
     desc: 'Pertahankan streak 14 hari berturut-turut',
     rarity: 'silver', category: 'Streak',
     check: s => s.maxStreak >= 14,
@@ -316,7 +316,7 @@ const ACHIEVEMENTS: AchievementDef[] = [
     check: s => s.capsules >= 3,
   },
   {
-    id: 'capsule_5', emoji: '⌛', title: 'Mesin Waktu Cinta',
+    id: 'capsule_5', emoji: '⌛', title: 'Mesin Waktu',
     desc: 'Buat 5 kapsul waktu',
     rarity: 'gold', category: 'Time Capsule',
     check: s => s.capsules >= 5,
@@ -328,23 +328,23 @@ const ACHIEVEMENTS: AchievementDef[] = [
     check: s => s.capsulesOpened >= 1,
   },
 
-  // ── LOVE QUIZ ──────────────────────────────────────────
+  // ── QUIZ PASANGAN ──────────────────────────────────────────
   {
-    id: 'quiz_first', emoji: '💘', title: 'Kuis Perdana',
-    desc: 'Tambahkan pertanyaan pertama ke love quiz',
-    rarity: 'bronze', category: 'Love Quiz',
+    id: 'quiz_first', emoji: '🎯', title: 'Kuis Perdana',
+    desc: 'Tambahkan pertanyaan pertama ke quiz pasangan',
+    rarity: 'bronze', category: 'Quiz Pasangan',
     check: s => s.quizQuestions >= 1,
   },
   {
-    id: 'quiz_10', emoji: '🧠', title: 'Bank Soal Cinta',
-    desc: 'Tambahkan 10 pertanyaan ke love quiz',
-    rarity: 'silver', category: 'Love Quiz',
+    id: 'quiz_10', emoji: '🧠', title: 'Bank Soal',
+    desc: 'Tambahkan 10 pertanyaan ke quiz pasangan',
+    rarity: 'silver', category: 'Quiz Pasangan',
     check: s => s.quizQuestions >= 10,
   },
   {
-    id: 'quiz_25', emoji: '📝', title: 'Profesor Cinta',
-    desc: 'Tambahkan 25 pertanyaan ke love quiz',
-    rarity: 'gold', category: 'Love Quiz',
+    id: 'quiz_25', emoji: '📝', title: 'Profesor',
+    desc: 'Tambahkan 25 pertanyaan ke quiz pasangan',
+    rarity: 'gold', category: 'Quiz Pasangan',
     check: s => s.quizQuestions >= 25,
   },
 
@@ -386,7 +386,7 @@ const ACHIEVEMENTS: AchievementDef[] = [
     check: s => s.daysTogether >= 500,
   },
   {
-    id: 'days_730', emoji: '👑', title: 'Dua Tahun Cinta',
+    id: 'days_730', emoji: '👑', title: 'Dua Tahun',
     desc: 'Sudah 2 tahun bersama — luar biasa!',
     rarity: 'legendary', category: 'Waktu Bersama',
     check: s => s.daysTogether >= 730,
@@ -450,19 +450,19 @@ const RARITY_STYLE: Record<string, { bg: string; border: string; badge: string; 
   silver:    { bg: '#f8fafc', border: '#cbd5e1', badge: '#475569', text: '#1e293b', label: 'Perak' },
   gold:      { bg: '#fefce8', border: '#fbbf24', badge: '#b45309', text: '#78350f', label: 'Emas' },
   special:   { bg: '#fdf4ff', border: '#d946ef', badge: '#86198f', text: '#4a044e', label: 'Spesial' },
-  legendary: { bg: '#fff1f2', border: '#f43f5e', badge: '#be123c', text: '#881337', label: 'Legendaris' },
+  legendary: { bg: '#f4f9f7', border: '#2d8c6e', badge: '#1a5c47', text: '#0f3d2e', label: 'Legendaris' },
 }
 
 const CATEGORY_ORDER = [
-  'Perjalanan', 'Kenangan', 'Surat Cinta', 'Dokumentasi',
-  'Streak', 'Bucket List', 'Time Capsule', 'Love Quiz',
+  'Perjalanan', 'Kenangan', 'Surat untuk Kamu', 'Dokumentasi',
+  'Streak', 'Bucket List', 'Time Capsule', 'Quiz Pasangan',
   'Waktu Bersama', 'Spesial',
 ]
 
 const CATEGORY_EMOJI: Record<string, string> = {
-  'Perjalanan': '🗺️', 'Kenangan': '💝', 'Surat Cinta': '💌',
+  'Perjalanan': '🗺️', 'Kenangan': '⭐', 'Surat untuk Kamu': '✉️',
   'Dokumentasi': '📸', 'Streak': '🔥', 'Bucket List': '✨',
-  'Time Capsule': '⏳', 'Love Quiz': '💘', 'Waktu Bersama': '💑', 'Spesial': '⭐',
+  'Time Capsule': '⏳', 'Quiz Pasangan': '🎯', 'Waktu Bersama': '👫', 'Spesial': '⭐',
 }
 
 export default function AchievementsPage() {
@@ -551,23 +551,23 @@ export default function AchievementsPage() {
     <div style={{ maxWidth: '780px', margin: '0 auto' }}>
       {/* Header */}
       <div style={{ marginBottom: '20px' }}>
-        <h1 className="font-display" style={{ fontSize: '1.5rem', fontWeight: 700, color: '#9f1239', margin: 0 }}>Achievement 🏆</h1>
-        <p className="font-body" style={{ color: '#fb7185', fontSize: '0.85rem', marginTop: '4px' }}>Setiap langkah cinta kalian adalah pencapaian</p>
+        <h1 className="font-display" style={{ fontSize: '1.5rem', fontWeight: 700, color: '#1a5c47', margin: 0 }}>Achievement 🏆</h1>
+        <p className="font-body" style={{ color: '#5bb89a', fontSize: '0.85rem', marginTop: '4px' }}>Setiap langkah kita adalah pencapaian</p>
       </div>
 
       {/* Overall progress */}
-      <div className="glass" style={{ borderRadius: '20px', padding: '18px 22px', border: '1px solid #fecdd3', marginBottom: '18px' }}>
+      <div className="glass" style={{ borderRadius: '20px', padding: '18px 22px', border: '1px solid #c8ddd5', marginBottom: '18px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <div style={{ fontSize: '2.5rem' }}>🏆</div>
           <div style={{ flex: 1 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-              <span className="font-display" style={{ fontWeight: 700, color: '#9f1239', fontSize: '0.9rem' }}>Progress Keseluruhan</span>
-              <span className="font-display" style={{ fontWeight: 700, color: '#f43f5e', fontSize: '0.9rem' }}>{unlocked.length} / {ACHIEVEMENTS.length}</span>
+              <span className="font-display" style={{ fontWeight: 700, color: '#1a5c47', fontSize: '0.9rem' }}>Progress Keseluruhan</span>
+              <span className="font-display" style={{ fontWeight: 700, color: '#2d8c6e', fontSize: '0.9rem' }}>{unlocked.length} / {ACHIEVEMENTS.length}</span>
             </div>
-            <div style={{ background: '#fce7f3', borderRadius: '50px', height: '8px' }}>
+            <div style={{ background: '#e3f0eb', borderRadius: '50px', height: '8px' }}>
               <div className="progress-bar" style={{ width: `${(unlocked.length / ACHIEVEMENTS.length) * 100}%`, height: '8px' }} />
             </div>
-            <p className="font-body" style={{ color: '#fda4af', fontSize: '0.72rem', marginTop: '5px', marginBottom: 0 }}>
+            <p className="font-body" style={{ color: '#a0c4b8', fontSize: '0.72rem', marginTop: '5px', marginBottom: 0 }}>
               {unlocked.length === ACHIEVEMENTS.length
                 ? '🎉 Semua achievement terbuka! Kalian luar biasa!'
                 : `${locked.length} achievement lagi menanti kalian 💪`}
@@ -595,7 +595,7 @@ export default function AchievementsPage() {
       <div style={{ display: 'flex', gap: '6px', marginBottom: '10px', flexWrap: 'wrap' }}>
         {[['all','Semua'], ['unlocked','✅ Terbuka'], ['locked','🔒 Terkunci']].map(([v, l]) => (
           <button key={v} onClick={() => setFilter(v as any)}
-            style={{ padding: '6px 14px', borderRadius: '50px', border: '1.5px solid', borderColor: filter === v ? '#f43f5e' : '#fecdd3', background: filter === v ? '#f43f5e' : '#fff', color: filter === v ? '#fff' : '#fb7185', fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'Lato,sans-serif' }}>
+            style={{ padding: '6px 14px', borderRadius: '50px', border: '1.5px solid', borderColor: filter === v ? '#2d8c6e' : '#c8ddd5', background: filter === v ? '#2d8c6e' : '#fff', color: filter === v ? '#fff' : '#5bb89a', fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'Lato,sans-serif' }}>
             {l}
           </button>
         ))}
@@ -605,7 +605,7 @@ export default function AchievementsPage() {
       <div style={{ display: 'flex', gap: '6px', marginBottom: '20px', overflowX: 'auto', paddingBottom: '4px' }}>
         {categories.map(cat => (
           <button key={cat} onClick={() => setActiveCategory(cat)}
-            style={{ padding: '5px 12px', borderRadius: '50px', border: '1.5px solid', whiteSpace: 'nowrap', borderColor: activeCategory === cat ? '#ec4899' : '#fecdd3', background: activeCategory === cat ? '#ec4899' : '#fff', color: activeCategory === cat ? '#fff' : '#fb7185', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'Lato,sans-serif', flexShrink: 0 }}>
+            style={{ padding: '5px 12px', borderRadius: '50px', border: '1.5px solid', whiteSpace: 'nowrap', borderColor: activeCategory === cat ? '#e8943a' : '#c8ddd5', background: activeCategory === cat ? '#e8943a' : '#fff', color: activeCategory === cat ? '#fff' : '#5bb89a', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'Lato,sans-serif', flexShrink: 0 }}>
             {cat !== 'Semua' ? CATEGORY_EMOJI[cat] + ' ' : ''}{cat}
           </button>
         ))}
@@ -613,9 +613,9 @@ export default function AchievementsPage() {
 
       {/* Achievement grid */}
       {visible.length === 0 ? (
-        <div className="glass" style={{ borderRadius: '20px', padding: '40px', textAlign: 'center', border: '1px solid #fecdd3' }}>
+        <div className="glass" style={{ borderRadius: '20px', padding: '40px', textAlign: 'center', border: '1px solid #c8ddd5' }}>
           <div style={{ fontSize: '3rem', marginBottom: '12px' }}>🔍</div>
-          <p className="font-display" style={{ color: '#be123c', fontSize: '1.1rem', margin: 0 }}>Tidak ada achievement di sini</p>
+          <p className="font-display" style={{ color: '#1a5c47', fontSize: '1.1rem', margin: 0 }}>Tidak ada achievement di sini</p>
         </div>
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(155px, 1fr))', gap: '10px' }}>
@@ -657,12 +657,12 @@ export default function AchievementsPage() {
                 </div>
 
                 {/* Title */}
-                <h4 className="font-display" style={{ fontWeight: 700, color: isUnlocked ? '#9f1239' : '#9ca3af', fontSize: '0.8rem', margin: '0 0 4px', lineHeight: 1.3 }}>
+                <h4 className="font-display" style={{ fontWeight: 700, color: isUnlocked ? '#1a5c47' : '#9ca3af', fontSize: '0.8rem', margin: '0 0 4px', lineHeight: 1.3 }}>
                   {a.title}
                 </h4>
 
                 {/* Desc */}
-                <p className="font-body" style={{ color: isUnlocked ? '#fb7185' : '#d1d5db', fontSize: '0.67rem', margin: 0, lineHeight: 1.4 }}>
+                <p className="font-body" style={{ color: isUnlocked ? '#5bb89a' : '#d1d5db', fontSize: '0.67rem', margin: 0, lineHeight: 1.4 }}>
                   {isUnlocked ? a.desc : (a.hint || a.desc)}
                 </p>
               </div>
@@ -671,8 +671,8 @@ export default function AchievementsPage() {
         </div>
       )}
 
-      <p className="font-body" style={{ textAlign: 'center', color: '#fda4af', fontSize: '0.75rem', marginTop: '24px' }}>
-        Total {ACHIEVEMENTS.length} achievement tersedia 💕
+      <p className="font-body" style={{ textAlign: 'center', color: '#a0c4b8', fontSize: '0.75rem', marginTop: '24px' }}>
+        Total {ACHIEVEMENTS.length} achievement tersedia 🌿
       </p>
     </div>
   )

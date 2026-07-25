@@ -9,7 +9,7 @@ const categories = [
   { value: 'travel', label: 'Perjalanan', emoji: '✈️' },
   { value: 'food', label: 'Kuliner', emoji: '🍽️' },
   { value: 'adventure', label: 'Petualangan', emoji: '🏔️' },
-  { value: 'romantic', label: 'Romantis', emoji: '💕' },
+  { value: 'romantic', label: 'Romantis', emoji: '🌿' },
   { value: 'achievement', label: 'Pencapaian', emoji: '🏆' },
   { value: 'experience', label: 'Pengalaman', emoji: '⭐' },
   { value: 'other', label: 'Lainnya', emoji: '✨' },
@@ -124,7 +124,7 @@ export default function BucketListPage() {
       </div>
 
       {loading ? (
-        <div className="text-center py-16 text-4xl heart-beat">💕</div>
+        <div className="text-center py-16 text-4xl heart-beat">🌿</div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-16 glass rounded-3xl">
           <div className="text-5xl mb-4">✨</div>
@@ -153,7 +153,7 @@ export default function BucketListPage() {
                   </button>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap mb-1">
-                      <span className="mood-badge" style={{ background: '#ffe8ef', color: '#f43f5e', fontSize: '0.75rem' }}>
+                      <span className="mood-badge" style={{ background: '#e3f0eb', color: '#2d8c6e', fontSize: '0.75rem' }}>
                         {catInfo.emoji} {catInfo.label}
                       </span>
                       {item.is_completed && (
@@ -226,7 +226,7 @@ export default function BucketListPage() {
                   Batal
                 </button>
                 <button onClick={addItem} disabled={saving || !form.title} className="flex-1 btn-rose flex items-center justify-center gap-2">
-                  {saving ? '💕' : <><Sparkles size={16} /> Tambahkan</>}
+                  {saving ? '🌿' : <><Sparkles size={16} /> Tambahkan</>}
                 </button>
               </div>
             </div>

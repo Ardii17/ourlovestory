@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import { differenceInDays, differenceInMonths, differenceInYears, format, parseISO, addYears, addMonths } from 'date-fns'
 import { id as idLocale } from 'date-fns/locale'
-import { Heart, Sparkles, Calendar, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Star, Sparkles, Calendar, ChevronLeft, ChevronRight } from 'lucide-react'
 
 interface Stats {
   wishlistCount: number
@@ -111,8 +111,8 @@ export default function DashboardHome() {
     { href: '/dashboard/wishlist',    emoji: '🗺️', label: 'Mau ke Mana?',     count: stats.wishlistCount,    desc: 'tempat dalam wishlist' },
     { href: '/dashboard/visited',     emoji: '📍', label: 'Sudah Dikunjungi', count: stats.visitedCount,     desc: 'tempat kenangan' },
     { href: '/dashboard/dokumentasi', emoji: '📸', label: 'Dokumentasi',       count: stats.photosCount,      desc: 'foto tersimpan' },
-    { href: '/dashboard/love-letters',emoji: '💌', label: 'Surat Cinta',       count: stats.lettersCount,     desc: 'surat tertulis' },
-    { href: '/dashboard/memories',    emoji: '💝', label: 'Kenangan',           count: stats.memoriesCount,    desc: 'momen spesial' },
+    { href: '/dashboard/love-letters',emoji: '✉️', label: 'Surat Cinta',       count: stats.lettersCount,     desc: 'surat tertulis' },
+    { href: '/dashboard/memories',    emoji: '⭐', label: 'Kenangan',           count: stats.memoriesCount,    desc: 'momen spesial' },
     { href: '/dashboard/bucket-list', emoji: '✨', label: 'Bucket List',        count: `${stats.bucketCompletedCount}/${stats.bucketCount}`, desc: 'impian terwujud' },
   ]
 
@@ -127,8 +127,8 @@ export default function DashboardHome() {
         padding: '52px 32px',
         textAlign: 'center',
         position: 'relative',
-        background: 'linear-gradient(135deg, #f43f5e 0%, #ec4899 60%, #be123c 100%)',
-        boxShadow: '0 20px 60px rgba(244,63,94,0.3)',
+        background: 'linear-gradient(135deg, #2d8c6e 0%, #e8943a 60%, #1a5c47 100%)',
+        boxShadow: '0 20px 60px rgba(45,140,110,0.3)',
       }}>
         {/* decorative circles */}
         <div style={{ position: 'absolute', top: '-40px', right: '-40px', width: '180px', height: '180px', borderRadius: '50%', background: 'rgba(255,255,255,0.06)', pointerEvents: 'none' }} />
@@ -168,7 +168,7 @@ export default function DashboardHome() {
             style={{
               display: 'inline-block',
               background: '#fff',
-              color: '#e11d48',
+              color: '#237a5e',
               fontWeight: 700,
               fontFamily: 'Lato, sans-serif',
               fontSize: '0.875rem',
@@ -257,41 +257,41 @@ export default function DashboardHome() {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', gap: '14px', marginBottom: '28px' }}>
         {quickLinks.map((item) => (
           <Link key={item.href} href={item.href} className="card-hover glass"
-            style={{ borderRadius: '16px', padding: '18px 14px', textAlign: 'center', border: '1px solid #fecdd3', textDecoration: 'none', display: 'block' }}>
+            style={{ borderRadius: '16px', padding: '18px 14px', textAlign: 'center', border: '1px solid #c8ddd5', textDecoration: 'none', display: 'block' }}>
             <div style={{ fontSize: '1.7rem', marginBottom: '6px' }}>{item.emoji}</div>
             <div className="font-display gradient-text" style={{ fontSize: '1.5rem', fontWeight: 700 }}>{item.count}</div>
-            <div className="font-body" style={{ color: '#be123c', fontSize: '0.78rem', fontWeight: 600 }}>{item.label}</div>
-            <div className="font-body" style={{ color: '#fb7185', fontSize: '0.7rem' }}>{item.desc}</div>
+            <div className="font-body" style={{ color: '#1a5c47', fontSize: '0.78rem', fontWeight: 600 }}>{item.label}</div>
+            <div className="font-body" style={{ color: '#5bb89a', fontSize: '0.7rem' }}>{item.desc}</div>
           </Link>
         ))}
       </div>
 
       {/* ── QUICK ACTIONS + LOVE METER ── */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px', marginBottom: '28px' }}>
-        <div className="glass" style={{ borderRadius: '20px', padding: '22px', border: '1px solid #fecdd3' }}>
-          <h3 className="font-display" style={{ color: '#9f1239', fontSize: '0.95rem', fontWeight: 700, marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <Sparkles size={15} color="#fb7185" /> Menu Cepat
+        <div className="glass" style={{ borderRadius: '20px', padding: '22px', border: '1px solid #c8ddd5' }}>
+          <h3 className="font-display" style={{ color: '#1a5c47', fontSize: '0.95rem', fontWeight: 700, marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <Sparkles size={15} color="#5bb89a" /> Menu Cepat
           </h3>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
             {[
               { href: '/dashboard/streak',    label: '+ Absen Streak', emoji: '🔥' },
               { href: '/dashboard/wishlist',    label: '+ Tambah Tempat', emoji: '🗺️' },
-              { href: '/dashboard/memories',    label: '+ Kenangan Baru', emoji: '💝' },
-              { href: '/dashboard/love-letters',label: '+ Tulis Surat',   emoji: '💌' },
+              { href: '/dashboard/memories',    label: '+ Kenangan Baru', emoji: '⭐' },
+              { href: '/dashboard/love-letters',label: '+ Tulis Surat',   emoji: '✉️' },
               { href: '/dashboard/bucket-list', label: '+ Impian Baru',   emoji: '✨' },
               { href: '/dashboard/achievements', label: '+ Pencapaian Kita',   emoji: '🏆' },
             ].map(item => (
               <Link key={item.href} href={item.href} className="font-body"
-                style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#fff1f2', borderRadius: '10px', padding: '9px 10px', textDecoration: 'none', color: '#be123c', fontSize: '0.78rem', fontWeight: 600 }}>
+                style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#f4f9f7', borderRadius: '10px', padding: '9px 10px', textDecoration: 'none', color: '#1a5c47', fontSize: '0.78rem', fontWeight: 600 }}>
                 <span>{item.emoji}</span> {item.label}
               </Link>
             ))}
           </div>
         </div>
 
-        <div className="glass" style={{ borderRadius: '20px', padding: '22px', border: '1px solid #fecdd3' }}>
-          <h3 className="font-display" style={{ color: '#9f1239', fontSize: '0.95rem', fontWeight: 700, marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <Heart size={15} color="#fb7185" fill="#fb7185" /> Love Meter
+        <div className="glass" style={{ borderRadius: '20px', padding: '22px', border: '1px solid #c8ddd5' }}>
+          <h3 className="font-display" style={{ color: '#1a5c47', fontSize: '0.95rem', fontWeight: 700, marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <Star size={15} color="#5bb89a" fill="#5bb89a" /> Bonding Meter
           </h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {[
@@ -301,30 +301,30 @@ export default function DashboardHome() {
             ].map(m => (
               <div key={m.label}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
-                  <span className="font-body" style={{ color: '#be123c', fontSize: '0.78rem' }}>{m.label}</span>
-                  <span className="font-body" style={{ color: '#fb7185', fontSize: '0.78rem' }}>{m.value} {m.suffix}</span>
+                  <span className="font-body" style={{ color: '#1a5c47', fontSize: '0.78rem' }}>{m.label}</span>
+                  <span className="font-body" style={{ color: '#5bb89a', fontSize: '0.78rem' }}>{m.value} {m.suffix}</span>
                 </div>
-                <div style={{ background: '#ffe4e6', borderRadius: '50px', height: '5px' }}>
+                <div style={{ background: '#e3f0eb', borderRadius: '50px', height: '5px' }}>
                   <div className="progress-bar" style={{ width: `${Math.min((m.value / m.max) * 100, 100)}%`, height: '5px' }} />
                 </div>
               </div>
             ))}
           </div>
-          <p className="font-body" style={{ color: '#fda4af', fontSize: '0.72rem', textAlign: 'center', marginTop: '12px' }}>Terus jaga kebersamaan kalian ♡</p>
+          <p className="font-body" style={{ color: '#a0c4b8', fontSize: '0.72rem', textAlign: 'center', marginTop: '12px' }}>Terus jaga kebersamaan kalian ✦</p>
         </div>
       </div>
 
       {/* ── LOVE TIMER (bawah) ── */}
       {duration && profile?.anniversary_date && (
-        <div className="glass" style={{ borderRadius: '20px', border: '1px solid #fecdd3', overflow: 'hidden' }}>
+        <div className="glass" style={{ borderRadius: '20px', border: '1px solid #c8ddd5', overflow: 'hidden' }}>
           {/* header strip */}
-          <div style={{ background: 'linear-gradient(90deg, #f43f5e, #ec4899)', padding: '14px 24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ background: 'linear-gradient(90deg, #2d8c6e, #e8943a)', padding: '14px 24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Calendar size={16} color="rgba(255,255,255,0.8)" />
-            <span className="font-display" style={{ color: '#fff', fontSize: '0.9rem', fontWeight: 600 }}>Perjalanan Cinta Kita</span>
+            <span className="font-display" style={{ color: '#fff', fontSize: '0.9rem', fontWeight: 600 }}>Perjalanan Kita Bersama</span>
           </div>
 
           <div style={{ padding: '28px 24px', textAlign: 'center' }}>
-            <p className="font-body" style={{ color: '#fb7185', fontSize: '0.8rem', marginBottom: '20px' }}>
+            <p className="font-body" style={{ color: '#5bb89a', fontSize: '0.8rem', marginBottom: '20px' }}>
               Bersama sejak <strong>{anniversaryDate}</strong>
             </p>
 
@@ -333,39 +333,39 @@ export default function DashboardHome() {
               {duration.years > 0 && (
                 <>
                   <div style={{ textAlign: 'center', padding: '0 16px' }}>
-                    <div className="font-display" style={{ fontSize: '3rem', fontWeight: 700, color: '#f43f5e', lineHeight: 1 }}>{duration.years}</div>
-                    <div className="font-body" style={{ color: '#fda4af', fontSize: '0.78rem', marginTop: '4px' }}>Tahun</div>
+                    <div className="font-display" style={{ fontSize: '3rem', fontWeight: 700, color: '#2d8c6e', lineHeight: 1 }}>{duration.years}</div>
+                    <div className="font-body" style={{ color: '#a0c4b8', fontSize: '0.78rem', marginTop: '4px' }}>Tahun</div>
                   </div>
                   {(duration.months > 0 || duration.days > 0) && (
-                    <div style={{ color: '#fecdd3', fontSize: '2rem', paddingBottom: '20px', fontWeight: 300 }}>·</div>
+                    <div style={{ color: '#c8ddd5', fontSize: '2rem', paddingBottom: '20px', fontWeight: 300 }}>·</div>
                   )}
                 </>
               )}
               {duration.months > 0 && (
                 <>
                   <div style={{ textAlign: 'center', padding: '0 16px' }}>
-                    <div className="font-display" style={{ fontSize: '3rem', fontWeight: 700, color: '#f43f5e', lineHeight: 1 }}>{duration.months}</div>
-                    <div className="font-body" style={{ color: '#fda4af', fontSize: '0.78rem', marginTop: '4px' }}>Bulan</div>
+                    <div className="font-display" style={{ fontSize: '3rem', fontWeight: 700, color: '#2d8c6e', lineHeight: 1 }}>{duration.months}</div>
+                    <div className="font-body" style={{ color: '#a0c4b8', fontSize: '0.78rem', marginTop: '4px' }}>Bulan</div>
                   </div>
                   {duration.days > 0 && (
-                    <div style={{ color: '#fecdd3', fontSize: '2rem', paddingBottom: '20px', fontWeight: 300 }}>·</div>
+                    <div style={{ color: '#c8ddd5', fontSize: '2rem', paddingBottom: '20px', fontWeight: 300 }}>·</div>
                   )}
                 </>
               )}
               {duration.days > 0 && (
                 <div style={{ textAlign: 'center', padding: '0 16px' }}>
-                  <div className="font-display" style={{ fontSize: '3rem', fontWeight: 700, color: '#f43f5e', lineHeight: 1 }}>{duration.days}</div>
-                  <div className="font-body" style={{ color: '#fda4af', fontSize: '0.78rem', marginTop: '4px' }}>Hari</div>
+                  <div className="font-display" style={{ fontSize: '3rem', fontWeight: 700, color: '#2d8c6e', lineHeight: 1 }}>{duration.days}</div>
+                  <div className="font-body" style={{ color: '#a0c4b8', fontSize: '0.78rem', marginTop: '4px' }}>Hari</div>
                 </div>
               )}
               {duration.years === 0 && duration.months === 0 && duration.days === 0 && (
-                <div className="font-display" style={{ fontSize: '1.5rem', fontWeight: 700, color: '#f43f5e' }}>Hari Pertama ✨</div>
+                <div className="font-display" style={{ fontSize: '1.5rem', fontWeight: 700, color: '#2d8c6e' }}>Hari Pertama ✨</div>
               )}
             </div>
 
             {/* Total hari */}
-            <div style={{ display: 'inline-block', background: '#fff1f2', borderRadius: '50px', padding: '6px 18px' }}>
-              <span className="font-body" style={{ color: '#be123c', fontSize: '0.8rem', fontWeight: 600 }}>
+            <div style={{ display: 'inline-block', background: '#f4f9f7', borderRadius: '50px', padding: '6px 18px' }}>
+              <span className="font-body" style={{ color: '#1a5c47', fontSize: '0.8rem', fontWeight: 600 }}>
                 🗓️ {duration.totalDays} hari bersama
               </span>
             </div>

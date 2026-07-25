@@ -86,7 +86,7 @@ const categoryEmoji: Record<string, string> = {
 }
 
 const moodEmoji: Record<string, string> = {
-  happy: '😊', romantic: '💕', nostalgic: '🥺', exciting: '🎉', peaceful: '🌸', funny: '😂'
+  happy: '😊', romantic: '🌿', nostalgic: '🥺', exciting: '🎉', peaceful: '🌸', funny: '😂'
 }
 
 export default function GalleryPage() {
@@ -404,9 +404,9 @@ export default function GalleryPage() {
           <div className="flex items-center gap-4 px-4 py-2 text-xs font-semibold border rounded-full glass border-rose-100 text-rose-700">
             <div>📸 {items.filter(i => i.type === 'documentation').length} Dokumentasi</div>
             <div className="w-[1px] h-4 bg-rose-200" />
-            <div>💝 {items.filter(i => i.type === 'memory').length} Kenangan</div>
+            <div>⭐ {items.filter(i => i.type === 'memory').length} Kenangan</div>
             <div className="w-[1px] h-4 bg-rose-200" />
-            <div>💑 {items.filter(i => i.type === 'profile').length} Profil</div>
+            <div>👫 {items.filter(i => i.type === 'profile').length} Profil</div>
           </div>
         </div>
       </div>
@@ -506,7 +506,7 @@ export default function GalleryPage() {
       {/* Loading state */}
       {loading ? (
         <div className="py-24 text-center">
-          <div className="text-4xl heart-beat">💕</div>
+          <div className="text-4xl heart-beat">🌿</div>
           <p className="mt-2 text-sm font-semibold text-rose-500 font-display">Merajut momen media kita...</p>
         </div>
       ) : filteredItems.length === 0 ? (
@@ -572,7 +572,7 @@ export default function GalleryPage() {
                       ? 'bg-rose-500/80 text-white'
                       : 'bg-amber-500/80 text-white'
                   }`}>
-                    {item.type === 'profile' ? '💑 Profil' : item.type === 'memory' ? '💝 Kenangan' : '📸 Dokumentasi'}
+                    {item.type === 'profile' ? '👫 Profil' : item.type === 'memory' ? '⭐ Kenangan' : '📸 Dokumentasi'}
                   </span>
                 </div>
 
@@ -669,7 +669,7 @@ export default function GalleryPage() {
                     ? 'bg-rose-500 text-white'
                     : 'bg-amber-500 text-white'
                 }`}>
-                  {currentLightboxItem.type === 'profile' ? '💑 Profil Pasangan' : currentLightboxItem.type === 'memory' ? '💝 Kenangan Indah' : '📸 Dokumentasi Tempat'}
+                  {currentLightboxItem.type === 'profile' ? '👫 Profil Pasangan' : currentLightboxItem.type === 'memory' ? '⭐ Kenangan Indah' : '📸 Dokumentasi Tempat'}
                 </span>
                 {currentLightboxItem.date && (
                   <span className="text-[10px] text-gray-300 font-body flex items-center gap-1 bg-white/10 px-2 py-0.5 rounded-full">
@@ -753,7 +753,7 @@ export default function GalleryPage() {
                     : 'text-rose-600 hover:bg-rose-50/70'
                 }`}
               >
-                💝 Kenangan Indah
+                ⭐ Kenangan Indah
               </button>
             </div>
 
@@ -881,7 +881,7 @@ export default function GalleryPage() {
             {/* Loading Indicator */}
             {uploading && (
               <div className="flex items-center justify-center gap-2 mt-4 text-xs font-bold text-rose-600 font-display">
-                <span className="heart-beat">💕</span> Mengunggah & mengompresi media...
+                <span className="heart-beat">🌿</span> Mengunggah & mengompresi media...
               </div>
             )}
           </div>

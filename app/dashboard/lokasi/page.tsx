@@ -71,7 +71,7 @@ function MapEmbed({
 }) {
   const src = `https://www.openstreetmap.org/export/embed.html?bbox=${lon - 0.01},${lat - 0.01},${lon + 0.01},${lat + 0.01}&layer=mapnik&marker=${lat},${lon}`
   return (
-    <div style={{ borderRadius: '16px', overflow: 'hidden', border: '2px solid #fecdd3', position: 'relative' }}>
+    <div style={{ borderRadius: '16px', overflow: 'hidden', border: '2px solid #c8ddd5', position: 'relative' }}>
       <iframe
         src={src}
         width="100%"
@@ -80,7 +80,7 @@ function MapEmbed({
         title={`Peta lokasi ${label}`}
         loading="lazy"
       />
-      <div style={{ position: 'absolute', bottom: '8px', left: '8px', background: 'rgba(244,63,94,0.9)', borderRadius: '8px', padding: '4px 10px' }}>
+      <div style={{ position: 'absolute', bottom: '8px', left: '8px', background: 'rgba(26,92,71,0.9)', borderRadius: '8px', padding: '4px 10px' }}>
         <span style={{ color: '#fff', fontSize: '0.72rem', fontFamily: 'Lato,sans-serif', fontWeight: 600 }}>
           📍 {label}
         </span>
@@ -98,13 +98,13 @@ function MapBoth({ loc1, loc2, name1, name2 }: { loc1: LocationData; loc2: Locat
   const pad = 0.015
   const src = `https://www.openstreetmap.org/export/embed.html?bbox=${minLon - pad},${minLat - pad},${maxLon + pad},${maxLat + pad}&layer=mapnik`
   return (
-    <div style={{ borderRadius: '16px', overflow: 'hidden', border: '2px solid #fecdd3', position: 'relative' }}>
+    <div style={{ borderRadius: '16px', overflow: 'hidden', border: '2px solid #c8ddd5', position: 'relative' }}>
       <iframe src={src} width="100%" height="260" style={{ border: 'none', display: 'block' }} title="Peta bersama" loading="lazy" />
       <div style={{ position: 'absolute', bottom: '8px', left: '8px', display: 'flex', gap: '6px' }}>
-        <div style={{ background: 'rgba(244,63,94,0.9)', borderRadius: '8px', padding: '4px 10px' }}>
+        <div style={{ background: 'rgba(26,92,71,0.9)', borderRadius: '8px', padding: '4px 10px' }}>
           <span style={{ color: '#fff', fontSize: '0.72rem', fontFamily: 'Lato,sans-serif', fontWeight: 600 }}>👩 {name1}</span>
         </div>
-        <div style={{ background: 'rgba(236,72,153,0.9)', borderRadius: '8px', padding: '4px 10px' }}>
+        <div style={{ background: 'rgba(91,184,154,0.9)', borderRadius: '8px', padding: '4px 10px' }}>
           <span style={{ color: '#fff', fontSize: '0.72rem', fontFamily: 'Lato,sans-serif', fontWeight: 600 }}>👨 {name2}</span>
         </div>
       </div>
@@ -277,17 +277,17 @@ export default function LokasiPage() {
 
       {/* Header */}
       <div style={{ marginBottom: '20px' }}>
-        <h1 className="font-display" style={{ fontSize: '1.5rem', fontWeight: 700, color: '#9f1239', margin: 0 }}>
+        <h1 className="font-display" style={{ fontSize: '1.5rem', fontWeight: 700, color: '#1a5c47', margin: 0 }}>
           Bagi Lokasi 📍
         </h1>
-        <p className="font-body" style={{ color: '#fb7185', fontSize: '0.85rem', marginTop: '4px' }}>
+        <p className="font-body" style={{ color: '#5bb89a', fontSize: '0.85rem', marginTop: '4px' }}>
           Tahu di mana pasanganmu berada sekarang
         </p>
       </div>
 
       {/* Pilih nama */}
-      <div className="glass" style={{ borderRadius: '16px', padding: '16px', border: '1px solid #fecdd3', marginBottom: '16px' }}>
-        <p className="font-body" style={{ color: '#be123c', fontSize: '0.78rem', fontWeight: 600, marginBottom: '10px' }}>
+      <div className="glass" style={{ borderRadius: '16px', padding: '16px', border: '1px solid #bce1d5', marginBottom: '16px' }}>
+        <p className="font-body" style={{ color: '#1a5c47', fontSize: '0.78rem', fontWeight: 600, marginBottom: '10px' }}>
           👤 Ini adalah perangkat siapa?
         </p>
         <div style={{ display: 'flex', gap: '8px' }}>
@@ -298,8 +298,8 @@ export default function LokasiPage() {
               disabled={isSharing}
               style={{
                 flex: 1, padding: '12px', borderRadius: '12px', border: '2px solid',
-                borderColor: myName === name ? '#f43f5e' : '#fecdd3',
-                background: myName === name ? 'linear-gradient(135deg,#fff1f2,#fce7f3)' : '#fff',
+                borderColor: myName === name ? '#2d8c6e' : '#bce1d5',
+                background: myName === name ? 'linear-gradient(135deg,#f0f5f3,#e3f0eb)' : '#fff',
                 cursor: isSharing ? 'not-allowed' : 'pointer',
                 opacity: isSharing && myName !== name ? 0.5 : 1,
                 transition: 'all 0.2s',
@@ -307,11 +307,11 @@ export default function LokasiPage() {
               }}
             >
               <span style={{ fontSize: '1.4rem' }}>{i === 0 ? '👩' : '👨'}</span>
-              <span className="font-body" style={{ fontWeight: 700, color: myName === name ? '#e11d48' : '#9f1239', fontSize: '0.85rem' }}>
+              <span className="font-body" style={{ fontWeight: 700, color: myName === name ? '#1a5c47' : '#5bb89a', fontSize: '0.85rem' }}>
                 {name}
               </span>
               {myLocData && myName === name && myLocData.is_sharing && (
-                <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#22c55e', animation: 'heartBeat 2s ease-in-out infinite', flexShrink: 0 }} />
+                <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#2d8c6e', animation: 'heartBeat 2s ease-in-out infinite', flexShrink: 0 }} />
               )}
             </button>
           ))}
@@ -322,65 +322,65 @@ export default function LokasiPage() {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '16px' }}>
 
         {/* Lokasiku */}
-        <div className="glass" style={{ borderRadius: '16px', padding: '16px', border: `2px solid ${isSharing ? '#86efac' : '#fecdd3'}`, transition: 'border-color 0.3s' }}>
+        <div className="glass" style={{ borderRadius: '16px', padding: '16px', border: `2px solid ${isSharing ? '#2d8c6e' : '#bce1d5'}`, transition: 'border-color 0.3s' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px' }}>
-            <Navigation size={14} color={isSharing ? '#22c55e' : '#fda4af'} />
-            <span className="font-body" style={{ fontSize: '0.75rem', fontWeight: 700, color: isSharing ? '#15803d' : '#fda4af' }}>
+            <Navigation size={14} color={isSharing ? '#2d8c6e' : '#a0c4b8'} />
+            <span className="font-body" style={{ fontSize: '0.75rem', fontWeight: 700, color: isSharing ? '#2d8c6e' : '#a0c4b8' }}>
               Lokasiku
             </span>
-            <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: isSharing ? '#22c55e' : '#fda4af', marginLeft: 'auto', animation: isSharing ? 'heartBeat 2s infinite' : 'none' }} />
+            <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: isSharing ? '#2d8c6e' : '#a0c4b8', marginLeft: 'auto', animation: isSharing ? 'heartBeat 2s infinite' : 'none' }} />
           </div>
 
           {isSharing && myLocation ? (
             <div>
-              <p className="font-body" style={{ color: '#15803d', fontSize: '0.78rem', fontWeight: 600, margin: '0 0 3px', lineHeight: 1.4 }}>
+              <p className="font-body" style={{ color: '#1a5c47', fontSize: '0.78rem', fontWeight: 600, margin: '0 0 3px', lineHeight: 1.4 }}>
                 {address || 'Mengambil alamat...'}
               </p>
-              <p className="font-body" style={{ color: '#86efac', fontSize: '0.68rem', margin: 0 }}>
+              <p className="font-body" style={{ color: '#5bb89a', fontSize: '0.68rem', margin: 0 }}>
                 ±{Math.round(myLocation.accuracy || 0)}m akurasi
               </p>
               {lastUpdated && (
-                <p className="font-body" style={{ color: '#4ade80', fontSize: '0.65rem', margin: '3px 0 0', display: 'flex', alignItems: 'center', gap: '3px' }}>
+                <p className="font-body" style={{ color: '#5bb89a', fontSize: '0.65rem', margin: '3px 0 0', display: 'flex', alignItems: 'center', gap: '3px' }}>
                   <Clock size={10} /> {formatDistanceToNow(lastUpdated, { locale: idLocale, addSuffix: true })}
                 </p>
               )}
             </div>
           ) : (
-            <p className="font-body" style={{ color: '#fda4af', fontSize: '0.75rem', margin: 0 }}>
+            <p className="font-body" style={{ color: '#a0c4b8', fontSize: '0.75rem', margin: 0 }}>
               {isSharing ? 'Mengambil lokasi...' : 'Belum aktif'}
             </p>
           )}
 
           {geoError && (
-            <p className="font-body" style={{ color: '#ef4444', fontSize: '0.68rem', margin: '6px 0 0', lineHeight: 1.4 }}>{geoError}</p>
+            <p className="font-body" style={{ color: '#d97706', fontSize: '0.68rem', margin: '6px 0 0', lineHeight: 1.4 }}>{geoError}</p>
           )}
         </div>
 
         {/* Lokasi pasangan */}
-        <div className="glass" style={{ borderRadius: '16px', padding: '16px', border: `2px solid ${isPartnerOnline ? '#f9a8d4' : '#fecdd3'}`, transition: 'border-color 0.3s' }}>
+        <div className="glass" style={{ borderRadius: '16px', padding: '16px', border: `2px solid ${isPartnerOnline ? '#e8943a' : '#bce1d5'}`, transition: 'border-color 0.3s' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px' }}>
-            <MapPin size={14} color={isPartnerOnline ? '#f43f5e' : '#fda4af'} />
-            <span className="font-body" style={{ fontSize: '0.75rem', fontWeight: 700, color: isPartnerOnline ? '#be123c' : '#fda4af' }}>
+            <MapPin size={14} color={isPartnerOnline ? '#e8943a' : '#a0c4b8'} />
+            <span className="font-body" style={{ fontSize: '0.75rem', fontWeight: 700, color: isPartnerOnline ? '#e8943a' : '#a0c4b8' }}>
               {partner || 'Pasangan'}
             </span>
-            <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: isPartnerOnline ? '#f43f5e' : '#fda4af', marginLeft: 'auto', animation: isPartnerOnline ? 'heartBeat 2s infinite' : 'none' }} />
+            <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: isPartnerOnline ? '#e8943a' : '#a0c4b8', marginLeft: 'auto', animation: isPartnerOnline ? 'heartBeat 2s infinite' : 'none' }} />
           </div>
 
           {partnerLocData && partnerLocData.is_sharing ? (
             <div>
-              <p className="font-body" style={{ color: isPartnerOnline ? '#be123c' : '#9ca3af', fontSize: '0.78rem', fontWeight: 600, margin: '0 0 3px', lineHeight: 1.4 }}>
+              <p className="font-body" style={{ color: isPartnerOnline ? '#e8943a' : '#9ca3af', fontSize: '0.78rem', fontWeight: 600, margin: '0 0 3px', lineHeight: 1.4 }}>
                 {partnerLocData.address || 'Lokasi tidak dikenal'}
               </p>
-              <p className="font-body" style={{ color: '#fda4af', fontSize: '0.65rem', margin: '3px 0 0', display: 'flex', alignItems: 'center', gap: '3px' }}>
+              <p className="font-body" style={{ color: '#a0c4b8', fontSize: '0.65rem', margin: '3px 0 0', display: 'flex', alignItems: 'center', gap: '3px' }}>
                 <Clock size={10} />
                 {formatDistanceToNow(parseISO(partnerLocData.updated_at), { locale: idLocale, addSuffix: true })}
               </p>
               {!isPartnerOnline && (
-                <p className="font-body" style={{ color: '#f97316', fontSize: '0.65rem', margin: '3px 0 0' }}>⚠️ Lokasi mungkin sudah berubah</p>
+                <p className="font-body" style={{ color: '#e8943a', fontSize: '0.65rem', margin: '3px 0 0' }}>⚠️ Lokasi mungkin sudah berubah</p>
               )}
             </div>
           ) : (
-            <p className="font-body" style={{ color: '#fda4af', fontSize: '0.75rem', margin: 0 }}>
+            <p className="font-body" style={{ color: '#a0c4b8', fontSize: '0.75rem', margin: 0 }}>
               {partnerLocData ? 'Tidak sedang berbagi' : 'Belum pernah berbagi'}
             </p>
           )}
@@ -392,9 +392,9 @@ export default function LokasiPage() {
         <div style={{
           borderRadius: '16px', padding: '16px 20px', marginBottom: '16px', textAlign: 'center',
           background: distance < 0.1
-            ? 'linear-gradient(135deg,#f43f5e,#ec4899)'
-            : 'linear-gradient(135deg,#fb7185,#f43f5e)',
-          boxShadow: '0 8px 24px rgba(244,63,94,0.3)',
+            ? 'linear-gradient(135deg,#2d8c6e,#5bb89a)'
+            : 'linear-gradient(135deg,#5bb89a,#81c7b1)',
+          boxShadow: '0 8px 24px rgba(26,92,71,0.2)',
         }}>
           <p className="font-body" style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.75rem', margin: '0 0 4px' }}>Jarak kalian saat ini</p>
           <div className="font-display" style={{ color: '#fff', fontSize: '2.2rem', fontWeight: 700, lineHeight: 1 }}>
@@ -416,12 +416,12 @@ export default function LokasiPage() {
         style={{
           width: '100%', padding: '18px',
           background: isSharing
-            ? 'linear-gradient(135deg,#ef4444,#dc2626)'
-            : 'linear-gradient(135deg,#f43f5e,#ec4899)',
+            ? 'linear-gradient(135deg,#e8943a,#d97706)'
+            : 'linear-gradient(135deg,#2d8c6e,#1a5c47)',
           color: '#fff', border: 'none', borderRadius: '16px',
           fontSize: '1rem', fontWeight: 700, fontFamily: 'Lato,sans-serif',
           cursor: 'pointer',
-          boxShadow: '0 8px 24px rgba(244,63,94,0.3)',
+          boxShadow: '0 8px 24px rgba(26,92,71,0.2)',
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
           marginBottom: '12px', transition: 'all 0.3s',
         }}
@@ -435,13 +435,13 @@ export default function LokasiPage() {
       <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
         <button
           onClick={loadLocations}
-          style={{ flex: 1, padding: '10px', background: '#fff', border: '2px solid #fecdd3', borderRadius: '12px', cursor: 'pointer', color: '#fb7185', fontWeight: 600, fontFamily: 'Lato,sans-serif', fontSize: '0.82rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
+          style={{ flex: 1, padding: '10px', background: '#fff', border: '2px solid #bce1d5', borderRadius: '12px', cursor: 'pointer', color: '#5bb89a', fontWeight: 600, fontFamily: 'Lato,sans-serif', fontSize: '0.82rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
         >
           <RefreshCw size={14} /> Refresh
         </button>
         <button
           onClick={() => setShowMap(p => !p)}
-          style={{ flex: 1, padding: '10px', background: showMap ? '#fff1f2' : '#fff', border: `2px solid ${showMap ? '#f43f5e' : '#fecdd3'}`, borderRadius: '12px', cursor: 'pointer', color: showMap ? '#e11d48' : '#fb7185', fontWeight: 600, fontFamily: 'Lato,sans-serif', fontSize: '0.82rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
+          style={{ flex: 1, padding: '10px', background: showMap ? '#f0f5f3' : '#fff', border: `2px solid ${showMap ? '#1a5c47' : '#bce1d5'}`, borderRadius: '12px', cursor: 'pointer', color: showMap ? '#1a5c47' : '#5bb89a', fontWeight: 600, fontFamily: 'Lato,sans-serif', fontSize: '0.82rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
         >
           {showMap ? <><EyeOff size={14} /> Sembunyikan Peta</> : <><Eye size={14} /> Tampilkan Peta</>}
         </button>
@@ -452,7 +452,7 @@ export default function LokasiPage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '16px' }}>
           {bothSharing && myLocData && partnerLocData ? (
             <div>
-              <p className="font-body" style={{ color: '#be123c', fontSize: '0.78rem', fontWeight: 700, marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <p className="font-body" style={{ color: '#1a5c47', fontSize: '0.78rem', fontWeight: 700, marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '4px' }}>
                 <Share2 size={13} /> Peta Bersama
               </p>
               <MapBoth
@@ -466,7 +466,7 @@ export default function LokasiPage() {
             <>
               {myLocData && myLocData.is_sharing && (
                 <div>
-                  <p className="font-body" style={{ color: '#be123c', fontSize: '0.78rem', fontWeight: 700, marginBottom: '8px' }}>
+                  <p className="font-body" style={{ color: '#1a5c47', fontSize: '0.78rem', fontWeight: 700, marginBottom: '8px' }}>
                     📍 Lokasiku — {myName}
                   </p>
                   <MapEmbed lat={myLocData.latitude} lon={myLocData.longitude} label={myName} />
@@ -474,7 +474,7 @@ export default function LokasiPage() {
               )}
               {partnerLocData && partnerLocData.is_sharing && (
                 <div>
-                  <p className="font-body" style={{ color: '#be123c', fontSize: '0.78rem', fontWeight: 700, marginBottom: '8px' }}>
+                  <p className="font-body" style={{ color: '#1a5c47', fontSize: '0.78rem', fontWeight: 700, marginBottom: '8px' }}>
                     📍 Lokasi {partner}
                   </p>
                   <MapEmbed lat={partnerLocData.latitude} lon={partnerLocData.longitude} label={partner} zoom={14} />
@@ -486,8 +486,8 @@ export default function LokasiPage() {
       )}
 
       {/* Info cara pakai */}
-      <div className="glass" style={{ borderRadius: '16px', padding: '16px', border: '1px solid #fecdd3' }}>
-        <p className="font-body" style={{ color: '#be123c', fontSize: '0.78rem', fontWeight: 700, marginBottom: '10px' }}>
+      <div className="glass" style={{ borderRadius: '16px', padding: '16px', border: '1px solid #bce1d5' }}>
+        <p className="font-body" style={{ color: '#1a5c47', fontSize: '0.78rem', fontWeight: 700, marginBottom: '10px' }}>
           💡 Cara Pakai
         </p>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
@@ -499,10 +499,10 @@ export default function LokasiPage() {
             { step: '5', text: 'Tekan "Stop" untuk berhenti berbagi lokasi' },
           ].map(({ step, text }) => (
             <div key={step} style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
-              <div style={{ width: '20px', height: '20px', borderRadius: '50%', background: 'linear-gradient(135deg,#f43f5e,#ec4899)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '1px' }}>
+              <div style={{ width: '20px', height: '20px', borderRadius: '50%', background: 'linear-gradient(135deg,#2d8c6e,#5bb89a)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '1px' }}>
                 <span style={{ color: '#fff', fontSize: '0.62rem', fontWeight: 700, fontFamily: 'Lato,sans-serif' }}>{step}</span>
               </div>
-              <p className="font-body" style={{ color: '#9f1239', fontSize: '0.78rem', margin: 0, lineHeight: 1.5 }}>{text}</p>
+              <p className="font-body" style={{ color: '#1a5c47', fontSize: '0.78rem', margin: 0, lineHeight: 1.5 }}>{text}</p>
             </div>
           ))}
         </div>

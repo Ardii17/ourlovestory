@@ -6,12 +6,12 @@ import { format, parseISO } from 'date-fns'
 import { id as idLocale } from 'date-fns/locale'
 
 const moods = [
-  { value: 'romantic', label: 'Romantis', emoji: '💕', color: '#ffe8ef' },
+  { value: 'romantic', label: 'Romantis', emoji: '🌿', color: '#e3f0eb' },
   { value: 'longing', label: 'Rindu', emoji: '🥺', color: '#fef3c7' },
   { value: 'grateful', label: 'Bersyukur', emoji: '🙏', color: '#dcfce7' },
   { value: 'excited', label: 'Semangat', emoji: '🌟', color: '#ede9fe' },
   { value: 'sorry', label: 'Minta Maaf', emoji: '😔', color: '#dbeafe' },
-  { value: 'playful', label: 'Gemas', emoji: '😘', color: '#fce7f3' },
+  { value: 'playful', label: 'Gemas', emoji: '😘', color: '#e3f0eb' },
 ]
 
 interface Letter {
@@ -71,7 +71,7 @@ export default function LoveLettersPage() {
     <div className="max-w-4xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="font-display text-2xl font-bold text-rose-800">Surat Cinta 💌</h1>
+          <h1 className="font-display text-2xl font-bold text-rose-800">Surat untuk Kamu ✉️</h1>
           <p className="text-rose-500 font-body text-sm mt-1">{letters.length} surat tersimpan dengan cinta</p>
         </div>
         <button onClick={() => setShowModal(true)} className="btn-rose flex items-center gap-2">
@@ -80,11 +80,11 @@ export default function LoveLettersPage() {
       </div>
 
       {loading ? (
-        <div className="text-center py-16 text-4xl heart-beat">💕</div>
+        <div className="text-center py-16 text-4xl heart-beat">🌿</div>
       ) : letters.length === 0 ? (
         <div className="text-center py-16 glass rounded-3xl">
-          <div className="text-5xl mb-4">💌</div>
-          <h3 className="font-display text-xl text-rose-700 mb-2">Belum ada surat cinta</h3>
+          <div className="text-5xl mb-4">✉️</div>
+          <h3 className="font-display text-xl text-rose-700 mb-2">Belum ada surat</h3>
           <p className="text-rose-400 font-body text-sm mb-4">Ungkapkan perasaanmu lewat tulisan!</p>
           <button onClick={() => setShowModal(true)} className="btn-rose">+ Tulis Surat Pertama</button>
         </div>
@@ -95,7 +95,7 @@ export default function LoveLettersPage() {
             return (
               <div key={letter.id}
                 className="card-hover rounded-2xl border border-rose-100 overflow-hidden cursor-pointer relative"
-                style={{ background: `linear-gradient(135deg, ${moodInfo.color}, #fffdf7)` }}
+                style={{ background: `linear-gradient(135deg, ${moodInfo.color}, #f4f9f7)` }}
                 onClick={() => setSelected(letter)}
               >
                 {/* Decorative wax seal */}
@@ -103,10 +103,10 @@ export default function LoveLettersPage() {
 
                 <div className="p-5">
                   {/* Envelope lines */}
-                  <div className="absolute inset-x-0 top-0 h-1" style={{ background: 'linear-gradient(90deg, transparent, rgba(244,63,94,0.15), transparent)' }} />
+                  <div className="absolute inset-x-0 top-0 h-1" style={{ background: 'linear-gradient(90deg, transparent, rgba(45,140,110,0.15), transparent)' }} />
 
                   <div className="mb-3">
-                    <span className="text-xs font-body text-rose-400 italic">Untuk: {letter.to_person} 💌</span>
+                    <span className="text-xs font-body text-rose-400 italic">Untuk: {letter.to_person} ✉️</span>
                   </div>
                   <h3 className="font-display font-bold text-rose-800 text-lg mb-2 pr-8">{letter.title}</h3>
                   <p className="text-rose-600 font-body text-sm line-clamp-3 leading-relaxed">{letter.content}</p>
@@ -133,7 +133,7 @@ export default function LoveLettersPage() {
             <div className="p-6 pb-0">
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <span className="mood-badge mb-2 inline-block" style={{ background: '#ffe8ef', color: '#f43f5e' }}>
+                  <span className="mood-badge mb-2 inline-block" style={{ background: '#e3f0eb', color: '#2d8c6e' }}>
                     {getMoodInfo(selected.mood).emoji} {getMoodInfo(selected.mood).label}
                   </span>
                   <p className="text-rose-400 font-body text-sm italic">
@@ -155,13 +155,13 @@ export default function LoveLettersPage() {
 
             {/* Letter content */}
             <div className="px-6 pb-6">
-              <div className="paper-texture rounded-2xl p-6" style={{ border: '1px solid rgba(244,63,94,0.1)' }}>
+              <div className="paper-texture rounded-2xl p-6" style={{ border: '1px solid rgba(45,140,110,0.1)' }}>
                 <p className="font-body text-rose-700 text-sm italic mb-4">Kepada yang tercinta, {selected.to_person}...</p>
                 <h2 className="font-display text-xl font-bold text-rose-800 mb-4">{selected.title}</h2>
                 <p className="font-body text-rose-700 leading-relaxed whitespace-pre-wrap">{selected.content}</p>
                 <div className="mt-6 text-right">
                   <p className="font-script text-rose-500 text-lg">Dengan sepenuh cinta,</p>
-                  <p className="font-script text-rose-600 text-xl font-bold">{selected.from_person} 💕</p>
+                  <p className="font-script text-rose-600 text-xl font-bold">{selected.from_person} 🌿</p>
                 </div>
               </div>
             </div>
@@ -175,7 +175,7 @@ export default function LoveLettersPage() {
           style={{ background: 'rgba(0,0,0,0.4)' }}>
           <div className="bg-white rounded-3xl p-6 w-full max-w-lg shadow-2xl" style={{ maxHeight: '90vh', overflowY: 'auto' }}>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="font-display text-xl font-bold text-rose-800">Tulis Surat Cinta 💌</h2>
+              <h2 className="font-display text-xl font-bold text-rose-800">Tulis Surat untuk Kamu ✉️</h2>
               <button onClick={() => setShowModal(false)} className="text-rose-400 hover:text-rose-600"><X size={20} /></button>
             </div>
 
@@ -216,7 +216,7 @@ export default function LoveLettersPage() {
               <div>
                 <label className="block text-sm font-semibold text-rose-700 mb-2 font-body">Isi Surat *</label>
                 <textarea className="love-input resize-none paper-texture" rows={8}
-                  placeholder="Tuliskan segala perasaanmu di sini... setiap kata yang tulus akan selalu dikenang 💕"
+                  placeholder="Tuliskan segala perasaanmu di sini... setiap kata yang tulus akan selalu dikenang 🌿"
                   value={form.content}
                   onChange={e => setForm(p => ({ ...p, content: e.target.value }))} />
               </div>
@@ -228,7 +228,7 @@ export default function LoveLettersPage() {
                 </button>
                 <button onClick={saveLetter} disabled={saving || !form.title || !form.content}
                   className="flex-1 btn-rose flex items-center justify-center gap-2">
-                  {saving ? '💕' : <><Scroll size={16} /> Kirim Surat</>}
+                  {saving ? '🌿' : <><Scroll size={16} /> Kirim Surat</>}
                 </button>
               </div>
             </div>
