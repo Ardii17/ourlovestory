@@ -190,7 +190,7 @@ export default function BiodataPage() {
       {duration && profile.anniversary_date && (
         <div className="glass" style={{ borderRadius: '20px', border: '1px solid #c8ddd5', overflow: 'hidden' }}>
           {/* header strip */}
-          <div style={{ background: 'linear-gradient(90deg, #2d8c6e, #e8943a)', padding: '14px 24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ background: 'linear-gradient(135deg, #004D60, #0081A7, #00A896)', padding: '14px 24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Calendar size={16} color="rgba(255,255,255,0.85)" />
             <span className="font-display" style={{ color: '#fff', fontSize: '0.9rem', fontWeight: 600 }}>Perjalanan Kita Bersama</span>
           </div>

@@ -1,286 +1,622 @@
-'use client'
-import { useState, useEffect } from 'react'
-import { supabase } from '@/lib/supabase'
-import { differenceInDays, format, parseISO, isToday, isYesterday } from 'date-fns'
-import { id as idLocale } from 'date-fns/locale'
-import { Flame, Heart, AlertTriangle, RefreshCw } from 'lucide-react'
+"use client";
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
+import {
+  differenceInDays,
+  format,
+  parseISO,
+  isToday,
+  isYesterday,
+} from "date-fns";
+import { id as idLocale } from "date-fns/locale";
+import { Flame, Heart, AlertTriangle, RefreshCw } from "lucide-react";
 
 const FUNNY_PENALTIES = [
-  { id: 1, label: 'Nyanyi lagu cinta di depan pasangan 🎤', emoji: '🎤' },
-  { id: 2, label: 'Kirim voice note bilang "I love you" dengan suara aneh 🐸', emoji: '🐸' },
-  { id: 3, label: 'Buat gambar wajah pasangan (tidak boleh dihapus) 🎨', emoji: '🎨' },
-  { id: 4, label: 'Ceritakan hal memalukan di depan pasangan 😳', emoji: '😳' },
-  { id: 5, label: 'Joget selama 30 detik tanpa musik 💃', emoji: '💃' },
-  { id: 6, label: 'Bacakan puisi asal-asalan tentang pasangan 📜', emoji: '📜' },
-  { id: 7, label: 'Tiru suara hewan favorit pasangan 🐾', emoji: '🐾' },
-  { id: 8, label: 'Buat video selfie dengan ekspresi lebay 🤪', emoji: '🤪' },
-]
+  { id: 1, label: "Nyanyi lagu cinta di depan pasangan 🎤", emoji: "🎤" },
+  {
+    id: 2,
+    label: 'Kirim voice note bilang "I love you" dengan suara aneh 🐸',
+    emoji: "🐸",
+  },
+  {
+    id: 3,
+    label: "Buat gambar wajah pasangan (tidak boleh dihapus) 🎨",
+    emoji: "🎨",
+  },
+  { id: 4, label: "Ceritakan hal memalukan di depan pasangan 😳", emoji: "😳" },
+  { id: 5, label: "Joget selama 30 detik tanpa musik 💃", emoji: "💃" },
+  {
+    id: 6,
+    label: "Bacakan puisi asal-asalan tentang pasangan 📜",
+    emoji: "📜",
+  },
+  { id: 7, label: "Tiru suara hewan favorit pasangan 🐾", emoji: "🐾" },
+  { id: 8, label: "Buat video selfie dengan ekspresi lebay 🤪", emoji: "🤪" },
+];
 
 interface StreakData {
-  id: string
-  person_name: string
-  current_streak: number
-  longest_streak: number
-  last_check_in: string | null
-  penalty_done: boolean
-  total_checkins: number
-  tolerances_used?: number
-  last_tolerance_used?: string | null
+  id: string;
+  person_name: string;
+  current_streak: number;
+  longest_streak: number;
+  last_check_in: string | null;
+  penalty_done: boolean;
+  total_checkins: number;
+  tolerances_used?: number;
+  last_tolerance_used?: string | null;
 }
 
 export default function StreakPage() {
-  const [streaks, setStreaks] = useState<StreakData[]>([])
-  const [profile, setProfile] = useState<any>(null)
-  const [loading, setLoading] = useState(true)
-  const [penalty, setPenalty] = useState<typeof FUNNY_PENALTIES[0] | null>(null)
-  const [showPenalty, setShowPenalty] = useState<string | null>(null) // person_name
-  const [showConfetti, setShowConfetti] = useState(false)
-  const [checkingIn, setCheckingIn] = useState<string | null>(null)
+  const [streaks, setStreaks] = useState<StreakData[]>([]);
+  const [profile, setProfile] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [penalty, setPenalty] = useState<(typeof FUNNY_PENALTIES)[0] | null>(
+    null,
+  );
+  const [showPenalty, setShowPenalty] = useState<string | null>(null); // person_name
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [checkingIn, setCheckingIn] = useState<string | null>(null);
 
   function getTolerancesLeft(s: StreakData): number {
-    const used = s.tolerances_used || 0
-    const lastUsedStr = s.last_tolerance_used
-    
-    if (!lastUsedStr) return 3
+    const used = s.tolerances_used || 0;
+    const lastUsedStr = s.last_tolerance_used;
+
+    if (!lastUsedStr) return 3;
 
     try {
-      const lastUsedDate = parseISO(lastUsedStr)
-      const currentMonthStr = format(new Date(), 'yyyy-MM')
-      const lastUsedMonthStr = format(lastUsedDate, 'yyyy-MM')
-      
+      const lastUsedDate = parseISO(lastUsedStr);
+      const currentMonthStr = format(new Date(), "yyyy-MM");
+      const lastUsedMonthStr = format(lastUsedDate, "yyyy-MM");
+
       if (currentMonthStr !== lastUsedMonthStr) {
-        return 3
+        return 3;
       }
     } catch (e) {
-      console.error(e)
+      console.error(e);
     }
 
-    return Math.max(3 - used, 0)
+    return Math.max(3 - used, 0);
   }
 
-  useEffect(() => { loadData() }, [])
+  useEffect(() => {
+    loadData();
+  }, []);
 
   async function loadData() {
     const [streakRes, profRes] = await Promise.all([
-      supabase.from('streaks').select('*').order('person_name'),
-      supabase.from('couple_profile').select('person1_name, person2_name').single()
-    ])
+      supabase.from("streaks").select("*").order("person_name"),
+      supabase
+        .from("couple_profile")
+        .select("person1_name, person2_name")
+        .single(),
+    ]);
     if (profRes.data) {
-      setProfile(profRes.data)
+      setProfile(profRes.data);
       // init records jika belum ada
-      const names = [profRes.data.person1_name, profRes.data.person2_name]
-      const existing = (streakRes.data || []).map((s: StreakData) => s.person_name)
+      const names = [profRes.data.person1_name, profRes.data.person2_name];
+      const existing = (streakRes.data || []).map(
+        (s: StreakData) => s.person_name,
+      );
       for (const name of names) {
         if (!existing.includes(name)) {
-          await supabase.from('streaks').insert([{
-            person_name: name, current_streak: 0,
-            longest_streak: 0, last_check_in: null,
-            penalty_done: false, total_checkins: 0
-          }])
+          await supabase.from("streaks").insert([
+            {
+              person_name: name,
+              current_streak: 0,
+              longest_streak: 0,
+              last_check_in: null,
+              penalty_done: false,
+              total_checkins: 0,
+            },
+          ]);
         }
       }
-      const { data } = await supabase.from('streaks').select('*').order('person_name')
-      setStreaks(data || [])
+      const { data } = await supabase
+        .from("streaks")
+        .select("*")
+        .order("person_name");
+      setStreaks(data || []);
     }
-    setLoading(false)
+    setLoading(false);
   }
 
-  function getStatus(s: StreakData): 'checked' | 'missed' | 'pending' {
-    if (!s.last_check_in) return 'pending'
-    const last = parseISO(s.last_check_in)
-    if (isToday(last)) return 'checked'
-    if (isYesterday(last)) return 'pending'
-    return 'missed'
+  function getStatus(s: StreakData): "checked" | "missed" | "pending" {
+    if (!s.last_check_in) return "pending";
+    const last = parseISO(s.last_check_in);
+    if (isToday(last)) return "checked";
+    if (isYesterday(last)) return "pending";
+    return "missed";
   }
 
   async function checkIn(s: StreakData, useTolerance = false) {
-    const status = getStatus(s)
-    if (status === 'checked') return
-    if (status === 'missed' && !s.penalty_done && !useTolerance) {
+    const status = getStatus(s);
+    if (status === "checked") return;
+    if (status === "missed" && !s.penalty_done && !useTolerance) {
       // pilih penalty random
-      setPenalty(FUNNY_PENALTIES[Math.floor(Math.random() * FUNNY_PENALTIES.length)])
-      setShowPenalty(s.person_name)
-      return
+      setPenalty(
+        FUNNY_PENALTIES[Math.floor(Math.random() * FUNNY_PENALTIES.length)],
+      );
+      setShowPenalty(s.person_name);
+      return;
     }
-    setCheckingIn(s.person_name)
-    
-    let newStreak = 1
-    let updatePayload: any = {}
+    setCheckingIn(s.person_name);
 
-    if (status === 'missed') {
+    let newStreak = 1;
+    let updatePayload: any = {};
+
+    if (status === "missed") {
       if (useTolerance) {
-        const last = s.last_check_in ? parseISO(s.last_check_in) : null
-        const missedDays = last ? differenceInDays(new Date(), last) - 1 : 0
-        const finalMissed = Math.max(missedDays, 1)
+        const last = s.last_check_in ? parseISO(s.last_check_in) : null;
+        const missedDays = last ? differenceInDays(new Date(), last) - 1 : 0;
+        const finalMissed = Math.max(missedDays, 1);
 
-        newStreak = s.current_streak + finalMissed + 1
-        const currentMonthStr = format(new Date(), 'yyyy-MM')
-        let currentUsed = s.tolerances_used || 0
+        newStreak = s.current_streak + finalMissed + 1;
+        const currentMonthStr = format(new Date(), "yyyy-MM");
+        let currentUsed = s.tolerances_used || 0;
         if (s.last_tolerance_used) {
-          const lastUsedMonthStr = format(parseISO(s.last_tolerance_used), 'yyyy-MM')
+          const lastUsedMonthStr = format(
+            parseISO(s.last_tolerance_used),
+            "yyyy-MM",
+          );
           if (lastUsedMonthStr !== currentMonthStr) {
-            currentUsed = 0 // Reset month rollover
+            currentUsed = 0; // Reset month rollover
           }
         }
         updatePayload = {
           tolerances_used: currentUsed + finalMissed,
-          last_tolerance_used: new Date().toISOString()
-        }
+          last_tolerance_used: new Date().toISOString(),
+        };
       } else {
-        newStreak = 1
+        newStreak = 1;
       }
     } else {
-      newStreak = s.current_streak + 1
+      newStreak = s.current_streak + 1;
     }
 
-    const newLongest = Math.max(newStreak, s.longest_streak)
-    await supabase.from('streaks').update({
-      current_streak: newStreak,
-      longest_streak: newLongest,
-      last_check_in: new Date().toISOString(),
-      penalty_done: false,
-      total_checkins: s.total_checkins + 1,
-      ...updatePayload
-    }).eq('id', s.id)
-    setCheckingIn(null)
-    setShowConfetti(true)
-    setTimeout(() => setShowConfetti(false), 2500)
-    await loadData()
+    const newLongest = Math.max(newStreak, s.longest_streak);
+    await supabase
+      .from("streaks")
+      .update({
+        current_streak: newStreak,
+        longest_streak: newLongest,
+        last_check_in: new Date().toISOString(),
+        penalty_done: false,
+        total_checkins: s.total_checkins + 1,
+        ...updatePayload,
+      })
+      .eq("id", s.id);
+    setCheckingIn(null);
+    setShowConfetti(true);
+    setTimeout(() => setShowConfetti(false), 2500);
+    await loadData();
   }
 
   async function completePenalty(personName: string) {
-    await supabase.from('streaks').update({ penalty_done: true }).eq('person_name', personName)
-    setShowPenalty(null)
-    setPenalty(null)
-    await loadData()
+    await supabase
+      .from("streaks")
+      .update({ penalty_done: true })
+      .eq("person_name", personName);
+    setShowPenalty(null);
+    setPenalty(null);
+    await loadData();
     // now allow check in
-    const { data } = await supabase.from('streaks').select('*').eq('person_name', personName).single()
-    if (data) await checkIn(data)
+    const { data } = await supabase
+      .from("streaks")
+      .select("*")
+      .eq("person_name", personName)
+      .single();
+    if (data) await checkIn(data);
   }
 
-  const totalSharedStreak = streaks.length === 2
-    ? Math.min(...streaks.map(s => s.current_streak))
-    : 0
+  const totalSharedStreak =
+    streaks.length === 2
+      ? Math.min(...streaks.map((s) => s.current_streak))
+      : 0;
 
-  if (loading) return <div style={{ textAlign: 'center', padding: '64px 0', fontSize: '2.5rem' }} className="heart-beat">🔥</div>
+  if (loading)
+    return (
+      <div
+        style={{ textAlign: "center", padding: "64px 0", fontSize: "2.5rem" }}
+        className="heart-beat"
+      >
+        🔥
+      </div>
+    );
 
   return (
-    <div style={{ maxWidth: '680px', margin: '0 auto' }}>
-      <div style={{ marginBottom: '24px' }}>
-        <h1 className="font-display" style={{ fontSize: '1.5rem', fontWeight: 700, color: '#1a5c47', margin: 0 }}>Streak Kebersamaan 🔥</h1>
-        <p className="font-body" style={{ color: '#5bb89a', fontSize: '0.85rem', marginTop: '4px' }}>Absen setiap hari untuk menjaga streak kalian!</p>
+    <div style={{ maxWidth: "680px", margin: "0 auto" }}>
+      <div style={{ marginBottom: "24px" }}>
+        <h1
+          className="font-display"
+          style={{
+            fontSize: "1.5rem",
+            fontWeight: 700,
+            color: "#1a5c47",
+            margin: 0,
+          }}
+        >
+          Streak Kebersamaan 🔥
+        </h1>
+        <p
+          className="font-body"
+          style={{ color: "#5bb89a", fontSize: "0.85rem", marginTop: "4px" }}
+        >
+          Absen setiap hari untuk menjaga streak kalian!
+        </p>
       </div>
 
       {/* Shared streak banner */}
-      <div style={{
-        borderRadius: '20px', padding: '24px', textAlign: 'center', marginBottom: '24px',
-        background: totalSharedStreak > 0
-          ? 'linear-gradient(135deg, #2d8c6e, #e8943a)'
-          : 'linear-gradient(135deg, #c8ddd5, #a0c4b8)',
-        boxShadow: '0 12px 40px rgba(45,140,110,0.25)',
-      }}>
-        <div style={{ fontSize: '3rem', marginBottom: '6px' }}>
-          {totalSharedStreak >= 30 ? '🔥🔥🔥' : totalSharedStreak >= 7 ? '🔥🔥' : totalSharedStreak >= 1 ? '🔥' : '💤'}
+      <div
+        style={{
+          borderRadius: "20px",
+          padding: "24px",
+          textAlign: "center",
+          marginBottom: "24px",
+          background:
+            totalSharedStreak > 0
+              ? "linear-gradient(135deg, #004D60, #0081A7, #00A896)"
+              : "linear-gradient(135deg, #004D60, #0081A7, #00A896)",
+          boxShadow: "0 12px 40px rgba(45,140,110,0.25)",
+        }}
+      >
+        <div style={{ fontSize: "3rem", marginBottom: "6px" }}>
+          {totalSharedStreak >= 30
+            ? "🔥🔥🔥"
+            : totalSharedStreak >= 7
+              ? "🔥🔥"
+              : totalSharedStreak >= 1
+                ? "🔥"
+                : "💤"}
         </div>
-        <div className="font-display" style={{ fontSize: '3.5rem', fontWeight: 700, color: '#fff', lineHeight: 1 }}>{totalSharedStreak}</div>
-        <div className="font-body" style={{ color: 'rgba(255,255,255,0.85)', fontSize: '0.9rem', marginTop: '4px' }}>Hari Streak Bersama</div>
+        <div
+          className="font-display"
+          style={{
+            fontSize: "3.5rem",
+            fontWeight: 700,
+            color: "#fff",
+            lineHeight: 1,
+          }}
+        >
+          {totalSharedStreak}
+        </div>
+        <div
+          className="font-body"
+          style={{
+            color: "rgba(255,255,255,0.85)",
+            fontSize: "0.9rem",
+            marginTop: "4px",
+          }}
+        >
+          Hari Streak Bersama
+        </div>
         {totalSharedStreak >= 7 && (
-          <div style={{ marginTop: '8px', background: 'rgba(255,255,255,0.2)', borderRadius: '50px', display: 'inline-block', padding: '4px 14px' }}>
-            <span className="font-body" style={{ color: '#fff', fontSize: '0.78rem', fontWeight: 600 }}>
-              {totalSharedStreak >= 30 ? '🏆 Luar biasa! 30+ hari!' : totalSharedStreak >= 14 ? '⭐ 2 minggu!' : '🌟 7 hari!'}
+          <div
+            style={{
+              marginTop: "8px",
+              background: "rgba(255,255,255,0.2)",
+              borderRadius: "50px",
+              display: "inline-block",
+              padding: "4px 14px",
+            }}
+          >
+            <span
+              className="font-body"
+              style={{ color: "#fff", fontSize: "0.78rem", fontWeight: 600 }}
+            >
+              {totalSharedStreak >= 30
+                ? "🏆 Luar biasa! 30+ hari!"
+                : totalSharedStreak >= 14
+                  ? "⭐ 2 minggu!"
+                  : "🌟 7 hari!"}
             </span>
           </div>
         )}
       </div>
 
       {/* Individual streaks */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px', marginBottom: '24px' }}>
-        {streaks.map(s => {
-          const status = getStatus(s)
-          const isP1 = s.person_name === profile?.person1_name
-          const streakColor = status === 'checked' ? '#22c55e' : status === 'missed' ? '#ef4444' : '#2d8c6e'
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+          gap: "16px",
+          marginBottom: "24px",
+        }}
+      >
+        {streaks.map((s) => {
+          const status = getStatus(s);
+          const isP1 = s.person_name === profile?.person1_name;
+          const streakColor =
+            status === "checked"
+              ? "#22c55e"
+              : status === "missed"
+                ? "#ef4444"
+                : "#2d8c6e";
 
           return (
-            <div key={s.id} className="glass" style={{ borderRadius: '20px', border: `2px solid ${status === 'checked' ? '#86efac' : status === 'missed' ? '#fca5a5' : '#c8ddd5'}`, overflow: 'hidden' }}>
+            <div
+              key={s.id}
+              className="glass"
+              style={{
+                borderRadius: "20px",
+                border: `2px solid ${status === "checked" ? "#86efac" : status === "missed" ? "#fca5a5" : "#c8ddd5"}`,
+                overflow: "hidden",
+              }}
+            >
               {/* Status bar */}
-              <div style={{ height: '4px', background: streakColor }} />
+              <div style={{ height: "4px", background: streakColor }} />
 
-              <div style={{ padding: '20px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <div style={{ fontSize: '2rem' }}>{isP1 ? '👩' : '👨'}</div>
+              <div style={{ padding: "20px" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    marginBottom: "16px",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "10px",
+                    }}
+                  >
+                    <div style={{ fontSize: "2rem" }}>{isP1 ? "👩" : "👨"}</div>
                     <div>
-                      <h3 className="font-display" style={{ fontWeight: 700, color: '#1a5c47', fontSize: '1rem', margin: 0 }}>{s.person_name}</h3>
-                      <p className="font-body" style={{ fontSize: '0.72rem', color: '#a0c4b8', margin: 0 }}>
-                        {s.last_check_in ? `Terakhir: ${format(parseISO(s.last_check_in), 'd MMM, HH:mm', { locale: idLocale })}` : 'Belum pernah absen'}
+                      <h3
+                        className="font-display"
+                        style={{
+                          fontWeight: 700,
+                          color: "#1a5c47",
+                          fontSize: "1rem",
+                          margin: 0,
+                        }}
+                      >
+                        {s.person_name}
+                      </h3>
+                      <p
+                        className="font-body"
+                        style={{
+                          fontSize: "0.72rem",
+                          color: "#a0c4b8",
+                          margin: 0,
+                        }}
+                      >
+                        {s.last_check_in
+                          ? `Terakhir: ${format(parseISO(s.last_check_in), "d MMM, HH:mm", { locale: idLocale })}`
+                          : "Belum pernah absen"}
                       </p>
                     </div>
                   </div>
                   {/* streak count */}
-                  <div style={{ textAlign: 'center' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <Flame size={20} color={s.current_streak > 0 ? '#2d8c6e' : '#a0c4b8'} fill={s.current_streak > 0 ? '#2d8c6e' : 'none'} />
-                      <span className="font-display" style={{ fontSize: '1.8rem', fontWeight: 700, color: s.current_streak > 0 ? '#2d8c6e' : '#a0c4b8' }}>{s.current_streak}</span>
+                  <div style={{ textAlign: "center" }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "4px",
+                      }}
+                    >
+                      <Flame
+                        size={20}
+                        color={s.current_streak > 0 ? "#2d8c6e" : "#a0c4b8"}
+                        fill={s.current_streak > 0 ? "#2d8c6e" : "none"}
+                      />
+                      <span
+                        className="font-display"
+                        style={{
+                          fontSize: "1.8rem",
+                          fontWeight: 700,
+                          color: s.current_streak > 0 ? "#2d8c6e" : "#a0c4b8",
+                        }}
+                      >
+                        {s.current_streak}
+                      </span>
                     </div>
-                    <div className="font-body" style={{ fontSize: '0.68rem', color: '#a0c4b8' }}>hari</div>
+                    <div
+                      className="font-body"
+                      style={{ fontSize: "0.68rem", color: "#a0c4b8" }}
+                    >
+                      hari
+                    </div>
                   </div>
                 </div>
 
                 {/* Stats row */}
-                <div style={{ display: 'flex', gap: '8px', marginBottom: '14px' }}>
+                <div
+                  style={{ display: "flex", gap: "8px", marginBottom: "14px" }}
+                >
                   {[
-                    { label: 'Terpanjang', value: `${s.longest_streak} hari` },
-                    { label: 'Total absen', value: `${s.total_checkins} kali` },
-                    { label: 'Toleransi', value: `${getTolerancesLeft(s)}/3` },
-                  ].map(stat => (
-                    <div key={stat.label} style={{ flex: 1, background: '#f4f9f7', borderRadius: '10px', padding: '8px 6px', textAlign: 'center', minWidth: 0 }}>
-                      <div className="font-display" style={{ fontWeight: 700, color: '#2d8c6e', fontSize: '1rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{stat.value}</div>
-                      <div className="font-body" style={{ fontSize: '0.62rem', color: '#a0c4b8', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{stat.label}</div>
+                    { label: "Terpanjang", value: `${s.longest_streak} hari` },
+                    { label: "Total absen", value: `${s.total_checkins} kali` },
+                    { label: "Toleransi", value: `${getTolerancesLeft(s)}/3` },
+                  ].map((stat) => (
+                    <div
+                      key={stat.label}
+                      style={{
+                        flex: 1,
+                        background: "#f4f9f7",
+                        borderRadius: "10px",
+                        padding: "8px 6px",
+                        textAlign: "center",
+                        minWidth: 0,
+                      }}
+                    >
+                      <div
+                        className="font-display"
+                        style={{
+                          fontWeight: 700,
+                          color: "#2d8c6e",
+                          fontSize: "1rem",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {stat.value}
+                      </div>
+                      <div
+                        className="font-body"
+                        style={{
+                          fontSize: "0.62rem",
+                          color: "#a0c4b8",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {stat.label}
+                      </div>
                     </div>
                   ))}
                 </div>
 
                 {/* Status + check-in button */}
-                {status === 'checked' ? (
-                  <div style={{ background: '#f0fdf4', border: '1.5px solid #86efac', borderRadius: '12px', padding: '12px', textAlign: 'center' }}>
-                    <span style={{ fontSize: '1.3rem' }}>✅</span>
-                    <p className="font-body" style={{ color: '#15803d', fontWeight: 600, fontSize: '0.85rem', margin: '4px 0 0' }}>Sudah absen hari ini!</p>
+                {status === "checked" ? (
+                  <div
+                    style={{
+                      background: "#f0fdf4",
+                      border: "1.5px solid #86efac",
+                      borderRadius: "12px",
+                      padding: "12px",
+                      textAlign: "center",
+                    }}
+                  >
+                    <span style={{ fontSize: "1.3rem" }}>✅</span>
+                    <p
+                      className="font-body"
+                      style={{
+                        color: "#15803d",
+                        fontWeight: 600,
+                        fontSize: "0.85rem",
+                        margin: "4px 0 0",
+                      }}
+                    >
+                      Sudah absen hari ini!
+                    </p>
                   </div>
-                ) : status === 'missed' && !s.penalty_done ? (
+                ) : status === "missed" && !s.penalty_done ? (
                   (() => {
                     const tolerancesLeft = getTolerancesLeft(s);
-                    const last = s.last_check_in ? parseISO(s.last_check_in) : null;
-                    const missedDays = last ? differenceInDays(new Date(), last) - 1 : 0;
+                    const last = s.last_check_in
+                      ? parseISO(s.last_check_in)
+                      : null;
+                    const missedDays = last
+                      ? differenceInDays(new Date(), last) - 1
+                      : 0;
                     const finalMissed = Math.max(missedDays, 1);
                     const canUseTolerance = tolerancesLeft >= finalMissed;
 
                     if (canUseTolerance) {
                       return (
                         <div>
-                          <div style={{ background: '#fffbeb', border: '1.5px solid #fde68a', borderRadius: '12px', padding: '10px 12px', marginBottom: '8px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <div
+                            style={{
+                              background: "#fffbeb",
+                              border: "1.5px solid #fde68a",
+                              borderRadius: "12px",
+                              padding: "10px 12px",
+                              marginBottom: "8px",
+                              display: "flex",
+                              flexDirection: "column",
+                              gap: "4px",
+                            }}
+                          >
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "6px",
+                              }}
+                            >
                               <AlertTriangle size={14} color="#d97706" />
-                              <p className="font-body" style={{ color: '#b45309', fontSize: '0.75rem', margin: 0, fontWeight: 700 }}>
+                              <p
+                                className="font-body"
+                                style={{
+                                  color: "#b45309",
+                                  fontSize: "0.75rem",
+                                  margin: 0,
+                                  fontWeight: 700,
+                                }}
+                              >
                                 Terlewat {finalMissed} hari! 😢
                               </p>
                             </div>
-                            <p className="font-body" style={{ color: '#d97706', fontSize: '0.7rem', margin: 0, lineHeight: 1.3 }}>
-                              Kamu punya <strong>{tolerancesLeft}</strong> sisa toleransi bulan ini. Kamu bisa menggunakan <strong>{finalMissed}</strong> toleransi untuk menyelamatkan streak-mu.
+                            <p
+                              className="font-body"
+                              style={{
+                                color: "#d97706",
+                                fontSize: "0.7rem",
+                                margin: 0,
+                                lineHeight: 1.3,
+                              }}
+                            >
+                              Kamu punya <strong>{tolerancesLeft}</strong> sisa
+                              toleransi bulan ini. Kamu bisa menggunakan{" "}
+                              <strong>{finalMissed}</strong> toleransi untuk
+                              menyelamatkan streak-mu.
                             </p>
                           </div>
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                          <div
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              gap: "8px",
+                            }}
+                          >
                             <button
                               onClick={() => checkIn(s, true)}
                               disabled={checkingIn === s.person_name}
-                              style={{ width: '100%', background: 'linear-gradient(135deg, #10b981, #059669)', color: '#fff', border: 'none', borderRadius: '12px', padding: '12px', cursor: 'pointer', fontWeight: 700, fontFamily: 'Lato, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', boxShadow: '0 4px 10px rgba(16,185,129,0.2)' }}
+                              style={{
+                                width: "100%",
+                                background:
+                                  "linear-gradient(135deg, #10b981, #059669)",
+                                color: "#fff",
+                                border: "none",
+                                borderRadius: "12px",
+                                padding: "12px",
+                                cursor: "pointer",
+                                fontWeight: 700,
+                                fontFamily: "Lato, sans-serif",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                gap: "6px",
+                                boxShadow: "0 4px 10px rgba(16,185,129,0.2)",
+                              }}
                             >
-                              {checkingIn === s.person_name ? '🌿' : <><Flame size={15} /> Gunakan {finalMissed} Toleransi & Absen</>}
+                              {checkingIn === s.person_name ? (
+                                "🌿"
+                              ) : (
+                                <>
+                                  <Flame size={15} /> Gunakan {finalMissed}{" "}
+                                  Toleransi & Absen
+                                </>
+                              )}
                             </button>
                             <button
                               onClick={() => checkIn(s, false)}
-                              style={{ width: '100%', background: 'linear-gradient(135deg, #ef4444, #f97316)', color: '#fff', border: 'none', borderRadius: '12px', padding: '10px', cursor: 'pointer', fontWeight: 700, fontFamily: 'Lato, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', fontSize: '0.78rem', boxShadow: '0 4px 10px rgba(239,68,68,0.2)' }}
+                              style={{
+                                width: "100%",
+                                background:
+                                  "linear-gradient(135deg, #ef4444, #f97316)",
+                                color: "#fff",
+                                border: "none",
+                                borderRadius: "12px",
+                                padding: "10px",
+                                cursor: "pointer",
+                                fontWeight: 700,
+                                fontFamily: "Lato, sans-serif",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                gap: "6px",
+                                fontSize: "0.78rem",
+                                boxShadow: "0 4px 10px rgba(239,68,68,0.2)",
+                              }}
                             >
-                              <RefreshCw size={13} /> Terima Hukuman & Reset Harian 😂
+                              <RefreshCw size={13} /> Terima Hukuman & Reset
+                              Harian 😂
                             </button>
                           </div>
                         </div>
@@ -288,20 +624,71 @@ export default function StreakPage() {
                     } else {
                       return (
                         <div>
-                          <div style={{ background: '#fef2f2', border: '1.5px solid #fca5a5', borderRadius: '12px', padding: '10px 12px', marginBottom: '8px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <div
+                            style={{
+                              background: "#fef2f2",
+                              border: "1.5px solid #fca5a5",
+                              borderRadius: "12px",
+                              padding: "10px 12px",
+                              marginBottom: "8px",
+                              display: "flex",
+                              flexDirection: "column",
+                              gap: "4px",
+                            }}
+                          >
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "6px",
+                              }}
+                            >
                               <AlertTriangle size={14} color="#ef4444" />
-                              <p className="font-body" style={{ color: '#dc2626', fontSize: '0.75rem', margin: 0, fontWeight: 700 }}>
+                              <p
+                                className="font-body"
+                                style={{
+                                  color: "#dc2626",
+                                  fontSize: "0.75rem",
+                                  margin: 0,
+                                  fontWeight: 700,
+                                }}
+                              >
                                 Terlewat {finalMissed} hari! 😢
                               </p>
                             </div>
-                            <p className="font-body" style={{ color: '#dc2626', fontSize: '0.7rem', margin: 0, lineHeight: 1.3 }}>
-                              Toleransi tersisa ({tolerancesLeft}) tidak cukup untuk mengganti {finalMissed} hari terlewat. Streak terputus!
+                            <p
+                              className="font-body"
+                              style={{
+                                color: "#dc2626",
+                                fontSize: "0.7rem",
+                                margin: 0,
+                                lineHeight: 1.3,
+                              }}
+                            >
+                              Toleransi tersisa ({tolerancesLeft}) tidak cukup
+                              untuk mengganti {finalMissed} hari terlewat.
+                              Streak terputus!
                             </p>
                           </div>
                           <button
                             onClick={() => checkIn(s, false)}
-                            style={{ width: '100%', background: 'linear-gradient(135deg, #ef4444, #f97316)', color: '#fff', border: 'none', borderRadius: '12px', padding: '12px', cursor: 'pointer', fontWeight: 700, fontFamily: 'Lato, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', boxShadow: '0 4px 10px rgba(239,68,68,0.2)' }}
+                            style={{
+                              width: "100%",
+                              background:
+                                "linear-gradient(135deg, #ef4444, #f97316)",
+                              color: "#fff",
+                              border: "none",
+                              borderRadius: "12px",
+                              padding: "12px",
+                              cursor: "pointer",
+                              fontWeight: 700,
+                              fontFamily: "Lato, sans-serif",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              gap: "6px",
+                              boxShadow: "0 4px 10px rgba(239,68,68,0.2)",
+                            }}
                           >
                             <RefreshCw size={15} /> Terima Hukuman! 😂
                           </button>
@@ -314,57 +701,191 @@ export default function StreakPage() {
                     onClick={() => checkIn(s)}
                     disabled={checkingIn === s.person_name}
                     className="btn-rose"
-                    style={{ width: '100%', justifyContent: 'center', gap: '8px', fontSize: '0.875rem' }}
+                    style={{
+                      width: "100%",
+                      justifyContent: "center",
+                      gap: "8px",
+                      fontSize: "0.875rem",
+                    }}
                   >
-                    {checkingIn === s.person_name ? '🌿' : <><Flame size={16} /> Absen Sekarang!</>}
+                    {checkingIn === s.person_name ? (
+                      "🌿"
+                    ) : (
+                      <>
+                        <Flame size={16} /> Absen Sekarang!
+                      </>
+                    )}
                   </button>
                 )}
               </div>
             </div>
-          )
+          );
         })}
       </div>
 
       {/* Confetti overlay */}
       {showConfetti && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 100, pointerEvents: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ textAlign: 'center', animation: 'float 0.5s ease-out' }}>
-            <div style={{ fontSize: '5rem' }}>🔥</div>
-            <div className="font-display" style={{ fontSize: '2rem', fontWeight: 700, color: '#2d8c6e', textShadow: '0 2px 20px rgba(45,140,110,0.5)' }}>Streak lanjut!</div>
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 100,
+            pointerEvents: "none",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <div
+            style={{ textAlign: "center", animation: "float 0.5s ease-out" }}
+          >
+            <div style={{ fontSize: "5rem" }}>🔥</div>
+            <div
+              className="font-display"
+              style={{
+                fontSize: "2rem",
+                fontWeight: 700,
+                color: "#2d8c6e",
+                textShadow: "0 2px 20px rgba(45,140,110,0.5)",
+              }}
+            >
+              Streak lanjut!
+            </div>
           </div>
-          {['🌟','🌿','🔥','⭐','✨'].map((e, i) => (
-            <div key={i} style={{
-              position: 'absolute',
-              left: `${10 + Math.random() * 80}%`,
-              top: `${10 + Math.random() * 80}%`,
-              fontSize: '1.5rem',
-              animation: `confetti-fall ${0.8 + Math.random()}s ease-out forwards`,
-              animationDelay: `${i * 0.1}s`,
-            }}>{e}</div>
+          {["🌟", "🌿", "🔥", "⭐", "✨"].map((e, i) => (
+            <div
+              key={i}
+              style={{
+                position: "absolute",
+                left: `${10 + Math.random() * 80}%`,
+                top: `${10 + Math.random() * 80}%`,
+                fontSize: "1.5rem",
+                animation: `confetti-fall ${0.8 + Math.random()}s ease-out forwards`,
+                animationDelay: `${i * 0.1}s`,
+              }}
+            >
+              {e}
+            </div>
           ))}
         </div>
       )}
 
       {/* Penalty Modal */}
       {showPenalty && penalty && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px', background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)' }}>
-          <div style={{ background: '#fff', borderRadius: '24px', padding: '0', width: '100%', maxWidth: '420px', overflow: 'hidden', boxShadow: '0 25px 60px rgba(0,0,0,0.25)' }}>
-            <div style={{ background: 'linear-gradient(135deg, #ef4444, #f97316)', padding: '24px', textAlign: 'center' }}>
-              <div style={{ fontSize: '3.5rem', marginBottom: '8px' }}>{penalty.emoji}</div>
-              <h2 className="font-display" style={{ color: '#fff', fontSize: '1.2rem', fontWeight: 700, margin: 0 }}>Hukuman untuk {showPenalty}! 😂</h2>
-              <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.8rem', marginTop: '4px', fontFamily: 'Lato,sans-serif' }}>Streak terputus, selesaikan tantangan ini dulu!</p>
-            </div>
-            <div style={{ padding: '24px' }}>
-              <div style={{ background: '#fff7ed', border: '2px solid #fed7aa', borderRadius: '16px', padding: '20px', textAlign: 'center', marginBottom: '20px' }}>
-                <p className="font-body" style={{ color: '#9a3412', fontSize: '1.05rem', fontWeight: 600, lineHeight: 1.5, margin: 0 }}>{penalty.label}</p>
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 50,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "16px",
+            background: "rgba(0,0,0,0.5)",
+            backdropFilter: "blur(4px)",
+          }}
+        >
+          <div
+            style={{
+              background: "#fff",
+              borderRadius: "24px",
+              padding: "0",
+              width: "100%",
+              maxWidth: "420px",
+              overflow: "hidden",
+              boxShadow: "0 25px 60px rgba(0,0,0,0.25)",
+            }}
+          >
+            <div
+              style={{
+                background: "linear-gradient(135deg, #ef4444, #f97316)",
+                padding: "24px",
+                textAlign: "center",
+              }}
+            >
+              <div style={{ fontSize: "3.5rem", marginBottom: "8px" }}>
+                {penalty.emoji}
               </div>
-              <div style={{ display: 'flex', gap: '10px' }}>
-                <button onClick={() => { setShowPenalty(null); setPenalty(null) }}
-                  className="font-body" style={{ flex: 1, padding: '12px', borderRadius: '12px', border: '2px solid #c8ddd5', background: '#fff', color: '#5bb89a', fontWeight: 600, cursor: 'pointer' }}>
+              <h2
+                className="font-display"
+                style={{
+                  color: "#fff",
+                  fontSize: "1.2rem",
+                  fontWeight: 700,
+                  margin: 0,
+                }}
+              >
+                Hukuman untuk {showPenalty}! 😂
+              </h2>
+              <p
+                style={{
+                  color: "rgba(255,255,255,0.7)",
+                  fontSize: "0.8rem",
+                  marginTop: "4px",
+                  fontFamily: "Lato,sans-serif",
+                }}
+              >
+                Streak terputus, selesaikan tantangan ini dulu!
+              </p>
+            </div>
+            <div style={{ padding: "24px" }}>
+              <div
+                style={{
+                  background: "#fff7ed",
+                  border: "2px solid #fed7aa",
+                  borderRadius: "16px",
+                  padding: "20px",
+                  textAlign: "center",
+                  marginBottom: "20px",
+                }}
+              >
+                <p
+                  className="font-body"
+                  style={{
+                    color: "#9a3412",
+                    fontSize: "1.05rem",
+                    fontWeight: 600,
+                    lineHeight: 1.5,
+                    margin: 0,
+                  }}
+                >
+                  {penalty.label}
+                </p>
+              </div>
+              <div style={{ display: "flex", gap: "10px" }}>
+                <button
+                  onClick={() => {
+                    setShowPenalty(null);
+                    setPenalty(null);
+                  }}
+                  className="font-body"
+                  style={{
+                    flex: 1,
+                    padding: "12px",
+                    borderRadius: "12px",
+                    border: "2px solid #c8ddd5",
+                    background: "#fff",
+                    color: "#5bb89a",
+                    fontWeight: 600,
+                    cursor: "pointer",
+                  }}
+                >
                   Nanti dulu 😅
                 </button>
-                <button onClick={() => completePenalty(showPenalty)}
-                  style={{ flex: 1, background: 'linear-gradient(135deg, #ef4444, #f97316)', color: '#fff', border: 'none', borderRadius: '12px', padding: '12px', cursor: 'pointer', fontWeight: 700, fontFamily: 'Lato,sans-serif' }}>
+                <button
+                  onClick={() => completePenalty(showPenalty)}
+                  style={{
+                    flex: 1,
+                    background: "linear-gradient(135deg, #ef4444, #f97316)",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "12px",
+                    padding: "12px",
+                    cursor: "pointer",
+                    fontWeight: 700,
+                    fontFamily: "Lato,sans-serif",
+                  }}
+                >
                   Sudah selesai! ✅
                 </button>
               </div>
@@ -373,5 +894,5 @@ export default function StreakPage() {
         </div>
       )}
     </div>
-  )
+  );
 }

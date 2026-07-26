@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: 'Our Zootopia Story 🦊🐰',
   description: 'Menjelajahi petualangan duo ikonik kami di kota modern — tempat menyimpan setiap momen indah perjalanan kita bersama',
   icons: {
-    icon: '/images/logo.png',
+    icon: '/images/logo-zootopia.png',
   },
 }
 
