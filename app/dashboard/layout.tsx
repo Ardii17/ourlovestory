@@ -1,8 +1,8 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Menu, X, Sparkles, LogOut, PawPrint } from 'lucide-react'
+import { Menu, X, Sparkles, LogOut, PawPrint, Play, Pause, Volume2, VolumeX } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { logoutAction } from '../login/actions'
 
@@ -37,11 +37,103 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [profile, setProfile] = useState<{ person1_name: string; person2_name: string } | null>(null)
 
+  // ── Music State ──
+  const [showSplash, setShowSplash] = useState(false)
+  const [isPlaying, setIsPlaying] = useState(false)
+  const [isMuted, setIsMuted] = useState(false)
+  const [musicProgress, setMusicProgress] = useState(0)
+  const [musicDuration, setMusicDuration] = useState(0)
+  const [showPlayer, setShowPlayer] = useState(false)
+  const [playerExpanded, setPlayerExpanded] = useState(false)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
+
   useEffect(() => { loadProfile() }, [])
+
+  // ── Check splash on mount ──
+  useEffect(() => {
+    const seen = sessionStorage.getItem('splash_seen')
+    if (!seen) {
+      setShowSplash(true)
+    } else {
+      setShowPlayer(true)
+    }
+  }, [])
+
+  // ── Audio event listeners ──
+  useEffect(() => {
+    const audio = audioRef.current
+    if (!audio) return
+
+    const onTimeUpdate = () => setMusicProgress(audio.currentTime)
+    const onLoadedMetadata = () => setMusicDuration(audio.duration)
+    const onEnded = () => {
+      audio.currentTime = 0
+      audio.play()
+    }
+    const onPlay = () => setIsPlaying(true)
+    const onPause = () => setIsPlaying(false)
+
+    audio.addEventListener('timeupdate', onTimeUpdate)
+    audio.addEventListener('loadedmetadata', onLoadedMetadata)
+    audio.addEventListener('ended', onEnded)
+    audio.addEventListener('play', onPlay)
+    audio.addEventListener('pause', onPause)
+
+    return () => {
+      audio.removeEventListener('timeupdate', onTimeUpdate)
+      audio.removeEventListener('loadedmetadata', onLoadedMetadata)
+      audio.removeEventListener('ended', onEnded)
+      audio.removeEventListener('play', onPlay)
+      audio.removeEventListener('pause', onPause)
+    }
+  }, [])
 
   async function loadProfile() {
     const { data } = await supabase.from('couple_profile').select('person1_name, person2_name').single()
     if (data) setProfile(data)
+  }
+
+  const handleSplashEnter = useCallback(() => {
+    sessionStorage.setItem('splash_seen', '1')
+    setShowSplash(false)
+    setShowPlayer(true)
+    const audio = audioRef.current
+    if (audio) {
+      audio.volume = 0.5
+      audio.play().catch(() => {})
+    }
+  }, [])
+
+  const togglePlay = useCallback(() => {
+    const audio = audioRef.current
+    if (!audio) return
+    if (isPlaying) {
+      audio.pause()
+    } else {
+      audio.play().catch(() => {})
+    }
+  }, [isPlaying])
+
+  const toggleMute = useCallback(() => {
+    const audio = audioRef.current
+    if (!audio) return
+    audio.muted = !audio.muted
+    setIsMuted(!isMuted)
+  }, [isMuted])
+
+  const seekMusic = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const audio = audioRef.current
+    if (!audio || !musicDuration) return
+    const rect = e.currentTarget.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const pct = x / rect.width
+    audio.currentTime = pct * musicDuration
+  }, [musicDuration])
+
+  const formatTime = (s: number) => {
+    const m = Math.floor(s / 60)
+    const sec = Math.floor(s % 60)
+    return `${m}:${sec.toString().padStart(2, '0')}`
   }
 
   return (
@@ -277,7 +369,276 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           .sidebar-aside { position: fixed !important; left: 0; top: 0; height: 100vh !important; }
           .sidebar-hidden { transform: translateX(-100%) !important; }
         }
+        @keyframes splashFadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes splashContentUp {
+          from { opacity: 0; transform: translateY(40px) scale(0.95); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes splashPulse {
+          0%, 100% { transform: scale(1); opacity: 0.6; }
+          50% { transform: scale(1.15); opacity: 1; }
+        }
+        @keyframes playerSlideIn {
+          from { opacity: 0; transform: translateY(20px) scale(0.9); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes noteFloat {
+          0% { opacity: 0; transform: translateY(0) rotate(0deg); }
+          20% { opacity: 1; }
+          100% { opacity: 0; transform: translateY(-40px) rotate(20deg); }
+        }
       `}</style>
+
+      {/* ── Hidden Audio Element ── */}
+      <audio ref={audioRef} src="/music/song.m4a" preload="auto" loop />
+
+      {/* ── SPLASH SCREEN ── */}
+      {showSplash && (
+        <div
+          onClick={handleSplashEnter}
+          style={{
+            position: 'fixed', inset: 0, zIndex: 9999,
+            background: 'linear-gradient(135deg, #004D60 0%, #006D8E 30%, #00A896 70%, #E9C46A 100%)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: 'pointer',
+            animation: 'splashFadeIn 0.6s ease-out',
+          }}
+        >
+          {/* Decorative circles */}
+          <div style={{ position: 'absolute', top: '15%', left: '10%', width: '200px', height: '200px', borderRadius: '50%', background: 'rgba(244,162,97,0.08)', filter: 'blur(40px)' }} />
+          <div style={{ position: 'absolute', bottom: '20%', right: '15%', width: '250px', height: '250px', borderRadius: '50%', background: 'rgba(233,196,106,0.1)', filter: 'blur(50px)' }} />
+
+          <div style={{
+            textAlign: 'center', padding: '40px',
+            animation: 'splashContentUp 0.8s ease-out 0.3s both',
+            position: 'relative', zIndex: 1,
+          }}>
+            {/* Music icon */}
+            <div style={{
+              fontSize: '4rem', marginBottom: '24px',
+              animation: 'splashPulse 2s ease-in-out infinite',
+            }}>
+              🎵
+            </div>
+
+            <h1 style={{
+              fontFamily: "'Fredoka', sans-serif",
+              fontSize: 'clamp(1.8rem, 5vw, 2.5rem)',
+              fontWeight: 700,
+              color: '#fff',
+              margin: '0 0 12px',
+              textShadow: '0 2px 20px rgba(0,0,0,0.2)',
+            }}>
+              Our Zootopia Story
+            </h1>
+
+            <p style={{
+              fontFamily: "'Dancing Script', cursive",
+              fontSize: 'clamp(1rem, 3vw, 1.3rem)',
+              color: '#E9C46A',
+              margin: '0 0 32px',
+              lineHeight: 1.5,
+            }}>
+              {profile ? `${profile.person1_name} & ${profile.person2_name}` : 'Our Adventure Together'}
+            </p>
+
+            {/* Paw prints decoration */}
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', marginBottom: '32px', opacity: 0.5 }}>
+              <span style={{ fontSize: '1.2rem' }}>🐾</span>
+              <span style={{ fontSize: '1rem' }}>🐾</span>
+              <span style={{ fontSize: '0.8rem' }}>🐾</span>
+            </div>
+
+            {/* CTA */}
+            <div style={{
+              display: 'inline-flex', alignItems: 'center', gap: '10px',
+              background: 'rgba(255,255,255,0.15)',
+              backdropFilter: 'blur(12px)',
+              border: '1.5px solid rgba(255,255,255,0.25)',
+              borderRadius: '50px',
+              padding: '14px 32px',
+              transition: 'all 0.3s',
+            }}>
+              <Play size={18} color="#fff" fill="#fff" />
+              <span style={{
+                fontFamily: "'Nunito', sans-serif",
+                fontSize: '0.95rem', fontWeight: 600,
+                color: '#fff', letterSpacing: '0.02em',
+              }}>
+                Ketuk untuk masuk 🎵
+              </span>
+            </div>
+
+            <p style={{
+              fontFamily: "'Nunito', sans-serif",
+              fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)',
+              marginTop: '16px',
+            }}>
+              Musik akan diputar otomatis
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* ── MINI MUSIC PLAYER ── */}
+      {showPlayer && (
+        <div style={{
+          position: 'fixed',
+          bottom: '20px', right: '20px',
+          zIndex: 100,
+          animation: 'playerSlideIn 0.4s ease-out',
+        }}>
+          {/* Expanded player panel */}
+          {playerExpanded && (
+            <div style={{
+              width: '280px',
+              background: 'linear-gradient(135deg, #004D60, #006D8E)',
+              borderRadius: '18px',
+              padding: '16px',
+              marginBottom: '10px',
+              boxShadow: '0 10px 40px rgba(0,77,96,0.4)',
+              border: '1px solid rgba(244,162,97,0.2)',
+              animation: 'playerSlideIn 0.3s ease-out',
+            }}>
+              {/* Song info */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px' }}>
+                <div style={{
+                  width: '40px', height: '40px',
+                  borderRadius: '10px',
+                  background: 'linear-gradient(135deg, #F4A261, #E9C46A)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: '1.2rem',
+                  animation: isPlaying ? 'splashPulse 2s ease-in-out infinite' : 'none',
+                }}>
+                  🎵
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <p style={{
+                    fontFamily: "'Nunito', sans-serif",
+                    fontSize: '0.82rem', fontWeight: 700,
+                    color: '#fff', margin: 0,
+                    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                  }}>
+                    Our Song
+                  </p>
+                  <p style={{
+                    fontFamily: "'Nunito', sans-serif",
+                    fontSize: '0.68rem',
+                    color: 'rgba(255,255,255,0.5)', margin: '2px 0 0',
+                  }}>
+                    🦊🐰 Lagu Kita
+                  </p>
+                </div>
+              </div>
+
+              {/* Progress bar */}
+              <div
+                onClick={seekMusic}
+                style={{
+                  width: '100%', height: '5px',
+                  background: 'rgba(255,255,255,0.15)',
+                  borderRadius: '50px', cursor: 'pointer',
+                  marginBottom: '8px',
+                  position: 'relative',
+                }}
+              >
+                <div style={{
+                  width: `${musicDuration ? (musicProgress / musicDuration) * 100 : 0}%`,
+                  height: '100%',
+                  background: 'linear-gradient(90deg, #F4A261, #E9C46A)',
+                  borderRadius: '50px',
+                  transition: 'width 0.1s linear',
+                }} />
+              </div>
+
+              {/* Time display */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+                <span style={{ fontFamily: "'Nunito', sans-serif", fontSize: '0.62rem', color: 'rgba(255,255,255,0.4)' }}>
+                  {formatTime(musicProgress)}
+                </span>
+                <span style={{ fontFamily: "'Nunito', sans-serif", fontSize: '0.62rem', color: 'rgba(255,255,255,0.4)' }}>
+                  {formatTime(musicDuration)}
+                </span>
+              </div>
+
+              {/* Controls */}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px' }}>
+                <button
+                  onClick={toggleMute}
+                  style={{
+                    background: 'rgba(255,255,255,0.1)',
+                    border: 'none', borderRadius: '50%',
+                    width: '36px', height: '36px',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    cursor: 'pointer', transition: 'all 0.2s',
+                  }}
+                >
+                  {isMuted ? <VolumeX size={15} color="rgba(255,255,255,0.6)" /> : <Volume2 size={15} color="rgba(255,255,255,0.6)" />}
+                </button>
+                <button
+                  onClick={togglePlay}
+                  style={{
+                    background: 'linear-gradient(135deg, #F4A261, #E9C46A)',
+                    border: 'none', borderRadius: '50%',
+                    width: '46px', height: '46px',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    cursor: 'pointer',
+                    boxShadow: '0 4px 15px rgba(244,162,97,0.4)',
+                    transition: 'all 0.2s',
+                  }}
+                >
+                  {isPlaying ? <Pause size={20} color="#004D60" fill="#004D60" /> : <Play size={20} color="#004D60" fill="#004D60" />}
+                </button>
+                <button
+                  onClick={() => setPlayerExpanded(false)}
+                  style={{
+                    background: 'rgba(255,255,255,0.1)',
+                    border: 'none', borderRadius: '50%',
+                    width: '36px', height: '36px',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    cursor: 'pointer', transition: 'all 0.2s',
+                  }}
+                >
+                  <X size={15} color="rgba(255,255,255,0.6)" />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Floating FAB button */}
+          {!playerExpanded && (
+            <button
+              onClick={() => setPlayerExpanded(true)}
+              style={{
+                width: '52px', height: '52px',
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, #004D60, #0081A7)',
+                border: '2px solid rgba(244,162,97,0.4)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                cursor: 'pointer',
+                boxShadow: '0 4px 20px rgba(0,77,96,0.4)',
+                transition: 'all 0.3s',
+                position: 'relative',
+                overflow: 'visible',
+              }}
+            >
+              {isPlaying ? (
+                <>
+                  <span style={{ fontSize: '1.3rem' }}>🎵</span>
+                  {/* Animated music notes */}
+                  <span style={{ position: 'absolute', top: '-5px', right: '-3px', fontSize: '0.7rem', animation: 'noteFloat 2s ease-out infinite' }}>♪</span>
+                  <span style={{ position: 'absolute', top: '-8px', left: '2px', fontSize: '0.6rem', animation: 'noteFloat 2s ease-out 0.7s infinite' }}>♫</span>
+                </>
+              ) : (
+                <Play size={22} color="#F4A261" fill="#F4A261" />
+              )}
+            </button>
+          )}
+        </div>
+      )}
     </div>
   )
 }
