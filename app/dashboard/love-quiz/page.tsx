@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
-import { Plus, X, ChevronRight, RefreshCw, Eye, EyeOff } from "lucide-react";
+import { Plus, X, ChevronRight, RefreshCw } from "lucide-react";
 
 interface Question {
   id: string;
@@ -51,7 +51,7 @@ export default function LoveQuizPage() {
   const [quizDone, setQuizDone] = useState(false);
   const [saving, setSaving] = useState(false);
   const [filterAsker, setFilterAsker] = useState("all");
-  const [showAnswerInList, setShowAnswerInList] = useState(false);
+
   const [form, setForm] = useState({
     question: "",
     answer: "",
@@ -155,13 +155,14 @@ export default function LoveQuizPage() {
       <div
         style={{
           display: "flex",
+          flexWrap: "wrap",
           alignItems: "flex-start",
           justifyContent: "space-between",
           marginBottom: "24px",
           gap: "12px",
         }}
       >
-        <div>
+        <div style={{ minWidth: 0, flex: "1 1 200px" }}>
           <h1
             className="font-display"
             style={{
@@ -180,7 +181,7 @@ export default function LoveQuizPage() {
             Seberapa kenal kamu sama aku?
           </p>
         </div>
-        <div style={{ display: "flex", gap: "8px", flexShrink: 0 }}>
+        <div style={{ display: "flex", gap: "8px", flexShrink: 0, flexWrap: "wrap" }}>
           {questions.length > 0 && !quizMode && (
             <button
               onClick={startQuiz}
@@ -197,6 +198,7 @@ export default function LoveQuizPage() {
                 display: "flex",
                 alignItems: "center",
                 gap: "6px",
+                whiteSpace: "nowrap",
               }}
             >
               <ChevronRight size={15} /> Mulai Quiz!
@@ -206,7 +208,7 @@ export default function LoveQuizPage() {
             <button
               onClick={() => setShowAdd(true)}
               className="btn-rose"
-              style={{ gap: "6px", fontSize: "0.85rem", padding: "10px 16px" }}
+              style={{ gap: "6px", fontSize: "0.85rem", padding: "10px 16px", whiteSpace: "nowrap" }}
             >
               <Plus size={15} /> Tambah
             </button>
@@ -227,6 +229,7 @@ export default function LoveQuizPage() {
                 fontWeight: 600,
                 fontFamily: "Lato,sans-serif",
                 fontSize: "0.82rem",
+                whiteSpace: "nowrap",
               }}
             >
               ← Keluar Quiz
@@ -641,12 +644,11 @@ export default function LoveQuizPage() {
       {/* ── QUESTION BANK (tidak di quiz mode) ── */}
       {!quizMode && (
         <div>
-          {/* Filter + toggle jawaban */}
+          {/* Filter */}
           <div
             style={{
               display: "flex",
               alignItems: "center",
-              justifyContent: "space-between",
               flexWrap: "wrap",
               gap: "8px",
               marginBottom: "16px",
@@ -674,35 +676,6 @@ export default function LoveQuizPage() {
                 </button>
               ))}
             </div>
-
-            {/* Toggle tampilkan jawaban */}
-            <button
-              onClick={() => setShowAnswerInList((p) => !p)}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "6px",
-                background: showAnswerInList ? "#f4f9f7" : "#fff",
-                border: `1.5px solid ${showAnswerInList ? "#2d8c6e" : "#c8ddd5"}`,
-                borderRadius: "50px",
-                padding: "6px 14px",
-                cursor: "pointer",
-                color: showAnswerInList ? "#237a5e" : "#a0c4b8",
-                fontSize: "0.78rem",
-                fontWeight: 600,
-                fontFamily: "Lato,sans-serif",
-              }}
-            >
-              {showAnswerInList ? (
-                <>
-                  <Eye size={13} /> Sembunyikan Jawaban
-                </>
-              ) : (
-                <>
-                  <EyeOff size={13} /> Tampilkan Jawaban
-                </>
-              )}
-            </button>
           </div>
 
           {loading ? (
@@ -808,31 +781,7 @@ export default function LoveQuizPage() {
                           {isP1 ? "👩" : "👨"} Dari {q.asked_by} · {cat?.label}
                         </p>
 
-                        {/* Jawaban — hanya tampil jika toggle aktif */}
-                        {showAnswerInList && (
-                          <div
-                            style={{
-                              display: "inline-flex",
-                              alignItems: "center",
-                              gap: "6px",
-                              background: "#f4f9f7",
-                              borderRadius: "8px",
-                              padding: "4px 10px",
-                            }}
-                          >
-                            <Eye size={11} color="#5bb89a" />
-                            <span
-                              className="font-body"
-                              style={{
-                                color: "#237a5e",
-                                fontSize: "0.75rem",
-                                fontWeight: 600,
-                              }}
-                            >
-                              {q.answer}
-                            </span>
-                          </div>
-                        )}
+
                       </div>
 
                       {/* Hapus */}
