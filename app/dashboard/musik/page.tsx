@@ -45,6 +45,7 @@ export default function MusikPage() {
     file: null as File | null,
   });
   const [uploadError, setUploadError] = useState("");
+  const [confirmActiveSong, setConfirmActiveSong] = useState<Song | null>(null);
 
   useEffect(() => {
     loadData();
@@ -562,9 +563,8 @@ export default function MusikPage() {
                     }}
                   >
                     <button
-                      onClick={() => !isActive && setActiveSong(song.id)}
+                      onClick={() => setConfirmActiveSong(song)}
                       title={isActive ? "Sedang diputar di dashboard" : "Putar lagu ini"}
-                      disabled={isActive}
                       style={{
                         width: "36px",
                         height: "36px",
@@ -980,15 +980,107 @@ export default function MusikPage() {
                     gap: "6px",
                   }}
                 >
-                  {uploading ? (
-                    "Mengupload..."
-                  ) : (
-                    <>
-                      <Upload size={15} /> Upload
-                    </>
                   )}
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── CONFIRM ACTIVE MODAL ── */}
+      {confirmActiveSong && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 60,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "16px",
+            background: "rgba(0,0,0,0.5)",
+            backdropFilter: "blur(4px)",
+          }}
+        >
+          <div
+            style={{
+              background: "#fff",
+              borderRadius: "24px",
+              padding: "28px",
+              width: "100%",
+              maxWidth: "400px",
+              boxShadow: "0 25px 60px rgba(0,0,0,0.2)",
+              textAlign: "center",
+            }}
+          >
+            <div
+              style={{
+                width: "60px",
+                height: "60px",
+                borderRadius: "16px",
+                background: "linear-gradient(135deg, #f4f9f7, #e8f4f0)",
+                border: "2px solid #2d8c6e",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                margin: "0 auto 16px",
+              }}
+            >
+              <Music size={28} color="#2d8c6e" />
+            </div>
+            <h3
+              className="font-display"
+              style={{
+                fontSize: "1.2rem",
+                fontWeight: 700,
+                color: "#1a5c47",
+                margin: "0 0 8px",
+              }}
+            >
+              Ubah Lagu Dashboard?
+            </h3>
+            <p
+              className="font-body"
+              style={{
+                fontSize: "0.85rem",
+                color: "#5bb89a",
+                margin: "0 0 24px",
+                lineHeight: 1.5,
+              }}
+            >
+              Apakah kamu yakin ingin memutar lagu <strong>{confirmActiveSong.title}</strong> di semua halaman dashboard?
+            </p>
+            <div style={{ display: "flex", gap: "10px" }}>
+              <button
+                onClick={() => setConfirmActiveSong(null)}
+                className="font-body"
+                style={{
+                  flex: 1,
+                  padding: "12px",
+                  borderRadius: "12px",
+                  border: "2px solid #c8ddd5",
+                  background: "#fff",
+                  color: "#5bb89a",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                }}
+              >
+                Batal
+              </button>
+              <button
+                onClick={() => {
+                  setActiveSong(confirmActiveSong.id);
+                  setConfirmActiveSong(null);
+                }}
+                className="btn-rose"
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                }}
+              >
+                Ya, Tampilkan
+              </button>
             </div>
           </div>
         </div>

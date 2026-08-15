@@ -422,7 +422,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       `}</style>
 
       {/* ── Hidden Audio Element ── */}
-      <audio ref={audioRef} src={activeSong?.file_url || '/music/song.m4a'} preload="auto" loop />
+      <audio ref={audioRef} src={activeSong?.file_url || ''} preload="auto" loop />
 
       {/* ── SPLASH SCREEN ── */}
       {showSplash && (
@@ -513,7 +513,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       )}
 
       {/* ── MINI MUSIC PLAYER ── */}
-      {showPlayer && (
+      {showPlayer && activeSong && (
         <div style={{
           position: 'fixed',
           bottom: '20px', right: '20px',
