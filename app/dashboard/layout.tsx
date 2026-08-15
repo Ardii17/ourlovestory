@@ -24,6 +24,7 @@ const navItems = [
   { href: '/dashboard/achievements',  label: 'Achievement',       emoji: '🏆' },
   // ── Fitur Baru ──
   { href: '/dashboard/lokasi',        label: 'Bagi Lokasi',       emoji: '🛰️' },
+  { href: '/dashboard/musik',         label: 'Musik Kita',        emoji: '🎵' },
 ]
 
 const NAV_GROUPS = [
@@ -36,6 +37,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const pathname = usePathname()
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [profile, setProfile] = useState<{ person1_name: string; person2_name: string } | null>(null)
+  const [activeSong, setActiveSong] = useState<{ file_url: string; title: string; artist: string } | null>(null)
 
   // ── Music State ──
   const [showSplash, setShowSplash] = useState(false)
@@ -47,7 +49,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [playerExpanded, setPlayerExpanded] = useState(false)
   const audioRef = useRef<HTMLAudioElement | null>(null)
 
-  useEffect(() => { loadProfile() }, [])
+  useEffect(() => { loadProfile(); loadActiveSong() }, [])
 
   // ── Check splash on mount ──
   useEffect(() => {
@@ -91,6 +93,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   async function loadProfile() {
     const { data } = await supabase.from('couple_profile').select('person1_name, person2_name').single()
     if (data) setProfile(data)
+  }
+
+  async function loadActiveSong() {
+    const { data } = await supabase.from('songs').select('file_url, title, artist').eq('is_active', true).single()
+    if (data) setActiveSong(data)
   }
 
   const handleSplashEnter = useCallback(() => {
@@ -393,7 +400,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       `}</style>
 
       {/* ── Hidden Audio Element ── */}
-      <audio ref={audioRef} src="/music/song.m4a" preload="auto" loop />
+      <audio ref={audioRef} src={activeSong?.file_url || '/music/song.m4a'} preload="auto" loop />
 
       {/* ── SPLASH SCREEN ── */}
       {showSplash && (
@@ -522,14 +529,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     color: '#fff', margin: 0,
                     overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                   }}>
-                    Our Song
+                    {activeSong?.title || 'Our Song'}
                   </p>
                   <p style={{
                     fontFamily: "'Nunito', sans-serif",
                     fontSize: '0.68rem',
                     color: 'rgba(255,255,255,0.5)', margin: '2px 0 0',
                   }}>
-                    🦊🐰 Lagu Kita
+                    {activeSong?.artist || '🦊🐰 Lagu Kita'}
                   </p>
                 </div>
               </div>
