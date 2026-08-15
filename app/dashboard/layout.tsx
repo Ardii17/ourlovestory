@@ -97,8 +97,30 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   async function loadActiveSong() {
     const { data } = await supabase.from('songs').select('file_url, title, artist').eq('is_active', true).single()
-    if (data) setActiveSong(data)
+    if (data) {
+      setActiveSong(data)
+    } else {
+      setActiveSong(null)
+    }
   }
+
+  useEffect(() => {
+    const handleSongUpdated = () => {
+      loadActiveSong()
+    }
+    window.addEventListener('song-updated', handleSongUpdated)
+    return () => window.removeEventListener('song-updated', handleSongUpdated)
+  }, [])
+
+  useEffect(() => {
+    if (audioRef.current) {
+      const wasPlaying = isPlaying
+      audioRef.current.load()
+      if (wasPlaying) {
+        audioRef.current.play().catch(() => {})
+      }
+    }
+  }, [activeSong?.file_url])
 
   const handleSplashEnter = useCallback(() => {
     sessionStorage.setItem('splash_seen', '1')

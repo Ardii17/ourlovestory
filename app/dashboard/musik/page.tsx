@@ -125,6 +125,10 @@ export default function MusikPage() {
 
       if (dbError) throw dbError;
 
+      if (isFirst) {
+        window.dispatchEvent(new CustomEvent("song-updated"));
+      }
+
       setUploadProgress(100);
 
       // Reset
@@ -142,10 +146,11 @@ export default function MusikPage() {
   }
 
   async function setActiveSong(songId: string) {
-    // Deactivate all
-    await supabase.from("songs").update({ is_active: false }).neq("id", "");
+    // Deactivate currently active song(s)
+    await supabase.from("songs").update({ is_active: false }).eq("is_active", true);
     // Activate selected
     await supabase.from("songs").update({ is_active: true }).eq("id", songId);
+    window.dispatchEvent(new CustomEvent("song-updated"));
     await loadData();
   }
 
@@ -170,6 +175,7 @@ export default function MusikPage() {
           .update({ is_active: true })
           .eq("id", remaining[0].id);
       }
+      window.dispatchEvent(new CustomEvent("song-updated"));
     }
 
     if (previewId === song.id) {
@@ -555,34 +561,37 @@ export default function MusikPage() {
                       flexShrink: 0,
                     }}
                   >
-                    {!isActive && (
-                      <button
-                        onClick={() => setActiveSong(song.id)}
-                        title="Putar lagu ini"
-                        style={{
-                          width: "36px",
-                          height: "36px",
-                          borderRadius: "10px",
-                          border: "1.5px solid #c8ddd5",
-                          background: "#f4f9f7",
-                          cursor: "pointer",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          transition: "all 0.2s",
-                        }}
-                        onMouseEnter={(e) => {
+                    <button
+                      onClick={() => !isActive && setActiveSong(song.id)}
+                      title={isActive ? "Sedang diputar di dashboard" : "Putar lagu ini"}
+                      disabled={isActive}
+                      style={{
+                        width: "36px",
+                        height: "36px",
+                        borderRadius: "10px",
+                        border: isActive ? "1.5px solid #2d8c6e" : "1.5px solid #c8ddd5",
+                        background: isActive ? "#2d8c6e" : "#f4f9f7",
+                        cursor: isActive ? "default" : "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        transition: "all 0.2s",
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!isActive) {
                           e.currentTarget.style.borderColor = "#2d8c6e";
                           e.currentTarget.style.background = "#e8f4f0";
-                        }}
-                        onMouseLeave={(e) => {
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (!isActive) {
                           e.currentTarget.style.borderColor = "#c8ddd5";
                           e.currentTarget.style.background = "#f4f9f7";
-                        }}
-                      >
-                        <CheckCircle size={16} color="#2d8c6e" />
-                      </button>
-                    )}
+                        }
+                      }}
+                    >
+                      <CheckCircle size={16} color={isActive ? "#fff" : "#2d8c6e"} />
+                    </button>
                     <button
                       onClick={() => deleteSong(song)}
                       title="Hapus lagu"
