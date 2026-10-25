@@ -1,7 +1,8 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
-import { Camera, Upload, X, Plus, ChevronLeft, ChevronRight, Search } from 'lucide-react'
+import { Camera, Upload, X, Plus, ChevronLeft, ChevronRight, Search, Download, CheckSquare, Square, Check, Loader2 } from 'lucide-react'
+import { downloadSingleFile, downloadMultipleAsZip, DownloadItem } from '@/lib/download'
 
 function isVideoUrl(url: string | null): boolean {
   if (!url) return false
@@ -97,8 +98,18 @@ export default function DokumentasiPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const fileRef = useRef<HTMLInputElement>(null)
 
+  // Selection & Batch Download States
+  const [selectedPhotoIds, setSelectedPhotoIds] = useState<string[]>([])
+  const [isSelectMode, setIsSelectMode] = useState(false)
+  const [downloading, setDownloading] = useState(false)
+  const [downloadProgress, setDownloadProgress] = useState<{ current: number; total: number } | null>(null)
+
   useEffect(() => { loadPlaces() }, [])
-  useEffect(() => { if (selectedPlace) loadPhotos(selectedPlace) }, [selectedPlace])
+  useEffect(() => {
+    setSelectedPhotoIds([])
+    setIsSelectMode(false)
+    if (selectedPlace) loadPhotos(selectedPlace)
+  }, [selectedPlace])
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
@@ -222,6 +233,60 @@ export default function DokumentasiPage() {
     await supabase.from('place_photos').update({ caption: newCaption }).eq('id', id)
     if (selectedPlace) await loadPhotos(selectedPlace)
     setShowCaption(null)
+  }
+
+  const currentPlace = places.find(p => p.id === selectedPlace)
+  const currentPlaceName = currentPlace?.name || 'dokumentasi'
+
+  function getPhotoFilename(photo: Photo, index: number) {
+    const ext = isVideoUrl(photo.photo_url) ? 'mp4' : 'jpg'
+    const safePlace = currentPlaceName.toLowerCase().replace(/[^a-z0-9_-]/g, '_')
+    return `${safePlace}_${index + 1}.${ext}`
+  }
+
+  async function handleDownloadSingle(photo: Photo, index: number) {
+    const filename = getPhotoFilename(photo, index)
+    await downloadSingleFile(photo.photo_url, filename)
+  }
+
+  function toggleSelectPhoto(id: string) {
+    setSelectedPhotoIds(prev => 
+      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
+    )
+  }
+
+  function handleSelectAll() {
+    if (selectedPhotoIds.length === photos.length) {
+      setSelectedPhotoIds([])
+    } else {
+      setSelectedPhotoIds(photos.map(p => p.id))
+    }
+  }
+
+  async function handleDownloadSelected() {
+    if (selectedPhotoIds.length === 0 || downloading) return
+    setDownloading(true)
+    const itemsToDownload: DownloadItem[] = selectedPhotoIds.map(id => {
+      const idx = photos.findIndex(p => p.id === id)
+      const p = photos[idx]
+      return {
+        url: p.photo_url,
+        filename: getPhotoFilename(p, idx)
+      }
+    })
+
+    const safeZipName = `${currentPlaceName.toLowerCase().replace(/[^a-z0-9_-]/g, '_')}_dokumentasi.zip`
+    try {
+      await downloadMultipleAsZip(itemsToDownload, safeZipName, (prog) => {
+        setDownloadProgress({ current: prog.current, total: prog.total })
+      })
+    } catch (err) {
+      console.error('Download error:', err)
+      alert('Gagal mendownload foto terpilih.')
+    } finally {
+      setDownloading(false)
+      setDownloadProgress(null)
+    }
   }
 
   const filteredPlaces = places.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -349,69 +414,234 @@ export default function DokumentasiPage() {
                 </p>
               </div>
             ) : (
-              <div className="photo-grid">
-                {photos.map((photo, idx) => (
-                  <div
-                    key={photo.id}
-                    className="relative overflow-hidden group rounded-xl aspect-square bg-rose-50"
-                    style={{ boxShadow: "0 4px 15px rgba(0, 168, 150, 0.08)", border: "1.5px solid rgba(0, 168, 150, 0.1)" }}
-                  >
-                    {isVideoUrl(photo.photo_url) ? (
-                      <video
-                        src={photo.photo_url}
-                        className="object-cover w-full h-full cursor-pointer"
-                        onClick={() => setLightbox(idx)}
-                        muted
-                        loop
-                        playsInline
-                        autoPlay
-                      />
-                    ) : (
-                      /* eslint-disable-next-line @next/next/no-img-element */
-                      <img
-                        src={photo.photo_url}
-                        alt={photo.caption || ""}
-                        className="object-cover w-full h-full cursor-pointer"
-                        onClick={() => setLightbox(idx)}
-                      />
+              <>
+                {/* ── Sub-header Toolbar for Selection & Actions ── */}
+                <div className="flex flex-wrap items-center justify-between gap-3 mb-4 px-1">
+                  <div className="text-xs font-medium text-rose-600 font-body flex items-center gap-2">
+                    <span>Total {photos.length} foto/video di {currentPlaceName}</span>
+                    {selectedPhotoIds.length > 0 && (
+                      <span className="px-2 py-0.5 rounded-full bg-[#2d8c6e]/15 text-[#2d8c6e] font-bold">
+                        {selectedPhotoIds.length} dipilih
+                      </span>
                     )}
-                    <div
-                      onClick={() => setLightbox(idx)}
-                      className="absolute inset-0 flex flex-col justify-end p-2.5 transition-opacity opacity-0 bg-black/40 group-hover:opacity-100 cursor-pointer"
-                    >
-                      {photo.caption && (
-                        <p className="mb-2 text-xs text-white font-body line-clamp-2">
-                          {photo.caption}
-                        </p>
-                      )}
-                      <div className="flex gap-1.5">
-                        <button
-                          onClick={(e) => { e.stopPropagation(); setShowCaption(photo.id); }}
-                          className="flex-1 py-1.5 text-center text-xs text-white rounded bg-white/20 hover:bg-white/35 font-semibold transition"
-                        >
-                          ✏️ Edit Caption
-                        </button>
-                        <button
-                          onClick={(e) => { e.stopPropagation(); deletePhoto(photo.id); }}
-                          className="px-2 py-1.5 text-center text-xs text-white rounded bg-red-500/60 hover:bg-red-500/85 transition"
-                        >
-                          🗑️
-                        </button>
-                      </div>
-                    </div>
                   </div>
-                ))}
-                {/* Add more photo card */}
-                <div
-                  className="flex flex-col items-center justify-center transition-colors border-2 border-dashed cursor-pointer aspect-square rounded-xl border-rose-200 hover:bg-rose-50"
-                  onClick={() => fileRef.current?.click()}
-                >
-                  <Plus size={24} className="mb-1 text-rose-300" />
-                  <span className="text-xs text-rose-400 font-body">
-                    Tambah Foto
-                  </span>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => {
+                        setIsSelectMode(!isSelectMode)
+                        if (isSelectMode) setSelectedPhotoIds([])
+                      }}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl transition cursor-pointer ${
+                        isSelectMode
+                          ? 'bg-rose-600 text-white shadow-sm'
+                          : 'bg-white text-rose-700 border border-rose-200 hover:bg-rose-50 shadow-sm'
+                      }`}
+                    >
+                      <CheckSquare size={14} />
+                      <span>{isSelectMode ? 'Batal Pilih' : 'Pilih Banyak'}</span>
+                    </button>
+
+                    {isSelectMode && (
+                      <>
+                        <button
+                          onClick={handleSelectAll}
+                          className="px-3 py-1.5 text-xs font-bold bg-white text-rose-700 border border-rose-200 hover:bg-rose-50 rounded-xl transition cursor-pointer shadow-sm"
+                        >
+                          {selectedPhotoIds.length === photos.length ? 'Batal Semua' : 'Pilih Semua'}
+                        </button>
+
+                        {selectedPhotoIds.length > 0 && (
+                          <button
+                            onClick={handleDownloadSelected}
+                            disabled={downloading}
+                            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-white bg-[#2d8c6e] hover:bg-[#236e57] rounded-xl shadow-sm transition disabled:opacity-50 cursor-pointer"
+                          >
+                            {downloading ? (
+                              <>
+                                <Loader2 size={13} className="animate-spin" />
+                                <span>Mengunduh {downloadProgress ? `${downloadProgress.current}/${downloadProgress.total}` : '...'}</span>
+                              </>
+                            ) : (
+                              <>
+                                <Download size={13} />
+                                <span>Download ({selectedPhotoIds.length})</span>
+                              </>
+                            )}
+                          </button>
+                        )}
+                      </>
+                    )}
+                  </div>
                 </div>
-              </div>
+
+                {/* ── Photo Grid ── */}
+                <div className="photo-grid">
+                  {photos.map((photo, idx) => {
+                    const isSelected = selectedPhotoIds.includes(photo.id)
+                    return (
+                      <div
+                        key={photo.id}
+                        onClick={() => {
+                          if (isSelectMode) {
+                            toggleSelectPhoto(photo.id)
+                          } else {
+                            setLightbox(idx)
+                          }
+                        }}
+                        className={`relative overflow-hidden group rounded-xl aspect-square bg-rose-50 cursor-pointer transition-all duration-200 ${
+                          isSelected
+                            ? 'ring-4 ring-[#2d8c6e] scale-[0.98] shadow-lg'
+                            : 'hover:shadow-md'
+                        }`}
+                        style={{
+                          boxShadow: isSelected ? 'none' : '0 4px 15px rgba(0, 168, 150, 0.08)',
+                          border: isSelected ? 'none' : '1.5px solid rgba(0, 168, 150, 0.1)',
+                        }}
+                      >
+                        {/* Checkbox badge (Always visible in select mode, or on hover) */}
+                        <div
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            if (!isSelectMode) setIsSelectMode(true)
+                            toggleSelectPhoto(photo.id)
+                          }}
+                          className={`absolute top-2.5 left-2.5 z-20 w-6 h-6 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
+                            isSelected
+                              ? 'bg-[#2d8c6e] text-white shadow-md opacity-100 scale-105'
+                              : isSelectMode
+                                ? 'bg-black/40 text-white/70 border border-white/70 backdrop-blur-sm opacity-100'
+                                : 'opacity-0 group-hover:opacity-100 bg-black/40 text-white/70 border border-white/60 backdrop-blur-sm'
+                          }`}
+                          title={isSelected ? 'Batal pilih' : 'Pilih foto ini'}
+                        >
+                          {isSelected ? <Check size={14} strokeWidth={3} /> : null}
+                        </div>
+
+                        {/* Quick download button on top-right (hover) */}
+                        {!isSelectMode && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleDownloadSingle(photo, idx)
+                            }}
+                            className="absolute top-2.5 right-2.5 z-20 p-1.5 rounded-lg bg-black/40 hover:bg-[#2d8c6e] text-white backdrop-blur-sm opacity-0 group-hover:opacity-100 transition shadow-sm cursor-pointer"
+                            title="Download foto ini"
+                          >
+                            <Download size={13} />
+                          </button>
+                        )}
+
+                        {isVideoUrl(photo.photo_url) ? (
+                          <video
+                            src={photo.photo_url}
+                            className="object-cover w-full h-full"
+                            muted
+                            loop
+                            playsInline
+                            autoPlay
+                          />
+                        ) : (
+                          /* eslint-disable-next-line @next/next/no-img-element */
+                          <img
+                            src={photo.photo_url}
+                            alt={photo.caption || ''}
+                            className="object-cover w-full h-full"
+                          />
+                        )}
+
+                        {/* Bottom overlay for caption & actions */}
+                        <div
+                          className={`absolute inset-0 flex flex-col justify-end p-2.5 transition-opacity ${
+                            isSelectMode ? 'opacity-0 pointer-events-none' : 'opacity-0 bg-black/40 group-hover:opacity-100'
+                          }`}
+                        >
+                          {photo.caption && (
+                            <p className="mb-2 text-xs text-white font-body line-clamp-2">
+                              {photo.caption}
+                            </p>
+                          )}
+                          <div className="flex gap-1.5">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                handleDownloadSingle(photo, idx)
+                              }}
+                              className="px-2.5 py-1.5 text-center text-xs text-white rounded bg-[#2d8c6e]/80 hover:bg-[#2d8c6e] font-semibold transition flex items-center justify-center gap-1 cursor-pointer"
+                              title="Download foto"
+                            >
+                              <Download size={12} />
+                              <span className="hidden sm:inline">Unduh</span>
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setShowCaption(photo.id)
+                              }}
+                              className="flex-1 py-1.5 text-center text-xs text-white rounded bg-white/20 hover:bg-white/35 font-semibold transition cursor-pointer"
+                            >
+                              ✏️ Edit Caption
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                deletePhoto(photo.id)
+                              }}
+                              className="px-2 py-1.5 text-center text-xs text-white rounded bg-red-500/60 hover:bg-red-500/85 transition cursor-pointer"
+                            >
+                              🗑️
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })}
+
+                  {/* Add more photo card */}
+                  <div
+                    className="flex flex-col items-center justify-center transition-colors border-2 border-dashed cursor-pointer aspect-square rounded-xl border-rose-200 hover:bg-rose-50"
+                    onClick={() => fileRef.current?.click()}
+                  >
+                    <Plus size={24} className="mb-1 text-rose-300" />
+                    <span className="text-xs text-rose-400 font-body">
+                      Tambah Foto
+                    </span>
+                  </div>
+                </div>
+
+                {/* ── Sticky Bottom Action Bar when items are selected ── */}
+                {selectedPhotoIds.length > 0 && (
+                  <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-white/95 backdrop-blur-md shadow-2xl border border-rose-200 px-5 py-3 rounded-2xl flex items-center gap-3 sm:gap-4 text-rose-800 transition-all max-w-[90vw]">
+                    <span className="text-xs font-bold font-display whitespace-nowrap">
+                      ✨ {selectedPhotoIds.length} foto dipilih
+                    </span>
+                    <div className="h-4 w-[1px] bg-rose-200" />
+                    <button
+                      onClick={handleSelectAll}
+                      className="text-xs text-rose-600 hover:text-rose-800 font-semibold cursor-pointer whitespace-nowrap"
+                    >
+                      {selectedPhotoIds.length === photos.length ? 'Batal Semua' : 'Pilih Semua'}
+                    </button>
+                    <button
+                      onClick={handleDownloadSelected}
+                      disabled={downloading}
+                      className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-[#2d8c6e] hover:bg-[#236e57] rounded-xl shadow-md transition disabled:opacity-50 cursor-pointer whitespace-nowrap"
+                    >
+                      {downloading ? (
+                        <>
+                          <Loader2 size={14} className="animate-spin" />
+                          <span>Mengunduh {downloadProgress ? `${downloadProgress.current}/${downloadProgress.total}` : '...'}</span>
+                        </>
+                      ) : (
+                        <>
+                          <Download size={14} />
+                          <span>Download Terpilih ({selectedPhotoIds.length})</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                )}
+              </>
             )}
           </>
         )}
@@ -423,12 +653,26 @@ export default function DokumentasiPage() {
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 modal-backdrop"
           onClick={() => setLightbox(null)}
         >
-          <button
-            className="absolute z-10 text-white top-4 right-4 hover:text-rose-300"
-            onClick={() => setLightbox(null)}
-          >
-            <X size={32} />
-          </button>
+          {/* Top buttons: Download & Close */}
+          <div className="absolute z-10 flex items-center gap-3 top-4 right-4">
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                handleDownloadSingle(photos[lightbox], lightbox)
+              }}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-white bg-[#2d8c6e] hover:bg-[#236e57] rounded-full transition shadow-md cursor-pointer"
+              title="Download media ini"
+            >
+              <Download size={15} />
+              <span>Download</span>
+            </button>
+            <button
+              className="p-1.5 text-white transition rounded-full hover:text-rose-300 bg-white/10 hover:bg-white/20 cursor-pointer"
+              onClick={() => setLightbox(null)}
+            >
+              <X size={24} />
+            </button>
+          </div>
           {lightbox > 0 && (
             <button
               className="absolute z-10 text-white left-4 hover:text-rose-300"

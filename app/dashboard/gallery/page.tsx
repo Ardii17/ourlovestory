@@ -15,10 +15,19 @@ import {
   ExternalLink,
   Plus,
   Upload,
+  Download,
+  CheckSquare,
+  Check,
+  Loader2,
 } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { id as idLocale } from "date-fns/locale";
 import Link from "next/link";
+import {
+  downloadSingleFile,
+  downloadMultipleAsZip,
+  DownloadItem,
+} from "@/lib/download";
 
 function isVideoUrl(url: string | null): boolean {
   if (!url) return false;
@@ -134,6 +143,15 @@ export default function GalleryPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<"newest" | "oldest">("newest");
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+
+  // Multi-select & Batch Download states
+  const [selectedItemIds, setSelectedItemIds] = useState<string[]>([]);
+  const [isSelectMode, setIsSelectMode] = useState(false);
+  const [downloading, setDownloading] = useState(false);
+  const [downloadProgress, setDownloadProgress] = useState<{
+    current: number;
+    total: number;
+  } | null>(null);
 
   // Upload modal states
   const [showUploadModal, setShowUploadModal] = useState(false);
@@ -444,6 +462,66 @@ export default function GalleryPage() {
     return "/dashboard/dokumentasi";
   }
 
+  function getItemFilename(item: GalleryItem, index?: number) {
+    const isVid = isVideoUrl(item.url);
+    const ext = isVid ? "mp4" : "jpg";
+    const safeTitle = (item.title || "media")
+      .toLowerCase()
+      .replace(/[^a-z0-9_-]/g, "_");
+    const numSuffix = index !== undefined ? `_${index + 1}` : "";
+    return `${safeTitle}_${item.type}${numSuffix}.${ext}`;
+  }
+
+  async function handleDownloadSingle(item: GalleryItem, index?: number) {
+    const filename = getItemFilename(item, index);
+    await downloadSingleFile(item.url, filename);
+  }
+
+  function toggleSelectItem(id: string) {
+    setSelectedItemIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+    );
+  }
+
+  function handleSelectAllFiltered() {
+    if (selectedItemIds.length === filteredItems.length) {
+      setSelectedItemIds([]);
+    } else {
+      setSelectedItemIds(filteredItems.map((i) => i.id));
+    }
+  }
+
+  async function handleDownloadSelected() {
+    if (selectedItemIds.length === 0 || downloading) return;
+    setDownloading(true);
+
+    const itemsToDownload: DownloadItem[] = selectedItemIds
+      .map((id) => {
+        const it = items.find((i) => i.id === id);
+        if (!it) return null;
+        const idx = items.indexOf(it);
+        return {
+          url: it.url,
+          filename: getItemFilename(it, idx),
+        };
+      })
+      .filter(Boolean) as DownloadItem[];
+
+    const dateStr = format(new Date(), "yyyyMMdd");
+    const zipName = `galeri_media_${dateStr}.zip`;
+    try {
+      await downloadMultipleAsZip(itemsToDownload, zipName, (prog) => {
+        setDownloadProgress({ current: prog.current, total: prog.total });
+      });
+    } catch (err) {
+      console.error("Gagal mendownload media terpilih:", err);
+      alert("Gagal mendownload media terpilih.");
+    } finally {
+      setDownloading(false);
+      setDownloadProgress(null);
+    }
+  }
+
   return (
     <div className="max-w-6xl mx-auto">
       {/* Header */}
@@ -460,6 +538,21 @@ export default function GalleryPage() {
 
         {/* Actions + Info stats */}
         <div className="flex flex-wrap items-center gap-3">
+          <button
+            onClick={() => {
+              setIsSelectMode(!isSelectMode);
+              if (isSelectMode) setSelectedItemIds([]);
+            }}
+            className={`flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-full transition-all shadow-md cursor-pointer ${
+              isSelectMode
+                ? "bg-rose-600 text-white"
+                : "bg-white text-rose-700 border border-rose-200 hover:bg-rose-50"
+            }`}
+          >
+            <CheckSquare size={14} />
+            <span>{isSelectMode ? "Batal Mode Pilih" : "Pilih Banyak 📥"}</span>
+          </button>
+
           <button
             onClick={() => setShowUploadModal(true)}
             className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-white transition-colors rounded-full shadow-md cursor-pointer bg-[#2d8c6e] hover:bg-rose-600 shadow-rose-200"
@@ -640,81 +733,173 @@ export default function GalleryPage() {
       ) : (
         /* Photo Grid */
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-          {filteredItems.map((item, idx) => (
-            <div
-              key={item.id}
-              onClick={() => setLightboxIndex(idx)}
-              className="relative overflow-hidden border shadow-sm cursor-pointer group rounded-2xl aspect-square bg-rose-50 border-rose-100 card-hover"
-            >
-              {/* Media */}
-              {isVideoUrl(item.url) ? (
-                <video
-                  src={item.url}
-                  className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
-                  muted
-                  loop
-                  playsInline
-                  autoPlay
-                />
-              ) : (
-                /* eslint-disable-next-line @next/next/no-img-element */
-                <img
-                  src={item.url}
-                  alt={item.title}
-                  loading="lazy"
-                  className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
-                />
-              )}
-
-              {/* Hover overlay */}
-              <div className="absolute inset-0 flex flex-col justify-end p-4 text-white transition-opacity duration-300 opacity-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent group-hover:opacity-100">
-                <div className="absolute p-2 rounded-full top-3 right-3 bg-white/20 backdrop-blur-md">
-                  <Eye size={14} className="text-white" />
+          {filteredItems.map((item, idx) => {
+            const isSelected = selectedItemIds.includes(item.id);
+            return (
+              <div
+                key={item.id}
+                onClick={() => {
+                  if (isSelectMode) {
+                    toggleSelectItem(item.id);
+                  } else {
+                    setLightboxIndex(idx);
+                  }
+                }}
+                className={`relative overflow-hidden border shadow-sm cursor-pointer group rounded-2xl aspect-square bg-rose-50 border-rose-100 transition-all duration-200 ${
+                  isSelected
+                    ? "ring-4 ring-[#2d8c6e] scale-[0.98] shadow-lg"
+                    : "card-hover"
+                }`}
+              >
+                {/* Checkbox badge */}
+                <div
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (!isSelectMode) setIsSelectMode(true);
+                    toggleSelectItem(item.id);
+                  }}
+                  className={`absolute top-2.5 left-2.5 z-20 w-6 h-6 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
+                    isSelected
+                      ? "bg-[#2d8c6e] text-white shadow-md opacity-100 scale-105"
+                      : isSelectMode
+                        ? "bg-black/40 text-white/70 border border-white/70 backdrop-blur-sm opacity-100"
+                        : "opacity-0 group-hover:opacity-100 bg-black/40 text-white/70 border border-white/60 backdrop-blur-sm"
+                  }`}
+                  title={isSelected ? "Batal pilih" : "Pilih media ini"}
+                >
+                  {isSelected ? <Check size={14} strokeWidth={3} /> : null}
                 </div>
 
-                {/* Badge Type */}
-                <div className="mb-2.5">
-                  <span
-                    className={`text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full ${
-                      item.type === "profile"
-                        ? "bg-blue-500/80 text-white"
-                        : item.type === "memory"
-                          ? "bg-[#2d8c6e]/80 text-white"
-                          : "bg-amber-500/80 text-white"
-                    }`}
+                {/* Quick Single Download button on top-right (hover) */}
+                {!isSelectMode && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDownloadSingle(item, idx);
+                    }}
+                    className="absolute top-2.5 right-2.5 z-20 p-2 rounded-full bg-black/40 hover:bg-[#2d8c6e] text-white backdrop-blur-md opacity-0 group-hover:opacity-100 transition shadow-sm cursor-pointer"
+                    title="Download media ini"
                   >
-                    {item.type === "profile"
-                      ? "👫 Profil"
-                      : item.type === "memory"
-                        ? "⭐ Kenangan"
-                        : "📸 Dokumentasi"}
-                  </span>
-                </div>
-
-                {/* Details */}
-                <h4 className="mb-1 text-xs font-bold truncate font-display">
-                  {item.type === "documentation" &&
-                  item.category &&
-                  categoryEmoji[item.category]
-                    ? `${categoryEmoji[item.category]} `
-                    : ""}
-                  {item.type === "memory" && item.mood && moodEmoji[item.mood]
-                    ? `${moodEmoji[item.mood]} `
-                    : ""}
-                  {item.title}
-                </h4>
-
-                {item.date && (
-                  <p className="text-[10px] text-gray-300 font-body flex items-center gap-1">
-                    <Calendar size={10} />
-                    {format(parseISO(item.date), "d MMM yyyy", {
-                      locale: idLocale,
-                    })}
-                  </p>
+                    <Download size={13} />
+                  </button>
                 )}
+
+                {/* Media */}
+                {isVideoUrl(item.url) ? (
+                  <video
+                    src={item.url}
+                    className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
+                    muted
+                    loop
+                    playsInline
+                    autoPlay
+                  />
+                ) : (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img
+                    src={item.url}
+                    alt={item.title}
+                    loading="lazy"
+                    className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
+                  />
+                )}
+
+                {/* Hover overlay */}
+                <div
+                  className={`absolute inset-0 flex flex-col justify-end p-4 text-white transition-opacity duration-300 ${
+                    isSelectMode
+                      ? "opacity-0 pointer-events-none"
+                      : "opacity-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent group-hover:opacity-100"
+                  }`}
+                >
+                  <div className="absolute p-2 rounded-full top-3 right-12 bg-white/20 backdrop-blur-md">
+                    <Eye size={14} className="text-white" />
+                  </div>
+
+                  {/* Badge Type */}
+                  <div className="mb-2.5">
+                    <span
+                      className={`text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full ${
+                        item.type === "profile"
+                          ? "bg-blue-500/80 text-white"
+                          : item.type === "memory"
+                            ? "bg-[#2d8c6e]/80 text-white"
+                            : "bg-amber-500/80 text-white"
+                      }`}
+                    >
+                      {item.type === "profile"
+                        ? "👫 Profil"
+                        : item.type === "memory"
+                          ? "⭐ Kenangan"
+                          : "📸 Dokumentasi"}
+                    </span>
+                  </div>
+
+                  {/* Details */}
+                  <h4 className="mb-1 text-xs font-bold truncate font-display">
+                    {item.type === "documentation" &&
+                    item.category &&
+                    categoryEmoji[item.category]
+                      ? `${categoryEmoji[item.category]} `
+                      : ""}
+                    {item.type === "memory" && item.mood && moodEmoji[item.mood]
+                      ? `${moodEmoji[item.mood]} `
+                      : ""}
+                    {item.title}
+                  </h4>
+
+                  {item.date && (
+                    <p className="text-[10px] text-gray-300 font-body flex items-center gap-1">
+                      <Calendar size={10} />
+                      {format(parseISO(item.date), "d MMM yyyy", {
+                        locale: idLocale,
+                      })}
+                    </p>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
+        </div>
+      )}
+
+      {/* ── Sticky Bottom Action Bar when items are selected ── */}
+      {selectedItemIds.length > 0 && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-white/95 backdrop-blur-md shadow-2xl border border-rose-200 px-5 py-3 rounded-2xl flex items-center gap-3 sm:gap-4 text-rose-800 transition-all max-w-[90vw]">
+          <span className="text-xs font-bold font-display whitespace-nowrap">
+            ✨ {selectedItemIds.length} media dipilih
+          </span>
+          <div className="h-4 w-[1px] bg-rose-200" />
+          <button
+            onClick={handleSelectAllFiltered}
+            className="text-xs text-rose-600 hover:text-rose-800 font-semibold cursor-pointer whitespace-nowrap"
+          >
+            {selectedItemIds.length === filteredItems.length
+              ? "Batal Semua"
+              : `Pilih Semua (${filteredItems.length})`}
+          </button>
+          <button
+            onClick={handleDownloadSelected}
+            disabled={downloading}
+            className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-[#2d8c6e] hover:bg-[#236e57] rounded-xl shadow-md transition disabled:opacity-50 cursor-pointer whitespace-nowrap"
+          >
+            {downloading ? (
+              <>
+                <Loader2 size={14} className="animate-spin" />
+                <span>
+                  Mengunduh{" "}
+                  {downloadProgress
+                    ? `${downloadProgress.current}/${downloadProgress.total}`
+                    : "..."}
+                </span>
+              </>
+            ) : (
+              <>
+                <Download size={14} />
+                <span>Download Terpilih ({selectedItemIds.length})</span>
+              </>
+            )}
+          </button>
         </div>
       )}
 
@@ -729,12 +914,25 @@ export default function GalleryPage() {
             <span className="text-xs font-semibold tracking-wide text-gray-400 font-body">
               {lightboxIndex + 1} dari {filteredItems.length} media
             </span>
-            <button
-              onClick={() => setLightboxIndex(null)}
-              className="p-2 text-white transition-colors rounded-full cursor-pointer bg-white/10 hover:bg-white/20"
-            >
-              <X size={20} />
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDownloadSingle(currentLightboxItem, lightboxIndex);
+                }}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-white bg-[#2d8c6e] hover:bg-[#236e57] rounded-full transition shadow-md cursor-pointer"
+                title="Download media ini"
+              >
+                <Download size={14} />
+                <span>Download</span>
+              </button>
+              <button
+                onClick={() => setLightboxIndex(null)}
+                className="p-2 text-white transition-colors rounded-full cursor-pointer bg-white/10 hover:bg-white/20"
+              >
+                <X size={20} />
+              </button>
+            </div>
           </div>
 
           {/* Center Area: Prev Image Next */}
@@ -839,14 +1037,22 @@ export default function GalleryPage() {
               )}
             </div>
 
-            {/* Direct action link to origin page */}
-            <Link
-              href={getRedirectLink(currentLightboxItem)}
-              onClick={() => setLightboxIndex(null)}
-              className="flex items-center gap-2 text-xs font-semibold bg-white/20 hover:bg-white/30 text-white py-2.5 px-4 rounded-xl transition-all whitespace-nowrap font-body border border-white/10"
-            >
-              Kelola Momen <ExternalLink size={12} />
-            </Link>
+            {/* Direct action links */}
+            <div className="flex items-center gap-2 flex-wrap">
+              <button
+                onClick={() => handleDownloadSingle(currentLightboxItem, lightboxIndex)}
+                className="flex items-center gap-2 text-xs font-semibold bg-[#2d8c6e] hover:bg-[#236e57] text-white py-2.5 px-4 rounded-xl transition-all whitespace-nowrap font-body shadow-md cursor-pointer"
+              >
+                <Download size={14} /> Download Media
+              </button>
+              <Link
+                href={getRedirectLink(currentLightboxItem)}
+                onClick={() => setLightboxIndex(null)}
+                className="flex items-center gap-2 text-xs font-semibold bg-white/20 hover:bg-white/30 text-white py-2.5 px-4 rounded-xl transition-all whitespace-nowrap font-body border border-white/10"
+              >
+                Kelola Momen <ExternalLink size={12} />
+              </Link>
+            </div>
           </div>
         </div>
       )}

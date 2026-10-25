@@ -980,7 +980,7 @@ export default function MusikPage() {
                     gap: "6px",
                   }}
                 >
-                  )}
+                  {uploading ? "Mengupload..." : "Upload Lagu"}
                 </button>
               </div>
             </div>

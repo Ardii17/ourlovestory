@@ -534,8 +534,9 @@ export default function TimeCapsulePage() {
             alignItems: "center",
             justifyContent: "center",
             padding: "16px",
-            background: "rgba(0,0,0,0.6)",
+            background: "rgba(0,0,0,0.65)",
             backdropFilter: "blur(6px)",
+            overflowY: "auto",
           }}
           onClick={() => setShowReveal(false)}
         >
@@ -544,51 +545,98 @@ export default function TimeCapsulePage() {
               background: "#fffdf7",
               borderRadius: "24px",
               width: "100%",
-              maxWidth: "460px",
+              maxWidth: "480px",
+              maxHeight: "min(90vh, 720px)",
+              display: "flex",
+              flexDirection: "column",
               overflow: "hidden",
               boxShadow: "0 30px 80px rgba(0,0,0,0.3)",
+              border: "1px solid rgba(255, 255, 255, 0.2)",
+              position: "relative",
             }}
             onClick={(e) => e.stopPropagation()}
           >
+            {/* Header (Fixed at top) */}
             <div
               style={{
                 background:
                   "linear-gradient(135deg, #004D60, #0081A7, #00A896)",
-                padding: "28px",
+                padding: "24px 24px 20px",
                 textAlign: "center",
+                position: "relative",
+                flexShrink: 0,
               }}
             >
-              <div style={{ fontSize: "3rem", marginBottom: "8px" }}>✉️</div>
+              <button
+                onClick={() => setShowReveal(false)}
+                style={{
+                  position: "absolute",
+                  top: "14px",
+                  right: "14px",
+                  background: "rgba(255, 255, 255, 0.2)",
+                  border: "none",
+                  borderRadius: "50%",
+                  width: "32px",
+                  height: "32px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "#fff",
+                  cursor: "pointer",
+                  transition: "background 0.2s",
+                }}
+                className="hover:bg-white/30"
+                title="Tutup"
+              >
+                <X size={18} />
+              </button>
+
+              <div style={{ fontSize: "2.5rem", marginBottom: "6px" }}>✉️</div>
               <h2
                 className="font-display"
                 style={{
                   color: "#fff",
-                  fontSize: "1.3rem",
+                  fontSize: "1.25rem",
                   fontWeight: 700,
                   margin: 0,
+                  padding: "0 28px",
+                  wordBreak: "break-word",
                 }}
               >
                 {selectedCapsule.title}
               </h2>
               <p
                 style={{
-                  color: "rgba(255,255,255,0.7)",
+                  color: "rgba(255,255,255,0.8)",
                   fontSize: "0.8rem",
                   marginTop: "4px",
                   fontFamily: "Lato,sans-serif",
                 }}
               >
-                Dari {selectedCapsule.from_person} untuk{" "}
-                {selectedCapsule.to_person}
+                Dari <strong style={{ color: "#fff" }}>{selectedCapsule.from_person}</strong> untuk{" "}
+                <strong style={{ color: "#fff" }}>{selectedCapsule.to_person}</strong>
               </p>
             </div>
-            <div style={{ padding: "28px" }}>
+
+            {/* Scrollable Content Body */}
+            <div
+              style={{
+                padding: "20px 24px 24px",
+                overflowY: "auto",
+                flex: 1,
+                display: "flex",
+                flexDirection: "column",
+                WebkitOverflowScrolling: "touch",
+              }}
+            >
               <div
                 className="paper-texture"
                 style={{
                   borderRadius: "16px",
                   padding: "20px",
-                  marginBottom: "20px",
+                  marginBottom: "16px",
+                  border: "1px solid #c8ddd5",
+                  background: "rgba(255, 255, 255, 0.7)",
                 }}
               >
                 <p
@@ -597,16 +645,20 @@ export default function TimeCapsulePage() {
                     color: "#1a5c47",
                     lineHeight: 1.8,
                     whiteSpace: "pre-wrap",
+                    wordBreak: "break-word",
+                    overflowWrap: "anywhere",
                     margin: 0,
+                    fontSize: "0.95rem",
                   }}
                 >
                   {selectedCapsule.message}
                 </p>
               </div>
+
               <p
                 className="font-body"
                 style={{
-                  color: "#a0c4b8",
+                  color: "#5bb89a",
                   fontSize: "0.75rem",
                   textAlign: "center",
                   marginBottom: "16px",
@@ -617,10 +669,17 @@ export default function TimeCapsulePage() {
                   locale: idLocale,
                 })}
               </p>
+
               <button
                 onClick={() => setShowReveal(false)}
                 className="btn-rose"
-                style={{ width: "100%", justifyContent: "center" }}
+                style={{
+                  width: "100%",
+                  justifyContent: "center",
+                  padding: "12px",
+                  marginTop: "auto",
+                  cursor: "pointer",
+                }}
               >
                 Tutup 🌿
               </button>
