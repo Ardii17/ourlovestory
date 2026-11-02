@@ -128,7 +128,7 @@ export default function LoginPage() {
           color: '#004D60', background: 'rgba(255,255,255,0.7)',
           padding: '3px 12px', borderRadius: '50px',
           backdropFilter: 'blur(4px)',
-        }}>NICK</span>
+        }}>Ardi</span>
       </motion.div>
 
       <motion.div
@@ -160,7 +160,7 @@ export default function LoginPage() {
           color: '#004D60', background: 'rgba(255,255,255,0.7)',
           padding: '3px 12px', borderRadius: '50px',
           backdropFilter: 'blur(4px)',
-        }}>JUDY</span>
+        }}>Triani</span>
       </motion.div>
 
       {/* ══════════════════════════════════════
